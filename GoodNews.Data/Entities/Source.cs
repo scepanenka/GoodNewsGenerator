@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace GoodNews.Data.Entities
+namespace GoodNews.DAL.Entities
 {
     public class Source : Entity
     {
         public string Name { get; set; }
         public string Description { get; set; }
-        public virtual List<Article> News { get; set; }
+        public virtual ICollection<Article> News { get; set; }
     }
 }

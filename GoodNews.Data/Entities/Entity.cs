@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace GoodNews.Data.Entities
+namespace GoodNews.DAL.Entities
 {
     public abstract class Entity
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         
     }
 }
