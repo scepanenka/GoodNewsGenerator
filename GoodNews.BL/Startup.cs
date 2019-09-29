@@ -11,6 +11,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using GoodNews.DAL;
+using GoodNews.DAL.Entities;
+using GoodNews.DAL.UnitOfWork;
+using GoodNews.DAL.Repository;
 
 namespace GoodNews.BL
 {
@@ -36,6 +39,10 @@ namespace GoodNews.BL
 
             string connection = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<GoodNewsContext>(options => options.UseSqlServer(connection));
+            services.AddTransient<IRepository<Article>, ArticleRepository>();
+            services.AddTransient<IRepository<Source>, SourceRepository>();
+            services.AddTransient<IRepository<Category>, CategoryRepository>();
+            services.AddTransient<IUnitOfWork, UnitOfWork>();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 

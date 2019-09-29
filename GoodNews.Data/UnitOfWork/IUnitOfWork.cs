@@ -8,9 +8,9 @@ namespace GoodNews.DAL.UnitOfWork
 {
     public interface IUnitOfWork : IDisposable
     {
-        IRepository<Article> Orders { get; }
-        IRepository<Source> OrderItems { get; }
-        IRepository<Category> Products { get; }
+        IRepository<Article> News { get; }
+        IRepository<Source> Sources { get; }
+        IRepository<Category> Categories { get; }
 
         void Save();
     }

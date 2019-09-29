@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using GoodNews.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -23,6 +24,11 @@ namespace GoodNews.DAL.Repository
         public IEnumerable<T> GetAll()
         {
             return _table.ToList();
+        }
+
+        public async Task<List<T>> GetAllAsync()
+        {
+            return await _table.ToListAsync();
         }
 
         public T GetById(object id)
