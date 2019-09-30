@@ -1,0 +1,14 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace GoodNews.DAL.Entities
+{
+    public class Category : Entity
+    {
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public virtual ICollection<Article> News { get; set; }
+
+    }
+}
