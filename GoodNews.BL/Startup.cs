@@ -38,7 +38,7 @@ namespace GoodNews.BL
 
 
             string connection = Configuration.GetConnectionString("DefaultConnection");
-            services.AddDbContext<GoodNewsContext>(options => options.UseSqlServer(connection));
+            services.AddDbContext<GoodNewsContext>(options => options.UseSqlServer(connection, x => x.MigrationsAssembly("GoodNews.DAL")));
             services.AddTransient<IRepository<Article>, ArticleRepository>();
             services.AddTransient<IRepository<Source>, SourceRepository>();
             services.AddTransient<IRepository<Category>, CategoryRepository>();
