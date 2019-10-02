@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace GoodNews.DAL.Entities
 {
@@ -16,5 +17,6 @@ namespace GoodNews.DAL.Entities
 
         public Guid SourceId { get; set; }
         public Source Source { get; set; }
+
     }
 }

@@ -24,6 +24,17 @@ namespace GoodNews.DAL
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<UserRole>().HasKey(ur => new { ur.UserId, ur.RoleId });
+
+            modelBuilder.Entity<UserRole>()
+                .HasOne<User>(sc => sc.User)
+                .WithMany(s => s.UserRoles)
+                .HasForeignKey(sc => sc.UserId);
+
+
+            modelBuilder.Entity<UserRole>()
+                .HasOne<Role>(sc => sc.Role)
+                .WithMany(s => s.UserRoles)
+                .HasForeignKey(sc => sc.RoleId);
         }
     }
 }
