@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-using GoodNews.DAL.Entities;
+using Core;
+using GoodNews.DAL;
 using GoodNews.DAL.Repository;
+using GoodNews.Data.Entities;
 
-namespace GoodNews.DAL.UnitOfWork
+namespace Services
 {
     public class UnitOfWork : IUnitOfWork
     {

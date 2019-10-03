@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using GoodNews.DAL.Entities;
+﻿using GoodNews.Data.Entities;
 
 namespace GoodNews.DAL.Repository
 {

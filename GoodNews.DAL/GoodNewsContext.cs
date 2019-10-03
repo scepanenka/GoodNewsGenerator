@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using GoodNews.DAL.Entities;
+using GoodNews.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace GoodNews.DAL
@@ -14,6 +14,7 @@ namespace GoodNews.DAL
         public DbSet<User> Users { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<UserRole> UserRoles { get; set; }
+        public DbSet<Comment> Comments { get; set; }
 
         public GoodNewsContext(DbContextOptions<GoodNewsContext> options)
             : base(options)

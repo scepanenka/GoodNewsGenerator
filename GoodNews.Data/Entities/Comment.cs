@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace GoodNews.DAL.Entities
+namespace GoodNews.Data.Entities
 {
     public class Comment : Entity
     {
@@ -11,7 +9,9 @@ namespace GoodNews.DAL.Entities
 
         public Guid UserId { get; set; }
         public User User { get; set; }
-
+        public DateTime Date { get; set; }
+        public string Content { get; set; }
+        public int LikesCount { get; set; }
 
     }
 }

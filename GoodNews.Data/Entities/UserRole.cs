@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Text;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
-namespace GoodNews.DAL.Entities
+namespace GoodNews.Data.Entities
 {
     public class UserRole : Entity
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace GoodNews.DAL.Entities
+namespace GoodNews.Data.Entities
 {
     public class Article : Entity
     {
@@ -17,6 +17,7 @@ namespace GoodNews.DAL.Entities
 
         public Guid SourceId { get; set; }
         public Source Source { get; set; }
+        public List<Comment> Comments { get; set; }
 
     }
 }

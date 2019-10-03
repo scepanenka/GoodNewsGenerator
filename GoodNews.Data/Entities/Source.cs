@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
-namespace GoodNews.DAL.Entities
+namespace GoodNews.Data.Entities
 {
     public class Source : Entity
     {
