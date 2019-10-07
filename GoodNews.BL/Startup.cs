@@ -39,6 +39,7 @@ namespace GoodNews.BL
             services.AddTransient<IRepository<Source>, SourceRepository>();
             services.AddTransient<IRepository<Category>, CategoryRepository>();
             services.AddTransient<IUnitOfWork, UnitOfWork>();
+            services.AddTransient<INewsParser, NewsParser>();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 

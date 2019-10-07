@@ -10,6 +10,8 @@ namespace GoodNews.DAL.Repository
         Task<List<T>> GetAllAsync();
         T GetById(object id);
         void Insert(T obj);
+
+        void AddRange(IEnumerable<T> objects);
         void Update(T obj);
         void Delete(object id);
 

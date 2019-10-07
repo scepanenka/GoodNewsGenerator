@@ -39,6 +39,11 @@ namespace GoodNews.DAL.Repository
             _table.Add(obj);
         }
 
+        public void AddRange(IEnumerable<T> objects)
+        {
+            _table.AddRange(objects);
+        }
+
         public void Update(T obj)
         {
             _table.Attach(obj);
