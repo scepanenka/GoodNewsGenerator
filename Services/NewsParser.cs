@@ -8,6 +8,7 @@ using System.Text.RegularExpressions;
 using System.Xml;
 using Core;
 using GoodNews.Data.Entities;
+using HtmlAgilityPack;
 
 
 namespace Services
@@ -15,6 +16,12 @@ namespace Services
     public class NewsParser : INewsParser
     {
         private readonly IUnitOfWork _unitOfWork;
+
+        public NewsParser(IUnitOfWork unitOfWork)
+        {
+            _unitOfWork = unitOfWork;
+        }
+
         public bool Add(Article article)
         {
             _unitOfWork.News.Insert(article);
@@ -40,9 +47,10 @@ namespace Services
                 {
                     news.Add(new Article()
                         {
-                            Title = article.Title.Text,
+                            Title = article.Title.Text.Replace("&nbsp;", ""),
                             Description = Regex.Replace(article.Summary.Text, "<.*?>", string.Empty),
-                             = article.Links.FirstOrDefault().Uri.ToString(),
+                            DateOfPublication = article.PublishDate.UtcDateTime,
+                            Content = GetTextOfArticle(article.Links.FirstOrDefault().Uri.ToString())
                     }
                     );
                 }
@@ -50,5 +58,12 @@ namespace Services
 
             return news;
         }
+
+        public string GetTextOfArticle(string url)
+        {
+                string text = "Test Test Test";
+
+                return text;
+            }
     }
 }
