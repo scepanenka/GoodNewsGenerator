@@ -17,14 +17,13 @@ namespace GoodNews.BL.Controllers
         {
             _unitOfWork = unitOfWork;
             _newsParser = newsParser;
-            var news = _newsParser.GetFromUrl(url);
-            _newsParser.AddRange(news);
-            _unitOfWork.Save();
         }
 
         public IActionResult Index()
         {
-            var news = _unitOfWork.News.AsQueryable();
+            var news = _newsParser.GetFromUrl(url);
+            _newsParser.AddRange(news);
+            _unitOfWork.Save();
 
             return View(news);
         }

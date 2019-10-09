@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Core;
 using GoodNews.DAL;
 using GoodNews.DAL.Repository;
@@ -33,6 +34,21 @@ namespace Services
         public IRepository<Source> Sources => _sourcesRepository;
 
         public IRepository<Category> Categories => _categoriesRepository;
+
+        public Category GetOrCreateCategory(string name)
+        {
+            Category category = _categoriesRepository.GetAll().FirstOrDefault(x => x.Name == name);
+            if (category == null)
+            {
+                category = new Category
+                {
+                    Name = name
+                };
+                _categoriesRepository.Insert(category);
+                Save();
+            }
+            return category;
+        }
 
         public virtual void Dispose(bool disposing)
         {

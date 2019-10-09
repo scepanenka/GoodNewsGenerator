@@ -10,6 +10,8 @@ namespace Core
         IRepository<Source> Sources { get; }
         IRepository<Category> Categories { get; }
 
+        Category GetOrCreateCategory(string name);
+
         void Save();
     }
 }

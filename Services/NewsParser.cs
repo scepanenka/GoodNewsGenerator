@@ -50,7 +50,10 @@ namespace Services
                             Title = article.Title.Text.Replace("&nbsp;", ""),
                             Description = Regex.Replace(article.Summary.Text, "<.*?>", string.Empty),
                             DateOfPublication = article.PublishDate.UtcDateTime,
-                            Content = GetTextOfArticle(article.Links.FirstOrDefault().Uri.ToString())
+                            Content = GetTextOfArticle(article.Links.FirstOrDefault().Uri.ToString()),
+                            Url = article.Links.FirstOrDefault().Uri.ToString(),
+                            Category = _unitOfWork.GetOrCreateCategory(Regex.Replace(article.Categories.FirstOrDefault().Name, "<.*?>", string.Empty)),
+                            Source = _unitOfWork.Sources.AsQueryable().FirstOrDefault(x => x.Name == "Onliner")
                     }
                     );
                 }
