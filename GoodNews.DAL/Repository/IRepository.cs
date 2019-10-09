@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace GoodNews.DAL.Repository
@@ -12,6 +10,8 @@ namespace GoodNews.DAL.Repository
         Task<List<T>> GetAllAsync();
         T GetById(object id);
         void Insert(T obj);
+
+        void AddRange(IEnumerable<T> objects);
         void Update(T obj);
         void Delete(object id);
 

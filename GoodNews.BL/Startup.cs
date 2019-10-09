@@ -1,19 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Core;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using GoodNews.DAL;
-using GoodNews.DAL.Entities;
-using GoodNews.DAL.UnitOfWork;
 using GoodNews.DAL.Repository;
+using GoodNews.Data.Entities;
+using Services;
 
 namespace GoodNews.BL
 {
@@ -38,11 +34,12 @@ namespace GoodNews.BL
 
 
             string connection = Configuration.GetConnectionString("DefaultConnection");
-            services.AddDbContext<GoodNewsContext>(options => options.UseSqlServer(connection));
+            services.AddDbContext<GoodNewsContext>(options => options.UseSqlServer(connection, x => x.MigrationsAssembly("GoodNews.DAL")));
             services.AddTransient<IRepository<Article>, ArticleRepository>();
             services.AddTransient<IRepository<Source>, SourceRepository>();
             services.AddTransient<IRepository<Category>, CategoryRepository>();
             services.AddTransient<IUnitOfWork, UnitOfWork>();
+            services.AddTransient<INewsParser, NewsParser>();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 

@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
-namespace GoodNews.DAL.Entities
+namespace GoodNews.Data.Entities
 {
     public class Category : Entity
     {
         public string Name { get; set; }
         public string Description { get; set; }
-        public virtual ICollection<Article> News { get; set; }
+        public ICollection<Article> News { get; set; }
 
     }
 }

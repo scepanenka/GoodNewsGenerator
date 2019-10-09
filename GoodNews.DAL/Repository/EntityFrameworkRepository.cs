@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using GoodNews.DAL.Entities;
+using GoodNews.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace GoodNews.DAL.Repository
@@ -39,6 +37,11 @@ namespace GoodNews.DAL.Repository
         public void Insert(T obj)
         {
             _table.Add(obj);
+        }
+
+        public void AddRange(IEnumerable<T> objects)
+        {
+            _table.AddRange(objects);
         }
 
         public void Update(T obj)

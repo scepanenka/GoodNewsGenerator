@@ -14,7 +14,8 @@
 
 
   <ItemGroup>
-    <ProjectReference Include="..\GoodNews.Data\GoodNews.DAL.csproj" />
+    <ProjectReference Include="..\Core\Core.csproj" />
+    <ProjectReference Include="..\Services\Services.csproj" />
   </ItemGroup>
 
 </Project>

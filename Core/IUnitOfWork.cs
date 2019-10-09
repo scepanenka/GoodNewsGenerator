@@ -1,16 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using GoodNews.DAL.Entities;
 using GoodNews.DAL.Repository;
+using GoodNews.Data.Entities;
 
-namespace GoodNews.DAL.UnitOfWork
+namespace Core
 {
     public interface IUnitOfWork : IDisposable
     {
         IRepository<Article> News { get; }
         IRepository<Source> Sources { get; }
         IRepository<Category> Categories { get; }
+
+        Category GetOrCreateCategory(string name);
 
         void Save();
     }

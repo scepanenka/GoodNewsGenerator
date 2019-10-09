@@ -1,11 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-using GoodNews.DAL.Entities;
+using System.Linq;
+using Core;
+using GoodNews.DAL;
 using GoodNews.DAL.Repository;
+using GoodNews.Data.Entities;
 
-namespace GoodNews.DAL.UnitOfWork
+namespace Services
 {
     public class UnitOfWork : IUnitOfWork
     {
@@ -34,6 +34,21 @@ namespace GoodNews.DAL.UnitOfWork
         public IRepository<Source> Sources => _sourcesRepository;
 
         public IRepository<Category> Categories => _categoriesRepository;
+
+        public Category GetOrCreateCategory(string name)
+        {
+            Category category = _categoriesRepository.GetAll().FirstOrDefault(x => x.Name == name);
+            if (category == null)
+            {
+                category = new Category
+                {
+                    Name = name
+                };
+                _categoriesRepository.Insert(category);
+                Save();
+            }
+            return category;
+        }
 
         public virtual void Dispose(bool disposing)
         {
