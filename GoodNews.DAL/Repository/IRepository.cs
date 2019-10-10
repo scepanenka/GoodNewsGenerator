@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -16,5 +17,7 @@ namespace GoodNews.DAL.Repository
         void Delete(object id);
 
         IQueryable<T> AsQueryable();
+
+        IEnumerable<T> Find(Func<T, bool> predicate);
     }
 }

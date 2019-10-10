@@ -24,13 +24,27 @@ namespace Services
 
         public bool Add(Article article)
         {
+            if (!_unitOfWork.News.Find(a => a.Url == article.Url).Any())
+            {
+                _unitOfWork.News.Insert(article);
+                return true;
+            }
             _unitOfWork.News.Insert(article);
             return true;
         }
 
         public bool AddRange(IEnumerable<Article> news)
         {
-            _unitOfWork.News.AddRange(news);
+            foreach (var article in news)
+            {
+                if (!_unitOfWork.News.Find(a => a.Url == article.Url).Any())
+                {
+                    _unitOfWork.News.Insert(article);
+
+                }
+
+            }
+
             return true;
         }
 

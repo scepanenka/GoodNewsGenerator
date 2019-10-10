@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using GoodNews.Data.Entities;
@@ -59,6 +60,11 @@ namespace GoodNews.DAL.Repository
         public IQueryable<T> AsQueryable()
         {
             return _table.AsQueryable();
+        }
+
+        public IEnumerable<T> Find(Func<T, bool> predicate)
+        {
+            return _table.Where(predicate);
         }
     }
 }
