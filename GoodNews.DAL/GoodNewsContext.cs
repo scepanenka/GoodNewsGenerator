@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 using GoodNews.Data.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -36,6 +37,30 @@ namespace GoodNews.DAL
                 .HasOne<Role>(sc => sc.Role)
                 .WithMany(s => s.UserRoles)
                 .HasForeignKey(sc => sc.RoleId);
+
+            modelBuilder.Entity<Source>().HasData(
+                new Source
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "Onliner",
+                    Description = "Новости onliner.by",
+                    Url = "https://people.onliner.by/feed"
+                },
+                new Source
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "S13",
+                    Description = "Новости s13",
+                    Url = "http://s13.ru/rss"
+                },
+                new Source
+                {
+                    Id = Guid.NewGuid(), Name = "Tut,by",
+                    Description = "Новости tut.by",
+                    Url = "https://news.tut.by/rss/all.rss"
+                }
+                );
         }
     }
 }
+
