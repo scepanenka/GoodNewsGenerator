@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="HtmlAgilityPack" Version="1.11.16" />
+    <PackageReference Include="HtmlAgilityPack.CssSelectors.NetCore" Version="1.2.1" />
     <PackageReference Include="Microsoft.SyndicationFeed.ReaderWriter" Version="1.0.2" />
     <PackageReference Include="System.ServiceModel.Syndication" Version="4.6.0" />
   </ItemGroup>
