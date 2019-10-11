@@ -54,7 +54,7 @@ namespace GoodNews.BL.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name,Description,Url,Id")] Source source)
+        public async Task<IActionResult> Create(Source source)
         {
             if (ModelState.IsValid)
             {

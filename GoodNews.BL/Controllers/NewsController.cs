@@ -21,11 +21,17 @@ namespace GoodNews.BL.Controllers
 
         public IActionResult Index()
         {
-            var news = _newsParser.GetFromUrl(url);
-            _newsParser.AddRange(news);
-            _unitOfWork.Save();
+            // var news = _newsParser.GetFromUrl(url);
+            // _newsParser.AddRange(news);
+            // _unitOfWork.Save();
+            var news = _unitOfWork.News.GetAll();
 
             return View(news);
+        }
+
+        public IActionResult Parse()
+        {
+            return View();
         }
     }
 }
