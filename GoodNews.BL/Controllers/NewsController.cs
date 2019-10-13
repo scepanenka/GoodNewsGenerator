@@ -23,7 +23,7 @@ namespace GoodNews.BL.Controllers
 
         public IActionResult Index()
         {
-         
+
 
             var news = _unitOfWork.News.GetAll().OrderByDescending(x => x.DateOfPublication);
             return View(news);
@@ -41,7 +41,25 @@ namespace GoodNews.BL.Controllers
             _s13Parser.Parse();
 
 
-            return RedirectToAction("Index", "News"); ;
+            return RedirectToAction("Index", "News");
+            ;
+        }
+
+        [HttpGet]
+        public IActionResult Details(Guid? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var article = _unitOfWork.News.GetById(id);
+
+            if (article == null)
+            {
+                return NotFound();
+            }
+
+            return View(article);
         }
     }
 }

@@ -68,19 +68,13 @@ namespace Services.Parsers
 
             foreach (var item in nodes)
             {
-                if (text == "")
-                {
-                    text = item.InnerText;
-                }
-                else
-                {
-                    text += Environment.NewLine + item.InnerText;
-                }
+                HttpUtility.HtmlDecode(text);
+                text += "<p>" + item.InnerHtml +"</p>";
             }
 
-            text = Regex.Replace(text, @"\s+", " ").Replace("&nbsp;", string.Empty);
+            text = Regex.Replace(text, @"\s+", " ").Replace("&nbsp;", " ");
 
-            return HttpUtility.HtmlDecode(text);
+            return text;
         }
     }
 }

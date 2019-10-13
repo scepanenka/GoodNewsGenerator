@@ -28,7 +28,7 @@ namespace Services.Parsers
             return true;
         }
 
-        public virtual async Task<bool> AddNewsAsync(IEnumerable<Article> news)
+        public virtual bool AddNews(IEnumerable<Article> news)
         {
             foreach (var article in news)
             {
@@ -37,7 +37,7 @@ namespace Services.Parsers
                     _unitOfWork.News.Add(article);
                 }
             }
-            await _unitOfWork.SaveAsync();
+            _unitOfWork.Save();
             return true;
         }
 
@@ -51,9 +51,9 @@ namespace Services.Parsers
             return string.Empty;
         }
 
-        public async Task Parse()
+        public void Parse()
         {
-            await AddNewsAsync(GetFromRss());
+            AddNews(GetFromRss());
         }
     }
 }

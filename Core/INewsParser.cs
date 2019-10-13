@@ -10,12 +10,12 @@ namespace Core
     public interface INewsParser
     {
         bool Add(Article article);
-        Task<bool> AddNewsAsync(IEnumerable<Article> articles);
+        bool AddNews(IEnumerable<Article> articles);
 
         IEnumerable<Article> GetFromRss();
 
         string GetTextOfArticle(string url);
-        Task Parse();
+        void Parse();
 
     }
 }
