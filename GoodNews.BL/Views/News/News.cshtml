@@ -5,9 +5,9 @@
     @foreach (var article in Model)
     {
         <div class="card mb-4 p-3 shadow-sm">
-            <h4>@Html.DisplayFor(modelItem => article.Title)</h4>
-            <div>@Html.DisplayFor(modelItem => article.Description)</div>
-            <div>@Html.DisplayFor(modelItem => article.DateOfPublication)</div>
+            <h5 class="card-title">@Html.DisplayFor(modelItem => article.Title)</h5>
+            <p class="card-text">@Html.DisplayFor(modelItem => article.Description)</p>
+            <p>@Html.DisplayFor(modelItem => article.DateOfPublication)</p>
             @*<div>@Html.DisplayFor(modelItem => article.Source.Name)</div>*@
         </div>
     }

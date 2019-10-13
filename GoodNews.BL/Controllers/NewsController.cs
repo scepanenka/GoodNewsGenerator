@@ -4,26 +4,28 @@ using System.Linq;
 using System.Threading.Tasks;
 using Core;
 using Microsoft.AspNetCore.Mvc;
+using Services.Parsers;
 
 namespace GoodNews.BL.Controllers
 {
     public class NewsController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly INewsParser _newsParser;
-        private const string url = @"https://onliner.by/feed";
+        private readonly INewsParser _onlinerParser;
+        private readonly INewsParser _s13Parser;
 
-        public NewsController(IUnitOfWork unitOfWork, INewsParser newsParser)
+        public NewsController(IUnitOfWork unitOfWork, IS13Parser s13Parser, IOnlinerParser onlinerParser)
         {
             _unitOfWork = unitOfWork;
-            _newsParser = newsParser;
+            _onlinerParser = onlinerParser;
+            _s13Parser = s13Parser;
         }
 
         public IActionResult Index()
         {
          
 
-            var news = _unitOfWork.News.GetAll();
+            var news = _unitOfWork.News.GetAll().OrderByDescending(x => x.DateOfPublication);
             return View(news);
         }
 
@@ -35,9 +37,10 @@ namespace GoodNews.BL.Controllers
 
         public IActionResult Parse()
         {
-            var news = _newsParser.GetFromUrl(url);
-            _newsParser.AddRange(news);
-            _unitOfWork.Save();   
+            _onlinerParser.Parse();
+            _s13Parser.Parse();
+
+
             return RedirectToAction("Index", "News"); ;
         }
     }

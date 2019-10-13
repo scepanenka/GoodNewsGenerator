@@ -10,6 +10,7 @@ using GoodNews.DAL;
 using GoodNews.DAL.Repository;
 using GoodNews.Data.Entities;
 using Services;
+using Services.Parsers;
 
 namespace GoodNews.BL
 {
@@ -39,7 +40,8 @@ namespace GoodNews.BL
             services.AddTransient<IRepository<Source>, SourceRepository>();
             services.AddTransient<IRepository<Category>, CategoryRepository>();
             services.AddTransient<IUnitOfWork, UnitOfWork>();
-            services.AddTransient<INewsParser, NewsParser>();
+            services.AddTransient<IS13Parser, S13Parser>();
+            services.AddTransient<IOnlinerParser, OnlinerParser>();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 

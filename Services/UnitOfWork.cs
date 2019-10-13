@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Core;
 using GoodNews.DAL;
 using GoodNews.DAL.Repository;
@@ -44,7 +45,7 @@ namespace Services
                 {
                     Name = name
                 };
-                _categoriesRepository.Insert(category);
+                _categoriesRepository.Add(category);
                 Save();
             }
             return category;
@@ -72,6 +73,11 @@ namespace Services
         {
             _context.SaveChanges();
 
+        }
+
+        public async Task SaveAsync()
+        {
+            await _context.SaveChangesAsync();
         }
     }
 }
