@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.ServiceModel.Syndication;
 using System.Text.RegularExpressions;
 using System.Web;
@@ -16,8 +14,6 @@ namespace Services.Parsers
 {
     public class TutByParser : NewsParser, ITutByParser
     {
-                static HttpClient client;
-        static HtmlWeb web = new HtmlWeb();
         private readonly IUnitOfWork _unitOfWork;
         private readonly string _url = @"https://news.tut.by/rss/all.rss";
 

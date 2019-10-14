@@ -5,6 +5,7 @@ using System.Net;
 using System.ServiceModel.Syndication;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Web;
 using System.Xml;
 using Core;
@@ -35,13 +36,16 @@ namespace Services.Parsers
             {
                 foreach (var article in feed.Items)
                 {
+                    string url = article.Links.FirstOrDefault().Uri.ToString();
+                    string content = GetTextOfArticle(url);
+
                     news.Add(new Article()
                     {
                         Title = article.Title.Text.Replace("&nbsp;", string.Empty),
                         Description = Regex.Replace(article.Summary.Text, @"<[^>]+>|&nbsp;", string.Empty),
                         DateOfPublication = article.PublishDate.UtcDateTime,
-                        Content = GetTextOfArticle(article.Links.FirstOrDefault().Uri.ToString()),
-                        Url = article.Links.FirstOrDefault().Uri.ToString(),
+                        Content = content,
+                        Url = url,
                         Category = _unitOfWork.GetOrCreateCategory(article.Categories.FirstOrDefault().Name),
                         Source = _unitOfWork.Sources.AsQueryable().FirstOrDefault(x => x.Url.Contains(_url))
                     }
@@ -61,18 +65,17 @@ namespace Services.Parsers
 
             var doc = new HtmlAgilityPack.HtmlDocument();
             doc.LoadHtml(htmlText);
-            string text = "";
 
-            IList<HtmlNode> nodes = doc.QuerySelectorAll(".news-text p");
-
-            foreach (var item in nodes)
+            HtmlNode article = doc.QuerySelector(".news-text");
+            string content = "";
+            if (article != null)
             {
-                text = item.InnerText;
+                content = article.InnerHtml;
             }
 
-            text = Regex.Replace(text, @"\s+", " ").Replace("&nbsp;","").Replace("Читать далее…", "");
+            content = Regex.Replace(content, @"\s+", " ").Replace("Читать далее…", "");
 
-            return HttpUtility.HtmlDecode(text);
+            return HttpUtility.HtmlDecode(content);
         }
     }
 }

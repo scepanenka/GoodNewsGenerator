@@ -62,19 +62,17 @@ namespace Services.Parsers
 
             var doc = new HtmlAgilityPack.HtmlDocument();
             doc.LoadHtml(htmlText);
-            string text = "";
 
-            IList<HtmlNode> nodes = doc.QuerySelectorAll(".js-mediator-article p");
-
-            foreach (var item in nodes)
+            HtmlNode article = doc.QuerySelector(".js-mediator-article");
+            string content = "";
+            if (article != null)
             {
-                HttpUtility.HtmlDecode(text);
-                text += "<p>" + item.InnerHtml +"</p>";
+                content = article.InnerHtml;
             }
 
-            text = Regex.Replace(text, @"\s+", " ").Replace("&nbsp;", " ");
+            content = Regex.Replace(content, @"\s+", " ");
 
-            return text;
+            return HttpUtility.HtmlDecode(content);
         }
     }
 }
