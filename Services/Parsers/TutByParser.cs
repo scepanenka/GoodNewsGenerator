@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.ServiceModel.Syndication;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
 using System.Xml;
@@ -14,12 +14,14 @@ using HtmlAgilityPack.CssSelectors.NetCore;
 
 namespace Services.Parsers
 {
-    public class OnlinerParser : NewsParser, IOnlinerParser
+    public class TutByParser : NewsParser, ITutByParser
     {
+                static HttpClient client;
+        static HtmlWeb web = new HtmlWeb();
         private readonly IUnitOfWork _unitOfWork;
-        private readonly string _url = @"https://people.onliner.by/feed";
+        private readonly string _url = @"https://news.tut.by/rss/all.rss";
 
-        public OnlinerParser(IUnitOfWork unitOfWork) : base(unitOfWork)
+        public TutByParser(IUnitOfWork unitOfWork) : base(unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }
@@ -35,13 +37,16 @@ namespace Services.Parsers
             {
                 foreach (var article in feed.Items)
                 {
+                    string link = article.Links.FirstOrDefault().Uri.ToString();
+                    string articleUrl = link.Substring(0, link.LastIndexOf("?"));
+
                     news.Add(new Article()
                     {
                         Title = article.Title.Text.Replace("&nbsp;", string.Empty),
                         Description = Regex.Replace(article.Summary.Text, @"<[^>]+>|&nbsp;", string.Empty),
                         DateOfPublication = article.PublishDate.UtcDateTime,
-                        Content = GetTextOfArticle(article.Links.FirstOrDefault().Uri.ToString()),
-                        Url = article.Links.FirstOrDefault().Uri.ToString(),
+                        Content = GetTextOfArticle(articleUrl),
+                        Url = articleUrl,
                         Category = _unitOfWork.GetOrCreateCategory(article.Categories.FirstOrDefault().Name),
                         Source = _unitOfWork.Sources.AsQueryable().FirstOrDefault(x => x.Url.Contains(_url))
                     }
@@ -52,27 +57,25 @@ namespace Services.Parsers
             return news;
         }
 
+
         public override string GetTextOfArticle(string url)
         {
-
             WebClient wc = new WebClient();
             string htmlText = wc.DownloadString(url);
             wc.Dispose();
 
             var doc = new HtmlAgilityPack.HtmlDocument();
             doc.LoadHtml(htmlText);
-            string text = "";
-
-            IList<HtmlNode> nodes = doc.QuerySelectorAll(".news-text p");
-
-            foreach (var item in nodes)
+            HtmlNode article = doc.QuerySelector("#article_body");
+            string content = "";
+            if (article != null)
             {
-                text = item.InnerText;
+                content = article.InnerHtml;
             }
 
-            text = Regex.Replace(text, @"\s+", " ").Replace("&nbsp;","").Replace("Читать далее…", "");
+            content = Regex.Replace(content, @"\s+", " ");
 
-            return HttpUtility.HtmlDecode(text);
+            return HttpUtility.HtmlDecode(content);
         }
     }
 }

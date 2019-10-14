@@ -42,6 +42,7 @@ namespace GoodNews.BL
             services.AddTransient<IUnitOfWork, UnitOfWork>();
             services.AddTransient<IS13Parser, S13Parser>();
             services.AddTransient<IOnlinerParser, OnlinerParser>();
+            services.AddTransient<ITutByParser, TutByParser>();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 

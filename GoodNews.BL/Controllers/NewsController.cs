@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Core;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Services.Parsers;
 
 namespace GoodNews.BL.Controllers
@@ -13,19 +14,22 @@ namespace GoodNews.BL.Controllers
         private readonly IUnitOfWork _unitOfWork;
         private readonly INewsParser _onlinerParser;
         private readonly INewsParser _s13Parser;
+        private readonly INewsParser _tutByParser;
 
-        public NewsController(IUnitOfWork unitOfWork, IS13Parser s13Parser, IOnlinerParser onlinerParser)
+        public NewsController(IUnitOfWork unitOfWork, IS13Parser s13Parser, IOnlinerParser onlinerParser, ITutByParser tutByParser)
         {
             _unitOfWork = unitOfWork;
             _onlinerParser = onlinerParser;
             _s13Parser = s13Parser;
+            _tutByParser = tutByParser;
         }
 
         public IActionResult Index()
         {
 
 
-            var news = _unitOfWork.News.GetAll().OrderByDescending(x => x.DateOfPublication);
+            var news = _unitOfWork.News.AsQueryable().Include(article => article.Source)
+                                                     .OrderByDescending(article => article.DateOfPublication);
             return View(news);
         }
 
@@ -39,6 +43,7 @@ namespace GoodNews.BL.Controllers
         {
             _onlinerParser.Parse();
             _s13Parser.Parse();
+            _tutByParser.Parse();
 
 
             return RedirectToAction("Index", "News");
