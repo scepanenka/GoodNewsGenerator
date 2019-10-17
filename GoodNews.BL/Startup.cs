@@ -11,6 +11,8 @@ using GoodNews.DAL.Repository;
 using GoodNews.Data.Entities;
 using Services;
 using Services.Parsers;
+using Microsoft.AspNetCore.Identity;
+using SmtpEmailService;
 
 namespace GoodNews.BL
 {
@@ -43,6 +45,9 @@ namespace GoodNews.BL
             services.AddTransient<IS13Parser, S13Parser>();
             services.AddTransient<IOnlinerParser, OnlinerParser>();
             services.AddTransient<ITutByParser, TutByParser>();
+            services.AddTransient<IEmailSender, EmailSender>();
+            services.AddIdentity<User, IdentityRole>()
+                .AddEntityFrameworkStores<GoodNewsContext>();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 
@@ -63,6 +68,7 @@ namespace GoodNews.BL
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
+            app.UseAuthentication();
 
             app.UseMvc(routes =>
             {

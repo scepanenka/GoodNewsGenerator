@@ -4,14 +4,16 @@ using GoodNews.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace GoodNews.DAL.Migrations
 {
     [DbContext(typeof(GoodNewsContext))]
-    partial class GoodNewsContextModelSnapshot : ModelSnapshot
+    [Migration("20191017130830_Init")]
+    partial class Init
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -107,23 +109,23 @@ namespace GoodNews.DAL.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("7c3f8174-695a-4e1f-8ef4-3d32e8cd31c0"),
+                            Id = new Guid("7f6355ab-7190-4261-af70-8e2d511552cf"),
                             Description = "Новости onliner.by",
                             Name = "Onliner",
                             Url = "https://people.onliner.by/feed"
                         },
                         new
                         {
-                            Id = new Guid("b1a80a06-1aca-4801-a7fc-e98cdf1b4a18"),
+                            Id = new Guid("60a783bf-803b-4e60-b352-9bfdada085f7"),
                             Description = "Новости s13",
                             Name = "S13",
                             Url = "http://s13.ru/rss"
                         },
                         new
                         {
-                            Id = new Guid("2edb4e25-076b-4955-ada3-c4aec77b1442"),
+                            Id = new Guid("c30bdceb-3045-4aa0-a4ce-2bca0c03b718"),
                             Description = "Новости tut.by",
-                            Name = "Tut.by",
+                            Name = "Tut,by",
                             Url = "https://news.tut.by/rss/all.rss"
                         });
                 });
@@ -134,8 +136,6 @@ namespace GoodNews.DAL.Migrations
                         .ValueGeneratedOnAdd();
 
                     b.Property<int>("AccessFailedCount");
-
-                    b.Property<DateTime>("BirthDate");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken();

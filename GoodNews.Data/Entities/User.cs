@@ -1,15 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Identity;
 
 namespace GoodNews.Data.Entities
 {
-    public class User : Entity
+    public class User : IdentityUser
     {
-
-        [Required]
-        public string Name { get; set; }
-        public string Password { get; set; }
-        
-        public ICollection<UserRole> UserRoles { get; set; }
+        public DateTime BirthDate { get; set; }
     }
 }
