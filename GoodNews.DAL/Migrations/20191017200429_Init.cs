@@ -40,7 +40,8 @@ namespace GoodNews.DAL.Migrations
                     TwoFactorEnabled = table.Column<bool>(nullable: false),
                     LockoutEnd = table.Column<DateTimeOffset>(nullable: true),
                     LockoutEnabled = table.Column<bool>(nullable: false),
-                    AccessFailedCount = table.Column<int>(nullable: false)
+                    AccessFailedCount = table.Column<int>(nullable: false),
+                    BirthDate = table.Column<DateTime>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -243,17 +244,17 @@ namespace GoodNews.DAL.Migrations
             migrationBuilder.InsertData(
                 table: "Sources",
                 columns: new[] { "Id", "Description", "Name", "Url" },
-                values: new object[] { new Guid("7f6355ab-7190-4261-af70-8e2d511552cf"), "Новости onliner.by", "Onliner", "https://people.onliner.by/feed" });
+                values: new object[] { new Guid("71d8b2b1-17bc-4948-a20f-270abe72de23"), "Новости onliner.by", "Onliner", "https://people.onliner.by/feed" });
 
             migrationBuilder.InsertData(
                 table: "Sources",
                 columns: new[] { "Id", "Description", "Name", "Url" },
-                values: new object[] { new Guid("60a783bf-803b-4e60-b352-9bfdada085f7"), "Новости s13", "S13", "http://s13.ru/rss" });
+                values: new object[] { new Guid("540c8860-7028-4d1f-8c6c-8971920f6a7c"), "Новости s13", "S13", "http://s13.ru/rss" });
 
             migrationBuilder.InsertData(
                 table: "Sources",
                 columns: new[] { "Id", "Description", "Name", "Url" },
-                values: new object[] { new Guid("c30bdceb-3045-4aa0-a4ce-2bca0c03b718"), "Новости tut.by", "Tut,by", "https://news.tut.by/rss/all.rss" });
+                values: new object[] { new Guid("36ee4e33-bd40-4da1-84e7-03b49234ef32"), "Новости tut.by", "Tut.by", "https://news.tut.by/rss/all.rss" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",

@@ -107,21 +107,21 @@ namespace GoodNews.DAL.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("7c3f8174-695a-4e1f-8ef4-3d32e8cd31c0"),
+                            Id = new Guid("71d8b2b1-17bc-4948-a20f-270abe72de23"),
                             Description = "Новости onliner.by",
                             Name = "Onliner",
                             Url = "https://people.onliner.by/feed"
                         },
                         new
                         {
-                            Id = new Guid("b1a80a06-1aca-4801-a7fc-e98cdf1b4a18"),
+                            Id = new Guid("540c8860-7028-4d1f-8c6c-8971920f6a7c"),
                             Description = "Новости s13",
                             Name = "S13",
                             Url = "http://s13.ru/rss"
                         },
                         new
                         {
-                            Id = new Guid("2edb4e25-076b-4955-ada3-c4aec77b1442"),
+                            Id = new Guid("36ee4e33-bd40-4da1-84e7-03b49234ef32"),
                             Description = "Новости tut.by",
                             Name = "Tut.by",
                             Url = "https://news.tut.by/rss/all.rss"

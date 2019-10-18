@@ -13,9 +13,9 @@ namespace SmtpEmailService
     {
         private const string HOST = "smtp.gmail.com";
         private const int PORT = 587;
-        private const string OWNER_EMAIL = "myusername@gmail.com";
-        private const string OWNER_PASSWORD = "pswd";
-        private const string FROM = "myusername@gmail.com";
+        private const string OWNER_EMAIL = "adm.goodnews@gmail.com";
+        private const string OWNER_PASSWORD = "Qwe1234!";
+        private const string FROM = "GoodNews admin";
 
 
         public async Task<bool> SendEmail(string subject, string body, IEnumerable<string> to, IEnumerable<string> toCc)
