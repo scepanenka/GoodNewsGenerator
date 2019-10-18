@@ -8,6 +8,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
 using System.Xml;
+using System.Xml.Linq;
 using Core;
 using GoodNews.Data.Entities;
 using HtmlAgilityPack;
@@ -29,6 +30,7 @@ namespace Services.Parsers
         {
             XmlReader feedReader = XmlReader.Create(_url);
             SyndicationFeed feed = SyndicationFeed.Load(feedReader);
+            Source source = _unitOfWork.Sources.AsQueryable().FirstOrDefault(x => x.Url.Contains(_url));
 
             List<Article> news = new List<Article>();
 
@@ -36,21 +38,57 @@ namespace Services.Parsers
             {
                 foreach (var article in feed.Items)
                 {
+                    string url = article.Links.FirstOrDefault().Uri.ToString();
+                    string content = GetTextOfArticle(url);
+
                     news.Add(new Article()
                     {
                         Title = article.Title.Text.Replace("&nbsp;", string.Empty),
                         Description = Regex.Replace(article.Summary.Text, @"<[^>]+>|&nbsp;", string.Empty),
                         DateOfPublication = article.PublishDate.UtcDateTime,
-                        Content = GetTextOfArticle(article.Links.FirstOrDefault().Uri.ToString()),
-                        Url = article.Links.FirstOrDefault().Uri.ToString(),
+                        Content = content,
+                        Url = url,
                         Category = _unitOfWork.GetOrCreateCategory(article.Categories.FirstOrDefault().Name),
-                        Source = _unitOfWork.Sources.AsQueryable().FirstOrDefault(x => x.Url.Contains(_url))
+                        Source = source,
+                        ThumbnailUrl = GetThumbnail(article)
                     }
                     );
                 }
             }
 
             return news;
+        }
+
+        public override string GetThumbnail(SyndicationItem article)
+        {
+            string thumbnailUrl = article.ElementExtensions
+                .Where(extension => extension.OuterName == "thumbnail")
+                .Select(extension => (string)extension.GetObject<XElement>().Attribute("url"))
+                .FirstOrDefault();
+
+            if (thumbnailUrl == null)
+            {
+                thumbnailUrl = article.ElementExtensions
+                    .Where(extension => extension.OuterName == "content" && (string)extension.GetObject<XElement>().Attribute("type") == "image/jpeg")
+                    .Select(extension => (string)extension.GetObject<XElement>().Attribute("url"))
+                    .FirstOrDefault();
+            }
+
+            if (thumbnailUrl == null)
+            {
+                string link = article.Links.FirstOrDefault().Uri.ToString();
+
+                string content = GetTextOfArticle(link);
+
+                thumbnailUrl = Regex.Match(content, "<img.+?src=[\"'](.+?)[\"'].+?>", RegexOptions.IgnoreCase).Groups[1].Value;
+
+                if (thumbnailUrl.StartsWith("/"))
+                {
+                    thumbnailUrl = thumbnailUrl.Insert(0, "http://s13.ru");
+                }
+            }
+
+            return thumbnailUrl;
         }
 
         public override string GetTextOfArticle(string url)

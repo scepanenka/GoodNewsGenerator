@@ -6,13 +6,26 @@
     <div class="container">
         @foreach (var article in Model)
         {
-        <div class="card mb-4 p-3 shadow-sm">
-            <h5 class="card-title">@Html.DisplayFor(modelItem => article.Title)</h5>
-            <p class="card-text">@Html.DisplayFor(modelItem => article.Description)</p>
-            <p class="m-0">@Html.DisplayFor(modelItem => article.DateOfPublication)</p>
-            <p>@Html.DisplayFor(modelItem => article.Source.Name)</p>
-            <a asp-controller="News" asp-action="Details" asp-route-id="@article.Id">Читать далее...</a>
-        </div>
+            <div class="card mb-4 p-3 shadow-sm">
+                <div class="row no-gutters">
+                    <div class="col-md-4">
+                        <img class="card-img" src="@article.ThumbnailUrl" alt="thumb">
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card-body">
+
+                            <h5 class="card-title">@Html.DisplayFor(modelItem => article.Title)</h5>
+
+                            <p class="card-text">@Html.DisplayFor(modelItem => article.Description)</p>
+                            <p class="m-0">@Html.DisplayFor(modelItem => article.DateOfPublication)</p>
+                            <p>@Html.DisplayFor(modelItem => article.Source.Name)</p>
+                            <a asp-controller="News" asp-action="Details" asp-route-id="@article.Id">Читать далее...</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
         }
     </div>
 </div>

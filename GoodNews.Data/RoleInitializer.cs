@@ -10,6 +10,7 @@ namespace GoodNews.Data
         {
             string adminEmail = "adm.goodnews@gmail.com";
             string password = "123";
+
             if (await roleManager.FindByNameAsync("admin") == null)
             {
                 await roleManager.CreateAsync(new IdentityRole("admin"));

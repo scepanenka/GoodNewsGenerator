@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.ServiceModel.Syndication;
 using System.Threading.Tasks;
 using Core;
 using GoodNews.Data.Entities;
-
 
 namespace Services.Parsers
 {
@@ -47,6 +47,10 @@ namespace Services.Parsers
         }
 
         public virtual string GetTextOfArticle(string url)
+        {
+            return string.Empty;
+        }
+        public virtual string GetThumbnail(SyndicationItem article)
         {
             return string.Empty;
         }

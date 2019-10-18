@@ -5,6 +5,7 @@ using System.ServiceModel.Syndication;
 using System.Text.RegularExpressions;
 using System.Web;
 using System.Xml;
+using System.Xml.Linq;
 using Core;
 using GoodNews.Data.Entities;
 using HtmlAgilityPack;
@@ -17,6 +18,7 @@ namespace Services.Parsers
         private readonly IUnitOfWork _unitOfWork;
         private readonly string _url = @"https://news.tut.by/rss/all.rss";
 
+
         public TutByParser(IUnitOfWork unitOfWork) : base(unitOfWork)
         {
             _unitOfWork = unitOfWork;
@@ -26,7 +28,7 @@ namespace Services.Parsers
         {
             XmlReader feedReader = XmlReader.Create(_url);
             SyndicationFeed feed = SyndicationFeed.Load(feedReader);
-
+            Source source = _unitOfWork.Sources.AsQueryable().FirstOrDefault(x => x.Url.Contains(_url));
             List<Article> news = new List<Article>();
 
             if (feed != null)
@@ -44,13 +46,42 @@ namespace Services.Parsers
                         Content = GetTextOfArticle(articleUrl),
                         Url = articleUrl,
                         Category = _unitOfWork.GetOrCreateCategory(article.Categories.FirstOrDefault().Name),
-                        Source = _unitOfWork.Sources.AsQueryable().FirstOrDefault(x => x.Url.Contains(_url))
+                        Source = source,
+                        ThumbnailUrl = GetThumbnail(article)
                     }
                     );
                 }
             }
 
             return news;
+        }
+
+        public override string GetThumbnail(SyndicationItem article)
+        {
+            string thumbnailUrl = article.ElementExtensions
+                .Where(extension => extension.OuterName == "thumbnail")
+                .Select(extension => (string)extension.GetObject<XElement>().Attribute("url"))
+                .FirstOrDefault();
+
+            if (thumbnailUrl == null)
+            {
+                thumbnailUrl = article.ElementExtensions
+                    .Where(extension => extension.OuterName == "content" && (string)extension.GetObject<XElement>().Attribute("type") == "image/jpeg")
+                    .Select(extension => (string)extension.GetObject<XElement>().Attribute("url"))
+                    .FirstOrDefault();
+            }
+
+            if (thumbnailUrl == null)
+            {
+                string link = article.Links.FirstOrDefault().Uri.ToString();
+                string articleUrl = link.Substring(0, link.LastIndexOf("?"));
+
+                string content = GetTextOfArticle(articleUrl);
+
+                thumbnailUrl = Regex.Match(content, "<img.+?src=[\"'](.+?)[\"'].+?>", RegexOptions.IgnoreCase).Groups[1].Value;
+            }
+
+            return thumbnailUrl;
         }
 
 

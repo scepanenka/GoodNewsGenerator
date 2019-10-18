@@ -15,6 +15,7 @@ namespace Core
         IEnumerable<Article> GetFromRss();
 
         string GetTextOfArticle(string url);
+        
         void Parse();
 
     }

@@ -19,28 +19,36 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm flex-column flex-md-row mb-4">
+        <nav class="nav-bar navbar navbar-expand-lg navbar-light  shadow-sm flex-column flex-md-row mb-4">
             <div class="container">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">GoodNews</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
+                <div class="navbar-collapse collapse d-lg-inline-flex flex-lg-row-reverse">
                     <partial name="_LoginPartial" />
                     <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
                         <li class="nav-item">
                             <a class="nav-link" asp-area="" asp-controller="News" asp-action="Index">News</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="News" asp-action="Parse">Parse news</a>
+                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
+                        @if (User.IsInRole("admin"))
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Manage
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                    <a class="dropdown-item" asp-area="" asp-controller="Roles" asp-action="UserList">Users</a>
+                                    <a class="dropdown-item" asp-area="" asp-controller="Roles" asp-action="Index">Roles</a>
+                                    <a class="dropdown-item" asp-area="" asp-controller="Sources" asp-action="Index">Sources</a>
+                                    <a class="dropdown-item" asp-area="" asp-controller="News" asp-action="Parse">Parse News</a>
+                                </div>
+                            </li>
+                        }
                     </ul>
                 </div>
             </div>

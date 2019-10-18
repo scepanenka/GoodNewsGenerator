@@ -4,14 +4,16 @@ using GoodNews.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace GoodNews.DAL.Migrations
 {
     [DbContext(typeof(GoodNewsContext))]
-    partial class GoodNewsContextModelSnapshot : ModelSnapshot
+    [Migration("20191018174331_Source-QuerySelector")]
+    partial class SourceQuerySelector
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -35,8 +37,6 @@ namespace GoodNews.DAL.Migrations
                     b.Property<string>("Description");
 
                     b.Property<Guid>("SourceId");
-
-                    b.Property<string>("ThumbnailUrl");
 
                     b.Property<string>("Title");
 
@@ -111,7 +111,7 @@ namespace GoodNews.DAL.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("22636049-ebed-44a9-aa36-267aa89d19bb"),
+                            Id = new Guid("ecf0db23-9732-406c-9c19-c57a01d1a421"),
                             Description = "Новости onliner.by",
                             Name = "Onliner",
                             QuerySelector = ".news-text",
@@ -119,7 +119,7 @@ namespace GoodNews.DAL.Migrations
                         },
                         new
                         {
-                            Id = new Guid("3d841b00-cbaa-496a-a275-cc3619d54b42"),
+                            Id = new Guid("aaadaafd-32b7-47e6-82cf-fac02a87d9b4"),
                             Description = "Новости s13",
                             Name = "S13",
                             QuerySelector = ".js-mediator-article",
@@ -127,7 +127,7 @@ namespace GoodNews.DAL.Migrations
                         },
                         new
                         {
-                            Id = new Guid("915cee91-b054-487c-9c22-51f3158ba6f8"),
+                            Id = new Guid("ecb34afb-4994-444b-922f-8c6115b53db7"),
                             Description = "Новости tut.by",
                             Name = "Tut.by",
                             QuerySelector = "#article_body",

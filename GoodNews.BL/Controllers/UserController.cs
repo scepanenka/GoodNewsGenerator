@@ -2,12 +2,14 @@
 using System.Threading.Tasks;
 using GoodNews.BL.ViewModels;
 using GoodNews.Data.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GoodNews.BL.Controllers
 {
 
+    [Authorize(Roles = "admin")]
     public class UserController : Controller
     {
         private readonly UserManager<User> _userManager;

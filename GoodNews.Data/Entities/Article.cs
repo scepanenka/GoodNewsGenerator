@@ -10,6 +10,7 @@ namespace GoodNews.Data.Entities
         public string Author { get; set; }
         public string Description { get; set; }
         public string Url { get; set; }        
+        public string ThumbnailUrl { get; set; }        
         public DateTime DateOfPublication { get; set; }        
 
         public Guid CategoryId { get; set; }

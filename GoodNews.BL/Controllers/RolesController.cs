@@ -5,10 +5,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using GoodNews.BL.ViewModels;
 using GoodNews.Data.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 
 namespace GoodNews.BL.Controllers
 {
+    [Authorize(Roles = "admin")]
     public class RolesController : Controller
     {
         RoleManager<IdentityRole> _roleManager;
