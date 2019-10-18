@@ -26,14 +26,17 @@ namespace GoodNews.BL.Controllers
         public async Task<IActionResult> Create(CreateUserViewModel userViewModel)
         {
             if (!ModelState.IsValid) return View(userViewModel);
-            var result = await _userManager.CreateAsync(new User()
+
+            var user = new User()
             {
                 Email = userViewModel.Email,
                 UserName = userViewModel.Email,
                 BirthDate = userViewModel.BirthDate
-            });
+            };
+            var result = await _userManager.CreateAsync(user);
             if (result.Succeeded)
             {
+                await _userManager.AddToRoleAsync(user, "user");
                 return RedirectToAction("Index");
             }
 

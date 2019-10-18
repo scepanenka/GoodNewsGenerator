@@ -46,7 +46,16 @@ namespace GoodNews.BL
             services.AddTransient<IOnlinerParser, OnlinerParser>();
             services.AddTransient<ITutByParser, TutByParser>();
             services.AddTransient<IEmailSender, EmailSender>();
-            services.AddIdentity<User, IdentityRole>()
+            services.AddIdentity<User, IdentityRole>(options =>
+                {
+                    //настройка вилидности пароля
+                    options.Password.RequiredLength = 3;
+                    options.Password.RequireNonAlphanumeric = false;
+                    options.Password.RequireLowercase = false;
+                    options.Password.RequireUppercase = false;
+                    options.Password.RequireDigit = false;
+
+                })
                 .AddEntityFrameworkStores<GoodNewsContext>();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
