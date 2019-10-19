@@ -9,8 +9,14 @@ namespace Core
 {
     public interface INewsParser
     {
-        IEnumerable<Article> GetFromUrl(string url);
         bool Add(Article article);
-        bool AddRange(IEnumerable<Article> articles);
+        bool AddNews(IEnumerable<Article> articles);
+
+        IEnumerable<Article> GetFromRss();
+
+        string GetTextOfArticle(string url);
+        
+        void Parse();
+
     }
 }

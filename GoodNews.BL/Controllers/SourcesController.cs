@@ -1,15 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using GoodNews.DAL;
 using GoodNews.Data.Entities;
+using Microsoft.AspNetCore.Authorization;
 
 namespace GoodNews.BL.Controllers
 {
+    [Authorize(Roles = "admin")]
     public class SourcesController : Controller
     {
         private readonly GoodNewsContext _context;
@@ -54,7 +54,7 @@ namespace GoodNews.BL.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name,Description,Url,Id")] Source source)
+        public async Task<IActionResult> Create(Source source)
         {
             if (ModelState.IsValid)
             {

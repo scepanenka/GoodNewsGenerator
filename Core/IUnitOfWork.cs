@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using GoodNews.DAL.Repository;
 using GoodNews.Data.Entities;
 
@@ -13,5 +14,7 @@ namespace Core
         Category GetOrCreateCategory(string name);
 
         void Save();
+
+        Task SaveAsync();
     }
 }

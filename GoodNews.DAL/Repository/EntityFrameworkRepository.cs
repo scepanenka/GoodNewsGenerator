@@ -35,15 +35,26 @@ namespace GoodNews.DAL.Repository
             return _table.Find(id);
         }
 
-        public void Insert(T obj)
+        public void Add(T obj)
         {
             _table.Add(obj);
+        }
+
+        public async Task AddAsync(T obj)
+        {
+            await _table.AddAsync(obj);
         }
 
         public void AddRange(IEnumerable<T> objects)
         {
             _table.AddRange(objects);
         }
+
+        public async Task AddRangeAsync(IEnumerable<T> objects)
+        {
+            await _table.AddRangeAsync(objects);
+        }
+
 
         public void Update(T obj)
         {

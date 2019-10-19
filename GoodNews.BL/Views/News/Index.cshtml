@@ -1,71 +1,31 @@
 ﻿@model IEnumerable<GoodNews.Data.Entities.Article>
-
 @{
     ViewData["Title"] = "Index";
 }
+<div class="album py-3 bg-light">
+    <div class="container">
+        @foreach (var article in Model)
+        {
+            <div class="card mb-4 p-3 shadow-sm">
+                <div class="row no-gutters">
+                    <div class="col-md-4">
+                        <img class="card-img" src="@article.ThumbnailUrl" alt="thumb">
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card-body">
 
-<h1>Index</h1>
+                            <h5 class="card-title">@Html.DisplayFor(modelItem => article.Title)</h5>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Title)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Content)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Author)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Url)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DateOfPublication)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Category)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Source)
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Title)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Content)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Author)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Url)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DateOfPublication)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Category.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Source.Name)
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+                            <p class="card-text">@Html.DisplayFor(modelItem => article.Description)</p>
+                            <p class="m-0">@Html.DisplayFor(modelItem => article.DateOfPublication)</p>
+                            <p>@Html.DisplayFor(modelItem => article.Source.Name)</p>
+                            <a asp-controller="News" asp-action="Details" asp-route-id="@article.Id">Читать далее...</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        }
+    </div>
+</div>

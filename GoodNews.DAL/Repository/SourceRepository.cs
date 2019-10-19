@@ -7,5 +7,6 @@ namespace GoodNews.DAL.Repository
         public SourceRepository(GoodNewsContext _context) : base(_context)
         {
         }
+
     }
 }

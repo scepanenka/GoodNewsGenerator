@@ -4,14 +4,16 @@ using GoodNews.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace GoodNews.DAL.Migrations
 {
     [DbContext(typeof(GoodNewsContext))]
-    partial class GoodNewsContextModelSnapshot : ModelSnapshot
+    [Migration("20191017200429_Init")]
+    partial class Init
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -35,8 +37,6 @@ namespace GoodNews.DAL.Migrations
                     b.Property<string>("Description");
 
                     b.Property<Guid>("SourceId");
-
-                    b.Property<string>("ThumbnailUrl");
 
                     b.Property<string>("Title");
 
@@ -100,8 +100,6 @@ namespace GoodNews.DAL.Migrations
 
                     b.Property<string>("Name");
 
-                    b.Property<string>("QuerySelector");
-
                     b.Property<string>("Url");
 
                     b.HasKey("Id");
@@ -111,26 +109,23 @@ namespace GoodNews.DAL.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("22636049-ebed-44a9-aa36-267aa89d19bb"),
+                            Id = new Guid("71d8b2b1-17bc-4948-a20f-270abe72de23"),
                             Description = "Новости onliner.by",
                             Name = "Onliner",
-                            QuerySelector = ".news-text",
                             Url = "https://people.onliner.by/feed"
                         },
                         new
                         {
-                            Id = new Guid("3d841b00-cbaa-496a-a275-cc3619d54b42"),
+                            Id = new Guid("540c8860-7028-4d1f-8c6c-8971920f6a7c"),
                             Description = "Новости s13",
                             Name = "S13",
-                            QuerySelector = ".js-mediator-article",
                             Url = "http://s13.ru/rss"
                         },
                         new
                         {
-                            Id = new Guid("915cee91-b054-487c-9c22-51f3158ba6f8"),
+                            Id = new Guid("36ee4e33-bd40-4da1-84e7-03b49234ef32"),
                             Description = "Новости tut.by",
                             Name = "Tut.by",
-                            QuerySelector = "#article_body",
                             Url = "https://news.tut.by/rss/all.rss"
                         });
                 });

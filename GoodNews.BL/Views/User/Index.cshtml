@@ -1,0 +1,34 @@
+﻿@model System.Collections.Generic.IEnumerable<GoodNews.Data.Entities.User>
+
+@{
+    Layout = "_Layout";
+}
+
+<h2>User List</h2>
+
+<div>
+    <a asp-action="Create">Add User</a>
+</div>
+
+<table class="table">
+    <tr>
+        <th>Email</th>
+        <th>BirthDate</th>
+        <th>Actions</th>
+    </tr>
+    @foreach (var user in Model)
+    {
+        <tr>
+            <td>@user.Email</td>
+            <td>@user.BirthDate</td>
+            <td>
+                <div class="btn-group" role="group" aria-label="...">
+                    <a asp-action="Edit" asp-route-id="@user.Id" type="button" class="btn btn-primary">Edit</a>
+                    <button type="button" class="btn btn-danger">Delete</button>
+                  
+                </div>
+                
+            </td>
+        </tr>
+    }
+</table>

@@ -1,0 +1,9 @@
+﻿@model GoodNews.Data.Entities.Article
+@{
+    ViewData["Title"] = Model.Title;
+}
+<div class="container">
+    <h1>@Model.Title</h1>
+    <div>@Html.Raw(Model.Content)</div>
+</div>
+
