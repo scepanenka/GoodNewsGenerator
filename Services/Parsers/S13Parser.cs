@@ -78,8 +78,15 @@ namespace Services.Parsers
             {
                 string link = article.Links.FirstOrDefault().Uri.ToString();
 
-                string content = GetTextOfArticle(link);
+                WebClient wc = new WebClient();
+                string htmlText = wc.DownloadString(link);
+                wc.Dispose();
 
+                var doc = new HtmlAgilityPack.HtmlDocument();
+                doc.LoadHtml(htmlText);
+
+                string content = doc.QuerySelector(".content").InnerHtml;
+                
                 thumbnailUrl = Regex.Match(content, "<img.+?src=[\"'](.+?)[\"'].+?>", RegexOptions.IgnoreCase).Groups[1].Value;
 
                 if (thumbnailUrl.StartsWith("/"))

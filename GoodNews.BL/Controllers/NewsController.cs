@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Core;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Services.Parsers;
@@ -33,17 +32,12 @@ namespace GoodNews.BL.Controllers
             return View(news);
         }
 
-        public IActionResult News()
-        {
-            var news = _unitOfWork.News.GetAll();
-            return PartialView(news);
-        }
-
+        [Authorize(Roles = "admin")]
         public IActionResult Parse()
         {
-            _onlinerParser.Parse();
+           _onlinerParser.Parse();
             _s13Parser.Parse();
-            _tutByParser.Parse();
+           _tutByParser.Parse();
 
 
             return RedirectToAction("Index", "News");

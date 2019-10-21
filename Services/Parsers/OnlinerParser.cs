@@ -77,11 +77,22 @@ namespace Services.Parsers
             if (thumbnailUrl == null)
             {
                 string link = article.Links.FirstOrDefault().Uri.ToString();
-                string articleUrl = link.Substring(0, link.LastIndexOf("?"));
 
-                string content = GetTextOfArticle(articleUrl);
+                WebClient wc = new WebClient();
+                string htmlText = wc.DownloadString(link);
+                wc.Dispose();
+
+                var doc = new HtmlAgilityPack.HtmlDocument();
+                doc.LoadHtml(htmlText);
+
+                string content = doc.QuerySelector(".content").InnerHtml;
 
                 thumbnailUrl = Regex.Match(content, "<img.+?src=[\"'](.+?)[\"'].+?>", RegexOptions.IgnoreCase).Groups[1].Value;
+
+                if (thumbnailUrl.StartsWith("/"))
+                {
+                    thumbnailUrl = thumbnailUrl.Insert(0, "http://s13.ru");
+                }
             }
 
             return thumbnailUrl;
