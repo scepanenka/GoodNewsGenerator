@@ -1,0 +1,9 @@
+﻿@model IEnumerable<GoodNews.Data.Entities.Comment>
+
+<h3>Comments</h3>
+<div class="container">
+    @foreach (var comment in Model)
+    {
+        <h5 class="card-title">@Html.DisplayFor(modelItem => comment.User.UserName)</h5>
+    }
+</div>

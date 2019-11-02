@@ -41,6 +41,7 @@ namespace GoodNews.BL
             services.AddTransient<IRepository<Article>, ArticleRepository>();
             services.AddTransient<IRepository<Source>, SourceRepository>();
             services.AddTransient<IRepository<Category>, CategoryRepository>();
+            services.AddTransient<IRepository<Comment>, CommentRepository>();
             services.AddTransient<IUnitOfWork, UnitOfWork>();
             services.AddTransient<IS13Parser, S13Parser>();
             services.AddTransient<IOnlinerParser, OnlinerParser>();

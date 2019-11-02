@@ -5,5 +5,8 @@
 <div class="container">
     <h1>@Model.Title</h1>
     <div>@Html.Raw(Model.Content)</div>
+    <div>
+        @Html.Partial("../Comments/_Comments")
+    </div>
 </div>
 

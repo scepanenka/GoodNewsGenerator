@@ -10,8 +10,10 @@ namespace Core
         IRepository<Article> News { get; }
         IRepository<Source> Sources { get; }
         IRepository<Category> Categories { get; }
+        IRepository<Comment> Comments { get; }
 
         Category GetOrCreateCategory(string name);
+
 
         void Save();
 

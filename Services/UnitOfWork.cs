@@ -15,17 +15,20 @@ namespace Services
         private readonly IRepository<Article> _newsRepository;
         private readonly IRepository<Category> _categoriesRepository;
         private readonly IRepository<Source> _sourcesRepository;
+        private readonly IRepository<Comment> _commentsRepository;
         private bool disposed = false;
 
         public UnitOfWork(GoodNewsContext context,
             IRepository<Article> news,
             IRepository<Source> sources,
+            IRepository<Comment> comments,
             IRepository<Category> categories)
         {
             _context = context;
             _newsRepository = news;
             _categoriesRepository = categories;
             _sourcesRepository = sources;
+            _commentsRepository = comments;
         }
 
 
@@ -35,6 +38,7 @@ namespace Services
         public IRepository<Source> Sources => _sourcesRepository;
 
         public IRepository<Category> Categories => _categoriesRepository;
+        public IRepository<Comment> Comments => _commentsRepository;
 
         public Category GetOrCreateCategory(string name)
         {
