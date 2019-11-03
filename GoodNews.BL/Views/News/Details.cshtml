@@ -9,15 +9,16 @@
         <div>@Html.Raw(Model.Article.Content)</div>
     </div>
     <div class="container">
-        <button id="addacomment" class="pull-right btn btn-primary">Add a comment</button>
-        <div id="addcomment">
-            <form asp-action="AddComment" class="col" style="margin-top: 15px;" method="post">
+        <button id="toggle-comment-input" class="btn btn-primary m-3">Add a comment</button>
+        <div id="comment-input" style="display: none">
+            <form asp-action="AddComment" class="col" method="post">
                 <input type="hidden" name="articleId" value="@Model.Article.Id" />
                 <textarea name="content" class="form-control" id="comment-content" rows="3" minlength=10></textarea>
                 <div>
-                    <button type="submit" class="btn btn-primary btn-sm mt-1">Send</button>
+                    <button type="submit" class="btn btn-primary btn-sm mt-2">Send</button>
                 </div>
             </form>
+            <button id="btn-send" class="btn btn-primary btn-sm mt-2 ml-3">SendAjax</button>
         </div>
         <div class="card-body col-10">
             @if (Model.Comments != null)
@@ -38,9 +39,39 @@
 
 @section Scripts{
     <script>
-        $(document).on('click', '#addacomment', function(){
-            $('#addcomment').slideToggle();
+        $(document).ready(function() {
+            $('#toggle-comment-input').click(toggleCommentInput);
+            $('#btn-send').click(addComment);
         });
+
+
+        const toggleCommentInput = () => {
+            $('#comment-input').slideToggle();
+        };
+
+        const addComment = () => {
+            let comment = {
+                Id: $('#articleId').val(),
+                Content: $('#comment-content').val()
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/News/AddComment",
+                data: comment,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function(response) {
+                    $('#container').html(response);;
+                },
+                failure: function(response) {
+                    alert(response.responseText);
+                },
+                error: function(response) {
+                    alert(response.responseText);
+                }
+            });
+        };
     </script>
 }
 

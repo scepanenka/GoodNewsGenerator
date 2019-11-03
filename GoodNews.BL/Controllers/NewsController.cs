@@ -90,7 +90,7 @@ namespace GoodNews.BL.Controllers
                 Id = new Guid(),
                 User = user,
                 Content = content,
-                Date = DateTime.Now.ToUniversalTime(),
+                Date = DateTime.Now,
                 Article = _unitOfWork.News.Find(a => a.Id.Equals(articleId)).FirstOrDefault()
             };
 
