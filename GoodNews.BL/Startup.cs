@@ -49,7 +49,6 @@ namespace GoodNews.BL
             services.AddTransient<IEmailSender, EmailSender>();
             services.AddIdentity<User, IdentityRole>(options =>
                 {
-                    //настройка вилидности пароля
                     options.Password.RequiredLength = 3;
                     options.Password.RequireNonAlphanumeric = false;
                     options.Password.RequireLowercase = false;
