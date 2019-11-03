@@ -89,7 +89,7 @@ namespace Services.Parsers
                 
                 thumbnailUrl = Regex.Match(content, "<img.+?src=[\"'](.+?)[\"'].+?>", RegexOptions.IgnoreCase).Groups[1].Value;
 
-                if (thumbnailUrl.StartsWith("/"))
+                if (thumbnailUrl.StartsWith("/ru"))
                 {
                     thumbnailUrl = thumbnailUrl.Insert(0, "http://s13.ru");
                 }
@@ -116,6 +116,7 @@ namespace Services.Parsers
             }
 
             content = Regex.Replace(content, @"\s+", " ");
+            content = Regex.Replace(content, @"src=""/ru/", @"src=""http://s13.ru/ru/");
 
             return HttpUtility.HtmlDecode(content);
         }
