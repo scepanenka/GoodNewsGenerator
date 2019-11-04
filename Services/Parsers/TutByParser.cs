@@ -36,15 +36,15 @@ namespace Services.Parsers
                 foreach (var article in feed.Items)
                 {
                     string link = article.Links.FirstOrDefault().Uri.ToString();
-                    string articleUrl = link.Substring(0, link.LastIndexOf("?"));
+                    link = link.Substring(0, link.LastIndexOf("?"));
 
                     news.Add(new Article()
                     {
                         Title = article.Title.Text.Replace("&nbsp;", string.Empty),
                         Description = Regex.Replace(article.Summary.Text, @"<[^>]+>|&nbsp;", string.Empty),
                         DateOfPublication = article.PublishDate.UtcDateTime,
-                        Content = GetTextOfArticle(articleUrl),
-                        Url = articleUrl,
+                        Content = GetTextOfArticle(link),
+                        Url = link,
                         Category = _unitOfWork.GetOrCreateCategory(article.Categories.FirstOrDefault().Name),
                         Source = source,
                         ThumbnailUrl = GetThumbnail(article)

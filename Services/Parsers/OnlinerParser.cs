@@ -88,11 +88,6 @@ namespace Services.Parsers
                 string content = doc.QuerySelector(".content").InnerHtml;
 
                 thumbnailUrl = Regex.Match(content, "<img.+?src=[\"'](.+?)[\"'].+?>", RegexOptions.IgnoreCase).Groups[1].Value;
-
-                if (thumbnailUrl.StartsWith("/"))
-                {
-                    thumbnailUrl = thumbnailUrl.Insert(0, "http://s13.ru");
-                }
             }
 
             return thumbnailUrl;
@@ -107,15 +102,23 @@ namespace Services.Parsers
 
             var doc = new HtmlAgilityPack.HtmlDocument();
             doc.LoadHtml(htmlText);
-
+            
             HtmlNode article = doc.QuerySelector(".news-text");
+
+            var badNodes = article.ChildNodes.Where(n => n.Attributes.Contains("style") && n.Attributes["style"].Value.Contains("text-align: right")).ToList();
+            foreach (var node in badNodes)
+                node.Remove();
+
+
             string content = "";
             if (article != null)
             {
                 content = article.InnerHtml;
             }
 
-            content = Regex.Replace(content, @"\s+", " ").Replace("Читать далее…", "");
+            content = Regex.Replace(content, @"\s+", " ")
+                    .Replace("Читать далее…", "");
+
 
             return HttpUtility.HtmlDecode(content);
         }
