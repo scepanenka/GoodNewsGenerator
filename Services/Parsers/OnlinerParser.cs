@@ -39,23 +39,25 @@ namespace Services.Parsers
                 foreach (var article in feed.Items)
                 {
                     string url = article.Links.FirstOrDefault().Uri.ToString();
-                    string content = GetTextOfArticle(url);
-
-                    news.Add(new Article()
+                    if (_unitOfWork.News.Find(a => a.Url.Equals(url)).FirstOrDefault() == null)
                     {
-                        Title = article.Title.Text.Replace("&nbsp;", string.Empty),
-                        Description = Regex.Replace(article.Summary.Text, @"<[^>]+>|&nbsp;", string.Empty),
-                        DateOfPublication = article.PublishDate.UtcDateTime,
-                        Content = content,
-                        Url = url,
-                        Category = _unitOfWork.GetOrCreateCategory(article.Categories.FirstOrDefault().Name),
-                        Source = source,
-                        ThumbnailUrl = GetThumbnail(article)
+                        string content = GetTextOfArticle(url);
+
+                        news.Add(new Article()
+                            {
+                                Title = article.Title.Text.Replace("&nbsp;", string.Empty),
+                                Description = Regex.Replace(article.Summary.Text, @"<[^>]+>|&nbsp;", string.Empty),
+                                DateOfPublication = article.PublishDate.UtcDateTime,
+                                Content = content,
+                                Url = url,
+                                Category = _unitOfWork.GetOrCreateCategory(article.Categories.FirstOrDefault().Name),
+                                Source = source,
+                                ThumbnailUrl = GetThumbnail(article)
+                            }
+                        );
                     }
-                    );
                 }
             }
-
             return news;
         }
 
@@ -105,7 +107,11 @@ namespace Services.Parsers
             
             HtmlNode article = doc.QuerySelector(".news-text");
 
-            var badNodes = article.ChildNodes.Where(n => n.Attributes.Contains("style") && n.Attributes["style"].Value.Contains("text-align: right")).ToList();
+            var badNodes = article.ChildNodes
+                        .Where(a => (a.Attributes.Contains("style") && a.Attributes["style"].Value.Contains("text-align: right")) ||
+                                    (a.HasClass("news-media_3by2")) ||
+                                    (a.HasClass("news-widget")))
+                        .ToList();
             foreach (var node in badNodes)
                 node.Remove();
 

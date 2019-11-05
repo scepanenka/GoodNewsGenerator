@@ -47,8 +47,8 @@ namespace GoodNews.BL.Controllers
         public IActionResult Parse()
         {
            _onlinerParser.Parse();
-           // _s13Parser.Parse();
-           // _tutByParser.Parse();
+           _s13Parser.Parse();
+           _tutByParser.Parse();
 
 
             return RedirectToAction("Index", "News");

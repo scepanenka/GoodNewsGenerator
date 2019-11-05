@@ -39,23 +39,25 @@ namespace Services.Parsers
                 foreach (var article in feed.Items)
                 {
                     string url = article.Links.FirstOrDefault().Uri.ToString();
-                    string content = GetTextOfArticle(url);
-
-                    news.Add(new Article()
+                    if (_unitOfWork.News.Find(a => a.Url.Equals(url)).FirstOrDefault() == null)
                     {
-                        Title = article.Title.Text.Replace("&nbsp;", string.Empty),
-                        Description = Regex.Replace(article.Summary.Text, @"<[^>]+>|&nbsp;", string.Empty),
-                        DateOfPublication = article.PublishDate.UtcDateTime,
-                        Content = content,
-                        Url = url,
-                        Category = _unitOfWork.GetOrCreateCategory(article.Categories.FirstOrDefault().Name),
-                        Source = source,
-                        ThumbnailUrl = GetThumbnail(article)
+                        string content = GetTextOfArticle(url);
+
+                        news.Add(new Article()
+                            {
+                                Title = article.Title.Text.Replace("&nbsp;", string.Empty),
+                                Description = Regex.Replace(article.Summary.Text, @"<[^>]+>|&nbsp;", string.Empty),
+                                DateOfPublication = article.PublishDate.UtcDateTime,
+                                Content = content,
+                                Url = url,
+                                Category = _unitOfWork.GetOrCreateCategory(article.Categories.FirstOrDefault().Name),
+                                Source = source,
+                                ThumbnailUrl = GetThumbnail(article)
+                            }
+                        );
                     }
-                    );
                 }
             }
-
             return news;
         }
 
