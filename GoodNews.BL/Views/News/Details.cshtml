@@ -9,40 +9,33 @@
         <div class="article-content">@Html.Raw(Model.Article.Content)</div>
         <div><a href="@Model.Article.Url">источник</a></div>
     </div>
+
     <div class="container">
         <button id="toggle-comment-input" class="btn btn-primary m-3">Add a comment</button>
         <div id="comment-input" style="display: none">
             <form asp-action="AddComment" class="col" method="post">
-                <input type="hidden" name="articleId" value="@Model.Article.Id" />
+                <input type="hidden" id="articleId" name="articleId" value="@Model.Article.Id" />
                 <textarea name="content" class="form-control" id="comment-content" rows="3" minlength=10></textarea>
                 <div>
                     <button type="submit" class="btn btn-primary btn-sm mt-2">Send</button>
                 </div>
             </form>
-            <button id="btn-send" class="btn btn-primary btn-sm mt-2 ml-3">SendAjax</button>
+            <button id="btn-send-async" class="btn btn-primary btn-sm mt-2 ml-3">SendAjax</button>
         </div>
-        <div class="card-body col-10">
-            @if (Model.Comments != null)
-            {
-                @foreach (var comment in Model.Comments)
-                {
-                    <small><strong>@Html.DisplayFor(modelItem => comment.User.UserName)</strong> @comment.Date</small>
-
-                    <p>@comment.Content</p>
-                }
-            }
-
+        
+        <div id="commentContainer" class="container">
+            @await Html.PartialAsync("/Views/Comment/_GetComments.cshtml", @Model)
         </div>
+        
     </div>
 
 </div>
-
 
 @section Scripts{
     <script>
         $(document).ready(function() {
             $('#toggle-comment-input').click(toggleCommentInput);
-            $('#btn-send').click(addComment);
+            $('#btn-send-async').click(addComment);
         });
 
 
@@ -51,27 +44,36 @@
         };
 
         const addComment = () => {
-            let comment = {
-                Id: $('#articleId').val(),
+            const comment = {
+                ArticleId: $('#articleId').val(),
                 Content: $('#comment-content').val()
             }
-
-            $.ajax({
+            $.post({
                 type: "POST",
-                url: "/News/AddComment",
-                data: comment,
+                url: "/Comment/AddComment",
                 contentType: "application/json; charset=utf-8",
-                dataType: "json",
-                success: function(response) {
-                    $('#container').html(response);;
-                },
-                failure: function(response) {
-                    alert(response.responseText);
-                },
-                error: function(response) {
-                    alert(response.responseText);
+                data: JSON.stringify(comment),
+                dataType: "text",
+                success: function (result) {
+                    $('#comment-content').val('');
+                    getComments();
                 }
             });
+
+            function errorFunc(errorData) {
+                console.log('Error' + errorData.responseText);
+            }
+
+            function getComments() {
+                $.ajax({
+                    url: '/Comment/_GetComments/' + "?id=" + $('#articleId').val(),
+                    type: "GET",
+                    success: function (data) {
+                        $('#commentContainer').html(data);
+                    },
+                    error: errorFunc
+                });
+            };
         };
     </script>
 }

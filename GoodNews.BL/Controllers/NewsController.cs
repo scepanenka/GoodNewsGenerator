@@ -16,10 +16,10 @@ namespace GoodNews.BL.Controllers
     public class NewsController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly UserManager<User> _userManager;
         private readonly INewsParser _onlinerParser;
         private readonly INewsParser _s13Parser;
         private readonly INewsParser _tutByParser;
-        private readonly UserManager<User> _userManager;
 
         public NewsController(IUnitOfWork unitOfWork,
                                 UserManager<User> userManager,
@@ -46,13 +46,11 @@ namespace GoodNews.BL.Controllers
         [Authorize(Roles = "admin")]
         public IActionResult Parse()
         {
-           _onlinerParser.Parse();
-           _s13Parser.Parse();
-           _tutByParser.Parse();
-
+            _onlinerParser.Parse();
+            _s13Parser.Parse();
+            _tutByParser.Parse();
 
             return RedirectToAction("Index", "News");
-            ;
         }
 
         [HttpGet]
