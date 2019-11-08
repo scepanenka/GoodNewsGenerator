@@ -29,30 +29,33 @@ namespace Services.Parsers
             XmlReader feedReader = XmlReader.Create(_url);
             SyndicationFeed feed = SyndicationFeed.Load(feedReader);
             Source source = _unitOfWork.Sources.AsQueryable().FirstOrDefault(x => x.Url.Contains(_url));
+
             List<Article> news = new List<Article>();
 
             if (feed != null)
             {
                 foreach (var article in feed.Items)
                 {
-                    string link = article.Links.FirstOrDefault().Uri.ToString();
-                    string articleUrl = link.Substring(0, link.LastIndexOf("?"));
-
-                    news.Add(new Article()
+                    string url = article.Links.FirstOrDefault().Uri.ToString();
+                    if (_unitOfWork.News.Find(a => a.Url.Equals(url)).FirstOrDefault() == null)
                     {
-                        Title = article.Title.Text.Replace("&nbsp;", string.Empty),
-                        Description = Regex.Replace(article.Summary.Text, @"<[^>]+>|&nbsp;", string.Empty),
-                        DateOfPublication = article.PublishDate.UtcDateTime,
-                        Content = GetTextOfArticle(articleUrl),
-                        Url = articleUrl,
-                        Category = _unitOfWork.GetOrCreateCategory(article.Categories.FirstOrDefault().Name),
-                        Source = source,
-                        ThumbnailUrl = GetThumbnail(article)
+                        string content = GetTextOfArticle(url);
+
+                        news.Add(new Article()
+                            {
+                                Title = article.Title.Text.Replace("&nbsp;", string.Empty),
+                                Description = Regex.Replace(article.Summary.Text, @"<[^>]+>|&nbsp;", string.Empty),
+                                DateOfPublication = article.PublishDate.UtcDateTime,
+                                Content = content,
+                                Url = url,
+                                Category = _unitOfWork.GetOrCreateCategory(article.Categories.FirstOrDefault().Name),
+                                Source = source,
+                                ThumbnailUrl = GetThumbnail(article)
+                            }
+                        );
                     }
-                    );
                 }
             }
-
             return news;
         }
 
