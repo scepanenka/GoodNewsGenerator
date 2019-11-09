@@ -48,16 +48,13 @@
                 ArticleId: $('#articleId').val(),
                 Content: $('#comment-content').val()
             }
-            $.post({
+            $.ajax({
                 type: "POST",
                 url: "/Comment/AddComment",
                 contentType: "application/json; charset=utf-8",
                 data: JSON.stringify(comment),
                 dataType: "text",
-                success: function (result) {
-                    $('#comment-content').val('');
-                    getComments();
-                }
+                success: getComments
             });
 
             function errorFunc(errorData) {
@@ -66,9 +63,10 @@
 
             function getComments() {
                 $.ajax({
-                    url: '/Comment/_GetComments/' + "?id=" + $('#articleId').val(),
                     type: "GET",
+                    url: '/Comment/_GetComments/' + "?id=" + $('#articleId').val(),
                     success: function (data) {
+                        $('#comment-content').val('');
                         $('#commentContainer').html(data);
                     },
                     error: errorFunc

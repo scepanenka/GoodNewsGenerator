@@ -98,6 +98,13 @@ namespace Services.Parsers
             var doc = new HtmlAgilityPack.HtmlDocument();
             doc.LoadHtml(htmlText);
             HtmlNode article = doc.QuerySelector("#article_body");
+
+            var badNodes = article.ChildNodes
+                .Where(a => (a.HasClass("b-addition")))
+                .ToList();
+            foreach (var node in badNodes)
+                node.Remove();
+
             string content = "";
             if (article != null)
             {
