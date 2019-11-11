@@ -76,30 +76,5 @@ namespace GoodNews.BL.Controllers
 
             return View(articleViewModel);
         }
-
-        [Authorize]
-        [HttpPost]
-        public async Task<IActionResult> AddComment(string content, Guid articleId)
-        {
-            var user = _userManager.FindByIdAsync(User.FindFirst(ClaimTypes.NameIdentifier).Value).Result;
-            
-            var comment = new Comment()
-            {
-                Id = new Guid(),
-                User = user,
-                Content = content,
-                Date = DateTime.Now,
-                Article = _unitOfWork.News.Find(a => a.Id.Equals(articleId)).FirstOrDefault()
-            };
-
-            await _unitOfWork.Comments.AddAsync(comment);
-
-            await _unitOfWork.SaveAsync();
-
-
-            return RedirectToAction("Details", "News", new { id = articleId });
-        }
-
-
     }
 }

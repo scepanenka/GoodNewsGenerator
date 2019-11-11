@@ -2,7 +2,7 @@
 <h1>Comments</h1>
 
 <div class="card-body col-10">
-    @if (Model.Comments != null)
+    @if (Model.Comments.Any())
     {
         @foreach (var comment in Model.Comments)
         {
@@ -10,6 +10,10 @@
 
             <p>@comment.Content</p>
         }
+    }
+    else
+    {
+        <p>There is no comments yet</p>
     }
 
 </div>
