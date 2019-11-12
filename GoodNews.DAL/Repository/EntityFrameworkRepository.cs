@@ -30,7 +30,7 @@ namespace GoodNews.DAL.Repository
             return await _table.ToListAsync();
         }
 
-        public T GetById(object id)
+        public virtual T GetById(object id)
         {
             return _table.Find(id);
         }
@@ -77,5 +77,6 @@ namespace GoodNews.DAL.Repository
         {
             return _table.Where(predicate);
         }
+        
     }
 }

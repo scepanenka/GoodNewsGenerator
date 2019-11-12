@@ -39,23 +39,25 @@ namespace Services.Parsers
                 foreach (var article in feed.Items)
                 {
                     string url = article.Links.FirstOrDefault().Uri.ToString();
-                    string content = GetTextOfArticle(url);
-
-                    news.Add(new Article()
+                    if (_unitOfWork.News.Find(a => a.Url.Equals(url)).FirstOrDefault() == null)
                     {
-                        Title = article.Title.Text.Replace("&nbsp;", string.Empty),
-                        Description = Regex.Replace(article.Summary.Text, @"<[^>]+>|&nbsp;", string.Empty),
-                        DateOfPublication = article.PublishDate.UtcDateTime,
-                        Content = content,
-                        Url = url,
-                        Category = _unitOfWork.GetOrCreateCategory(article.Categories.FirstOrDefault().Name),
-                        Source = source,
-                        ThumbnailUrl = GetThumbnail(article)
+                        string content = GetTextOfArticle(url);
+
+                        news.Add(new Article()
+                            {
+                                Title = article.Title.Text.Replace("&nbsp;", string.Empty),
+                                Description = Regex.Replace(article.Summary.Text, @"<[^>]+>|&nbsp;", string.Empty),
+                                DateOfPublication = article.PublishDate.UtcDateTime,
+                                Content = content,
+                                Url = url,
+                                Category = _unitOfWork.GetOrCreateCategory(article.Categories.FirstOrDefault().Name),
+                                Source = source,
+                                ThumbnailUrl = GetThumbnail(article)
+                            }
+                        );
                     }
-                    );
                 }
             }
-
             return news;
         }
 
@@ -78,11 +80,18 @@ namespace Services.Parsers
             {
                 string link = article.Links.FirstOrDefault().Uri.ToString();
 
-                string content = GetTextOfArticle(link);
+                WebClient wc = new WebClient();
+                string htmlText = wc.DownloadString(link);
+                wc.Dispose();
 
+                var doc = new HtmlAgilityPack.HtmlDocument();
+                doc.LoadHtml(htmlText);
+
+                string content = doc.QuerySelector(".content").InnerHtml;
+                
                 thumbnailUrl = Regex.Match(content, "<img.+?src=[\"'](.+?)[\"'].+?>", RegexOptions.IgnoreCase).Groups[1].Value;
 
-                if (thumbnailUrl.StartsWith("/"))
+                if (thumbnailUrl.StartsWith("/ru"))
                 {
                     thumbnailUrl = thumbnailUrl.Insert(0, "http://s13.ru");
                 }
@@ -109,6 +118,7 @@ namespace Services.Parsers
             }
 
             content = Regex.Replace(content, @"\s+", " ");
+            content = Regex.Replace(content, @"src=""/ru/", @"src=""http://s13.ru/ru/");
 
             return HttpUtility.HtmlDecode(content);
         }
