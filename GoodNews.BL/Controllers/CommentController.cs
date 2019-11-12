@@ -53,7 +53,7 @@ namespace GoodNews.BL.Controllers
             {
                 return NotFound();
             }
-            var article = _unitOfWork.News.GetById(id);
+            var article = await _unitOfWork.News.GetByIdAsync(id);
             var comments = _unitOfWork.Comments.AsQueryable().Include(c => c.User)
                 .Where(c => c.ArticleId.Equals(id)).OrderByDescending(c => c.Date);
 

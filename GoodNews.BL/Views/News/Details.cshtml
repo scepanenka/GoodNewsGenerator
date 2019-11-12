@@ -1,4 +1,8 @@
-﻿@model GoodNews.BL.ViewModels.ArticleViewModel
+﻿@using GoodNews.Data.Entities
+@using Microsoft.AspNetCore.Identity
+@model GoodNews.BL.ViewModels.ArticleViewModel
+@inject SignInManager<User> SignInManager
+
 @{
     ViewData["Title"] = Model.Article.Title;
 }
@@ -11,14 +15,19 @@
     </div>
 
     <div class="container">
-        <button id="toggle-comment-input" class="btn btn-primary m-3">ADD COMMENT</button>
+        <button id="toggle-comment-input" class="btn btn-primary m-3"
+                @if (!SignInManager.IsSignedIn(User))
+                {
+                    @:disabled="disabled"
+                }>ADD COMMENT
+         </button>
         <a asp-controller="News" asp-action="Index" class="btn btn-outline-secondary m-3">BACK TO NEWS</a>
         <div id="comment-input" style="display: none">
-            <form class="col">
-                <input type="hidden" id="articleId" name="articleId" value="@Model.Article.Id" />
-                <textarea name="content" class="form-control" id="comment-content" rows="3" minlength=10></textarea>
-            </form>
-            <button id="btn-send-async" class="btn btn-success mt-2 ml-3">SEND</button>
+            <div class="form-group">
+                <input type="hidden" id="articleId" value="@Model.Article.Id" />
+                <textarea class="form-control" id="comment-content" rows="3" minlength=10></textarea>
+            </div>
+            <button id="btn-send-async" class="btn btn-success mt-2 ml-3">SEND MESSAGE</button>
         </div>
 
         <div id="commentContainer" class="container">
@@ -31,14 +40,31 @@
 
 @section Scripts{
     <script>
-        $(document).ready(function() {
+        const onDocumentReady = () => {
             $('#toggle-comment-input').click(toggleCommentInput);
             $('#btn-send-async').click(addComment);
-        });
-
+        };
 
         const toggleCommentInput = () => {
             $('#comment-input').slideToggle();
+        };
+
+
+        const errorFunc = (errorData) => {
+            console.log('Error' + errorData.responseText);
+        }
+
+        const getComments = () => {
+            const articleId = $('#articleId').val();
+            $.ajax({
+                type: "GET",
+                url: `/Comment/_GetComments/?id=${articleId}`,
+                success: function (data) {
+                    $('#comment-content').val('');
+                    $('#commentContainer').html(data);
+                },
+                error: errorFunc
+            });
         };
 
         const addComment = () => {
@@ -46,7 +72,7 @@
                 ArticleId: $('#articleId').val(),
                 Content: $('#comment-content').val()
             }
-            $.ajax({
+            $.post({
                 type: "POST",
                 url: "/Comment/AddComment",
                 contentType: "application/json; charset=utf-8",
@@ -55,22 +81,9 @@
                 success: getComments
             });
 
-            function errorFunc(errorData) {
-                console.log('Error' + errorData.responseText);
-            }
-
-            function getComments() {
-                $.ajax({
-                    type: "GET",
-                    url: '/Comment/_GetComments/' + "?id=" + $('#articleId').val(),
-                    success: function (data) {
-                        $('#comment-content').val('');
-                        $('#commentContainer').html(data);
-                    },
-                    error: errorFunc
-                });
-            };
         };
+
+        $(document).ready(onDocumentReady);
     </script>
 }
 

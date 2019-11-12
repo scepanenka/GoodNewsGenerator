@@ -35,6 +35,12 @@ namespace GoodNews.DAL.Repository
             return _table.Find(id);
         }
 
+        public async Task<T> GetByIdAsync(object id)
+        {
+            return await _table.FindAsync(id);
+        }
+
+
         public void Add(T obj)
         {
             _table.Add(obj);

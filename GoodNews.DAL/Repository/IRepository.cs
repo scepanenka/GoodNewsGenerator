@@ -10,6 +10,9 @@ namespace GoodNews.DAL.Repository
         IEnumerable<T> GetAll();
         Task<List<T>> GetAllAsync();
         T GetById(object id);
+        Task<T> GetByIdAsync(object id);
+
+
         void Add(T obj);
 
         Task AddAsync(T obj);
