@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace GoodNews.DAL.Repository
+namespace GoodNews.Core
 {
     public interface IRepository<T> where T : class
     {

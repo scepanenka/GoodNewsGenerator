@@ -132,7 +132,7 @@ namespace GoodNews.BL.Controllers
 
             if (changePasswordResult.Succeeded)
             {
-                await _emailSender.SendEmail(
+                _emailSender.SendEmail(
                     "Password was changed",
                     $"You password was changed at {vm.NewPassword}",
                     new[] { user.Email },
@@ -150,7 +150,6 @@ namespace GoodNews.BL.Controllers
 
                 return View(vm);
             }
-            return RedirectToAction("index", "Home");
         }
 
     }
