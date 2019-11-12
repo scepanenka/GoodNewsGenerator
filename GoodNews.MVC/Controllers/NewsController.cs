@@ -46,8 +46,8 @@ namespace GoodNews.BL.Controllers
         [Authorize(Roles = "admin")]
         public IActionResult Parse()
         {
-            _onlinerParser.Parse();
-            _s13Parser.Parse();
+            //_onlinerParser.Parse();
+            //_s13Parser.Parse();
             _tutByParser.Parse();
 
             return RedirectToAction("Index", "News");
