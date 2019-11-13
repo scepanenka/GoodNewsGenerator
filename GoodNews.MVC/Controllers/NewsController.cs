@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using Core;
 using GoodNews.BL.ViewModels;
@@ -11,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Services.Parsers;
 
-namespace GoodNews.BL.Controllers
+namespace GoodNews.MVC.Controllers
 {
     public class NewsController : Controller
     {
@@ -46,8 +45,8 @@ namespace GoodNews.BL.Controllers
         [Authorize(Roles = "admin")]
         public IActionResult Parse()
         {
-            //_onlinerParser.Parse();
-            //_s13Parser.Parse();
+            _onlinerParser.Parse();
+            _s13Parser.Parse();
             _tutByParser.Parse();
 
             return RedirectToAction("Index", "News");

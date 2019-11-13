@@ -1,14 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using GoodNews.BL.ViewModels;
 using GoodNews.Data.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 
-namespace GoodNews.BL.Controllers
+namespace GoodNews.MVC.Controllers
 {
     [Authorize(Roles = "admin")]
     public class RolesController : Controller
@@ -59,11 +58,11 @@ namespace GoodNews.BL.Controllers
 
         public async Task<IActionResult> Edit(string userId)
         {
-            // get user
+            
             User user = await _userManager.FindByIdAsync(userId);
             if (user != null)
             {
-                // get user roles
+            
                 var userRoles = await _userManager.GetRolesAsync(user);
                 var allRoles = _roleManager.Roles.ToList();
                 ChangeRoleViewModel model = new ChangeRoleViewModel
@@ -81,17 +80,17 @@ namespace GoodNews.BL.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(string userId, List<string> roles)
         {
-            // gey user
+            
             User user = await _userManager.FindByIdAsync(userId);
             if (user != null)
             {
-                // get user roles
+                
                 var userRoles = await _userManager.GetRolesAsync(user);
-                // get all roles
+                
                 var allRoles = _roleManager.Roles.ToList();
-                // get added roles
+                
                 var addedRoles = roles.Except(userRoles);
-                // get deleted roles
+                
                 var removedRoles = userRoles.Except(roles);
 
                 await _userManager.AddToRolesAsync(user, addedRoles);

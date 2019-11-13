@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Core;
 using GoodNews.BL.ViewModels;
 using GoodNews.Data.Entities;
@@ -9,7 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
-namespace GoodNews.BL.Controllers
+namespace GoodNews.MVC.Controllers
 {
     public class AccountController : Controller
     {
