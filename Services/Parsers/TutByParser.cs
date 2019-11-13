@@ -98,15 +98,21 @@ namespace Services.Parsers
             var doc = new HtmlAgilityPack.HtmlDocument();
             doc.LoadHtml(htmlText);
             HtmlNode article = doc.QuerySelector("#article_body");
-            string content = "";
             if (article != null)
             {
+                var badNodes = article.ChildNodes
+                    .Where(a => (a.HasClass("b-addition")))
+                    .ToList();
+                foreach (var node in badNodes)
+                    node.Remove();
+                string content = "";
                 content = article.InnerHtml;
+                content = Regex.Replace(content, @"\s+", " ");
+
+                return HttpUtility.HtmlDecode(content);
             }
 
-            content = Regex.Replace(content, @"\s+", " ");
-
-            return HttpUtility.HtmlDecode(content);
+            return string.Empty;
         }
     }
 }

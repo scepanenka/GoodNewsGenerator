@@ -3,13 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace GoodNews.DAL.Repository
+namespace GoodNews.Core
 {
     public interface IRepository<T> where T : class
     {
         IEnumerable<T> GetAll();
         Task<List<T>> GetAllAsync();
         T GetById(object id);
+        Task<T> GetByIdAsync(object id);
+
+
         void Add(T obj);
 
         Task AddAsync(T obj);

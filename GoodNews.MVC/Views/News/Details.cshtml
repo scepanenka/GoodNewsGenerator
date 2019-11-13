@@ -1,0 +1,92 @@
+﻿@using GoodNews.Data.Entities
+@using Microsoft.AspNetCore.Identity
+@model GoodNews.BL.ViewModels.ArticleViewModel
+@inject SignInManager<User> SignInManager
+
+@{
+    ViewData["Title"] = Model.Article.Title;
+}
+
+<div class="container">
+    <div class="p-2">
+        <h1>@Model.Article.Title</h1>
+        <div class="article-content">@Html.Raw(Model.Article.Content)</div>
+        <div><a href="@Model.Article.Url">источник</a></div>
+    </div>
+
+    <div class="container">
+        <button id="toggle-comment-input" class="btn btn-primary m-3"
+                @if (!SignInManager.IsSignedIn(User))
+                {
+                    @:disabled="disabled"
+                }>ADD COMMENT
+         </button>
+        <a asp-controller="News" asp-action="Index" class="btn btn-outline-secondary m-3">BACK TO NEWS</a>
+        <div id="comment-input" style="display: none">
+            <div class="form-group">
+                <input type="hidden" id="articleId" value="@Model.Article.Id" />
+                <textarea class="form-control" id="comment-content" rows="3" minlength=10></textarea>
+            </div>
+            <button id="btn-send-async" class="btn btn-success mt-2 ml-3">SEND MESSAGE</button>
+        </div>
+
+        <div id="commentContainer" class="container">
+            @await Html.PartialAsync("/Views/Comment/_GetComments.cshtml", @Model)
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts{
+    <script>
+        const onDocumentReady = () => {
+            $('#toggle-comment-input').click(toggleCommentInput);
+            $('#btn-send-async').click(addComment);
+        };
+
+        const toggleCommentInput = () => {
+            $('#comment-input').slideToggle();
+        };
+
+
+        const errorFunc = (errorData) => {
+            console.log('Error' + errorData.responseText);
+        }
+
+        const getComments = () => {
+            const articleId = $('#articleId').val();
+            $.ajax({
+                type: "GET",
+                url: `/Comment/_GetComments/?id=${articleId}`,
+                success: function (data) {
+                    $('#comment-content').val('');
+                    $('#commentContainer').html(data);
+                },
+                error: errorFunc
+            });
+        };
+
+        const addComment = () => {
+            const comment = {
+                ArticleId: $('#articleId').val(),
+                Content: $('#comment-content').val()
+            }
+            $.post({
+                type: "POST",
+                url: "/Comment/AddComment",
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(comment),
+                dataType: "text",
+                success: getComments
+            });
+
+        };
+
+        $(document).ready(onDocumentReady);
+    </script>
+}
+
+
+
+

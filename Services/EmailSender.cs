@@ -16,7 +16,7 @@ namespace SmtpEmailService
         private const string FROM = "GoodNews admin";
 
 
-        public async Task<bool> SendEmail(string subject, string body, IEnumerable<string> to, IEnumerable<string> toCc)
+        public bool SendEmail(string subject, string body, IEnumerable<string> to, IEnumerable<string> toCc)
         {
             try
             {

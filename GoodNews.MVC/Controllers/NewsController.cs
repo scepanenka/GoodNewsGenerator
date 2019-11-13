@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using Core;
 using GoodNews.BL.ViewModels;
@@ -11,15 +10,15 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Services.Parsers;
 
-namespace GoodNews.BL.Controllers
+namespace GoodNews.MVC.Controllers
 {
     public class NewsController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly UserManager<User> _userManager;
         private readonly INewsParser _onlinerParser;
         private readonly INewsParser _s13Parser;
         private readonly INewsParser _tutByParser;
-        private readonly UserManager<User> _userManager;
 
         public NewsController(IUnitOfWork unitOfWork,
                                 UserManager<User> userManager,
@@ -46,23 +45,21 @@ namespace GoodNews.BL.Controllers
         [Authorize(Roles = "admin")]
         public IActionResult Parse()
         {
-           _onlinerParser.Parse();
-           _s13Parser.Parse();
-           _tutByParser.Parse();
-
+            _onlinerParser.Parse();
+            _s13Parser.Parse();
+            _tutByParser.Parse();
 
             return RedirectToAction("Index", "News");
-            ;
         }
 
         [HttpGet]
-        public IActionResult Details(Guid? id)
+        public async Task<IActionResult> Details(Guid? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
-            var article = _unitOfWork.News.GetById(id);
+            var article = await _unitOfWork.News.GetByIdAsync(id);
             var comments = _unitOfWork.Comments.AsQueryable().Include(c=>c.User).Where(c => c.ArticleId.Equals(id)).OrderByDescending(c=>c.Date);
 
             if (article == null)
@@ -78,30 +75,5 @@ namespace GoodNews.BL.Controllers
 
             return View(articleViewModel);
         }
-
-        [Authorize]
-        [HttpPost]
-        public async Task<IActionResult> AddComment(string content, Guid articleId)
-        {
-            var user = _userManager.FindByIdAsync(User.FindFirst(ClaimTypes.NameIdentifier).Value).Result;
-            
-            var comment = new Comment()
-            {
-                Id = new Guid(),
-                User = user,
-                Content = content,
-                Date = DateTime.Now,
-                Article = _unitOfWork.News.Find(a => a.Id.Equals(articleId)).FirstOrDefault()
-            };
-
-            await _unitOfWork.Comments.AddAsync(comment);
-
-            await _unitOfWork.SaveAsync();
-
-
-            return RedirectToAction("Details", "News", new { id = articleId });
-        }
-
-
     }
 }

@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
-namespace GoodNews.BL.Controllers
+namespace GoodNews.MVC.Controllers
 {
 
     [Authorize(Roles = "admin")]

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using GoodNews.Core;
 using GoodNews.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -34,6 +35,12 @@ namespace GoodNews.DAL.Repository
         {
             return _table.Find(id);
         }
+
+        public async Task<T> GetByIdAsync(object id)
+        {
+            return await _table.FindAsync(id);
+        }
+
 
         public void Add(T obj)
         {

@@ -1,28 +1,29 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using Core;
 using GoodNews.DAL;
 using GoodNews.Data.Entities;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
-namespace GoodNews.BL.Controllers
+namespace GoodNews.MVC.Controllers
 {
     [Authorize(Roles = "admin")]
     public class SourcesController : Controller
     {
-        private readonly GoodNewsContext _context;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public SourcesController(GoodNewsContext context)
+        public SourcesController(IUnitOfWork unitOfWork)
         {
-            _context = context;
+            _unitOfWork = unitOfWork;
         }
 
         // GET: Sources
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Sources.ToListAsync());
+            return View(await _unitOfWork.Sources.GetAllAsync());
         }
 
         // GET: Sources/Details/5
@@ -33,8 +34,7 @@ namespace GoodNews.BL.Controllers
                 return NotFound();
             }
 
-            var source = await _context.Sources
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var source = await _unitOfWork.Sources.GetByIdAsync(id);
             if (source == null)
             {
                 return NotFound();
@@ -59,8 +59,8 @@ namespace GoodNews.BL.Controllers
             if (ModelState.IsValid)
             {
                 source.Id = Guid.NewGuid();
-                _context.Add(source);
-                await _context.SaveChangesAsync();
+                _unitOfWork.Sources.Add(source);
+                await _unitOfWork.SaveAsync();
                 return RedirectToAction(nameof(Index));
             }
             return View(source);
@@ -74,7 +74,7 @@ namespace GoodNews.BL.Controllers
                 return NotFound();
             }
 
-            var source = await _context.Sources.FindAsync(id);
+            var source = await _unitOfWork.Sources.GetByIdAsync(id);
             if (source == null)
             {
                 return NotFound();
@@ -87,7 +87,7 @@ namespace GoodNews.BL.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Name,Description,Url,Id")] Source source)
+        public async Task<IActionResult> Edit(Guid id, Source source)
         {
             if (id != source.Id)
             {
@@ -98,8 +98,8 @@ namespace GoodNews.BL.Controllers
             {
                 try
                 {
-                    _context.Update(source);
-                    await _context.SaveChangesAsync();
+                    _unitOfWork.Sources.Update(source);
+                    await _unitOfWork.SaveAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -125,8 +125,7 @@ namespace GoodNews.BL.Controllers
                 return NotFound();
             }
 
-            var source = await _context.Sources
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var source = await _unitOfWork.Sources.GetByIdAsync(id);
             if (source == null)
             {
                 return NotFound();
@@ -140,15 +139,16 @@ namespace GoodNews.BL.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            var source = await _context.Sources.FindAsync(id);
-            _context.Sources.Remove(source);
-            await _context.SaveChangesAsync();
+            _unitOfWork.Sources.Delete(id);
+            await _unitOfWork.SaveAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool SourceExists(Guid id)
         {
-            return _context.Sources.Any(e => e.Id == id);
+            var source = _unitOfWork.Sources.GetByIdAsync(id);
+            if (source != null) return true;
+            return false;
         }
     }
 }
