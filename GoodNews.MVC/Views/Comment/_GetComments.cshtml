@@ -1,14 +1,15 @@
-﻿@model GoodNews.BL.ViewModels.ArticleViewModel
+﻿@model GoodNews.MVC.ViewModels.ArticleViewModel
 <h1>Comments</h1>
 
-<div class="card-body col-10">
+<div class="card-body col-10" id="comments">
     @if (Model.Comments.Any())
     {
         @foreach (var comment in Model.Comments)
         {
-            <small><strong>@Html.DisplayFor(modelItem => comment.User.UserName)</strong> @comment.Date</small>
-
-            <p>@comment.Content</p>
+            <div class="shadow p-3 mb-5 bg-white rounded">
+                <small><strong>@Html.DisplayFor(modelItem => comment.User.UserName)</strong> @comment.Date</small>
+                <p>@comment.Content</p>
+            </div>
         }
     }
     else

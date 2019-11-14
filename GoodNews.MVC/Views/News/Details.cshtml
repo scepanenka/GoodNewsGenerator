@@ -1,6 +1,6 @@
 ﻿@using GoodNews.Data.Entities
 @using Microsoft.AspNetCore.Identity
-@model GoodNews.BL.ViewModels.ArticleViewModel
+@model GoodNews.MVC.ViewModels.ArticleViewModel
 @inject SignInManager<User> SignInManager
 
 @{
@@ -27,7 +27,7 @@
                 <input type="hidden" id="articleId" value="@Model.Article.Id" />
                 <textarea class="form-control" id="comment-content" rows="3" minlength=10></textarea>
             </div>
-            <button id="btn-send-async" class="btn btn-success mt-2 ml-3">SEND MESSAGE</button>
+            <button id="btn-send-async" class="btn btn-success mt-2 ml-3">POST COMMENT</button>
         </div>
 
         <div id="commentContainer" class="container">
@@ -42,7 +42,11 @@
     <script>
         const onDocumentReady = () => {
             $('#toggle-comment-input').click(toggleCommentInput);
-            $('#btn-send-async').click(addComment);
+            $('#btn-send-async').click(
+                () => {
+                    getComments();
+                    addComment();
+                });
         };
 
         const toggleCommentInput = () => {
@@ -51,7 +55,7 @@
 
 
         const errorFunc = (errorData) => {
-            console.log('Error' + errorData.responseText);
+            console.log('Error' + errorData);
         }
 
         const getComments = () => {
@@ -75,10 +79,10 @@
             $.post({
                 type: "POST",
                 url: "/Comment/AddComment",
-                contentType: "application/json; charset=utf-8",
+                contentType: "application/json",
                 data: JSON.stringify(comment),
-                dataType: "text",
-                success: getComments
+                success: getComments,
+                error: errorFunc
             });
 
         };

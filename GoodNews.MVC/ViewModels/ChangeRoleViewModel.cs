@@ -1,8 +1,8 @@
-﻿namespace GoodNews.BL.ViewModels
-{
-    using Microsoft.AspNetCore.Identity;
-    using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Microsoft.AspNetCore.Identity;
 
+namespace GoodNews.MVC.ViewModels
+{
     public class ChangeRoleViewModel
     {
         public string UserId { get; set; }

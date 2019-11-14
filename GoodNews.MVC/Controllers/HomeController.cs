@@ -1,5 +1,5 @@
 ﻿using System.Diagnostics;
-using GoodNews.BL.Models;
+using GoodNews.MVC.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GoodNews.MVC.Controllers

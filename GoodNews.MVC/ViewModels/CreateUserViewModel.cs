@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace GoodNews.BL.ViewModels
+namespace GoodNews.MVC.ViewModels
 {
     public class CreateUserViewModel
     {

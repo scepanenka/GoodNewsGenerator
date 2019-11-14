@@ -3,8 +3,8 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Core;
-using GoodNews.BL.ViewModels;
 using GoodNews.Data.Entities;
+using GoodNews.MVC.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -41,7 +41,7 @@ namespace GoodNews.MVC.Controllers
             await _unitOfWork.Comments.AddAsync(comment);
             await _unitOfWork.SaveAsync();
             
-            return Json(comment);
+            return Ok();
         }
 
         [AllowAnonymous]
