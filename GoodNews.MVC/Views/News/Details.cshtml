@@ -44,8 +44,8 @@
             $('#toggle-comment-input').click(toggleCommentInput);
             $('#btn-send-async').click(
                 () => {
-                    getComments();
                     addComment();
+                    $('#comment-content').val('');
                 });
         };
 
@@ -72,9 +72,11 @@
         };
 
         const addComment = () => {
+            const date = new Date();
             const comment = {
                 ArticleId: $('#articleId').val(),
-                Content: $('#comment-content').val()
+                Content: $('#comment-content').val(),
+                Date: date.toUTCString()
             }
             $.post({
                 type: "POST",

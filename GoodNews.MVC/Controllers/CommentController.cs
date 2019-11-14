@@ -34,7 +34,7 @@ namespace GoodNews.MVC.Controllers
                 Id = new Guid(),
                 User = user,
                 Content = newComment.Content,
-                Date = DateTime.Now,
+                Date = newComment.Date.ToLocalTime(),
                 Article = _unitOfWork.News.Find(a => a.Id.Equals(newComment.ArticleId)).FirstOrDefault()
             };
 
