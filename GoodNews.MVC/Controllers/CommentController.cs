@@ -40,8 +40,15 @@ namespace GoodNews.MVC.Controllers
 
             await _unitOfWork.Comments.AddAsync(comment);
             await _unitOfWork.SaveAsync();
+
+            var result = new CommentViewModel
+            {
+                Author = comment.User.UserName,
+                Date = comment.Date,
+                Content = comment.Content
+            };
             
-            return Ok();
+            return Json(result);
         }
 
         [AllowAnonymous]

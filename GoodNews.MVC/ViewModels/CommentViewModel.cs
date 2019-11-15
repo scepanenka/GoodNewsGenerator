@@ -8,7 +8,7 @@ namespace GoodNews.MVC.ViewModels
 {
     public class CommentViewModel
     {
-        public User User { get; set; }
+        public string Author { get; set; }
         public string Content { get; set; }
         public DateTime Date { get; set; }
 

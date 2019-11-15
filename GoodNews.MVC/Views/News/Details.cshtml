@@ -44,6 +44,7 @@
             $('#toggle-comment-input').click(toggleCommentInput);
             $('#btn-send-async').click(
                 () => {
+                    getComments();
                     addComment();
                     $('#comment-content').val('');
                 });
@@ -64,7 +65,6 @@
                 type: "GET",
                 url: `/Comment/_GetComments/?id=${articleId}`,
                 success: function (data) {
-                    $('#comment-content').val('');
                     $('#commentContainer').html(data);
                 },
                 error: errorFunc
@@ -83,7 +83,12 @@
                 url: "/Comment/AddComment",
                 contentType: "application/json",
                 data: JSON.stringify(comment),
-                success: getComments,
+                dataType: "json",
+                success: function (data) {
+                    console.log(data);
+                    const commentElement = '<div class="shadow p-3 mb-5 bg-white rounded">'+data.content+'</div>';
+                    $("#comments").prepend(commentElement);
+                },
                 error: errorFunc
             });
 
