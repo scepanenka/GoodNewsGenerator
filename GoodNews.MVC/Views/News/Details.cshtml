@@ -64,7 +64,7 @@
             $.ajax({
                 type: "GET",
                 url: `/Comment/_GetComments/?id=${articleId}`,
-                success: function (data) {
+                success: function(data) {
                     $('#commentContainer').html(data);
                 },
                 error: errorFunc
@@ -84,10 +84,12 @@
                 contentType: "application/json",
                 data: JSON.stringify(comment),
                 dataType: "json",
-                success: function (data) {
-                    console.log(data);
-                    const commentElement = '<div class="shadow p-3 mb-5 bg-white rounded">'+data.content+'</div>';
-                    $("#comments").prepend(commentElement);
+                success: function(data) {
+                    const commentElement =
+                    (`<div class="shadow p-3 mb-4 bg-white rounded new-comment" style="display:none">
+                        <small><strong>${data.author}</strong></small><small class="float-right">1 second ago</small><p>${data.content}</p></div>`);
+                    $('#comments').prepend(commentElement);
+                    $('.new-comment').fadeIn(1500);
                 },
                 error: errorFunc
             });

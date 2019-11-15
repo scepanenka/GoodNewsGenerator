@@ -6,10 +6,11 @@
     {
         @foreach (var comment in Model.Comments)
         {
-            <div class="shadow p-3 mb-5 bg-white rounded">
-                <small><strong>@Html.DisplayFor(modelItem => comment.User.UserName)</strong> @comment.Date</small>
-                <p>@comment.Content</p>
-            </div>
+    <div class="shadow p-2 mb-4 bg-white rounded">
+        <small><strong>@Html.DisplayFor(modelItem => comment.User.UserName)</strong> 
+            </small><small></small><small class="float-right">@comment.Date</small>
+        <p>@comment.Content</p>
+    </div>
         }
     }
     else
