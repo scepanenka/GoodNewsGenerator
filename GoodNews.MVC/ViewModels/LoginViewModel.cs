@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace GoodNews.BL.ViewModels
+namespace GoodNews.MVC.ViewModels
 {
     public class LoginViewModel
     {

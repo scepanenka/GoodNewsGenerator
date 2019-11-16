@@ -20,13 +20,13 @@ namespace GoodNews.MVC.Controllers
             _unitOfWork = unitOfWork;
         }
 
-        // GET: Sources
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
             return View(await _unitOfWork.Sources.GetAllAsync());
         }
 
-        // GET: Sources/Details/5
+        [HttpGet]
         public async Task<IActionResult> Details(Guid? id)
         {
             if (id == null)
@@ -43,7 +43,7 @@ namespace GoodNews.MVC.Controllers
             return View(source);
         }
 
-        // GET: Sources/Create
+        [HttpGet]
         public IActionResult Create()
         {
             return View();
@@ -66,7 +66,7 @@ namespace GoodNews.MVC.Controllers
             return View(source);
         }
 
-        // GET: Sources/Edit/5
+        [HttpGet]
         public async Task<IActionResult> Edit(Guid? id)
         {
             if (id == null)
@@ -117,7 +117,7 @@ namespace GoodNews.MVC.Controllers
             return View(source);
         }
 
-        // GET: Sources/Delete/5
+        [HttpGet]
         public async Task<IActionResult> Delete(Guid? id)
         {
             if (id == null)

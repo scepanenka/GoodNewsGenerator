@@ -1,6 +1,4 @@
-using System;
-
-namespace GoodNews.BL.Models
+namespace GoodNews.MVC.Models
 {
     public class ErrorViewModel
     {

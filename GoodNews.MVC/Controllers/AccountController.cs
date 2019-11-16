@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Core;
-using GoodNews.BL.ViewModels;
 using GoodNews.Data.Entities;
+using GoodNews.MVC.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;

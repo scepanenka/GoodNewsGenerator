@@ -3,8 +3,8 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Core;
-using GoodNews.BL.ViewModels;
 using GoodNews.Data.Entities;
+using GoodNews.MVC.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -34,14 +34,22 @@ namespace GoodNews.MVC.Controllers
                 Id = new Guid(),
                 User = user,
                 Content = newComment.Content,
-                Date = DateTime.Now,
+                Date = newComment.Date.ToLocalTime(),
                 Article = _unitOfWork.News.Find(a => a.Id.Equals(newComment.ArticleId)).FirstOrDefault()
             };
 
             await _unitOfWork.Comments.AddAsync(comment);
             await _unitOfWork.SaveAsync();
+
+            var result = new CommentViewModel
+            {
+                Id = comment.Id,
+                Author = comment.User.UserName,
+                Date = comment.Date.ToString(),
+                Content = comment.Content
+            };
             
-            return Json(comment);
+            return Json(result);
         }
 
         [AllowAnonymous]
