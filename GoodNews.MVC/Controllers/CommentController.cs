@@ -43,8 +43,9 @@ namespace GoodNews.MVC.Controllers
 
             var result = new CommentViewModel
             {
+                Id = comment.Id,
                 Author = comment.User.UserName,
-                Date = comment.Date,
+                Date = comment.Date.ToString(),
                 Content = comment.Content
             };
             
