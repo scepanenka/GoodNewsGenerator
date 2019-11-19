@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using GoodNews.DAL;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,6 +12,12 @@ namespace GoodNews.API.Controllers
     [ApiController]
     public class CommentsController : ControllerBase
     {
+        private readonly GoodNewsContext _context;
+
+        public CommentsController(GoodNewsContext context)
+        {
+            _context = context;
+        }
         // GET: api/Comments
         [HttpGet]
         public IEnumerable<string> Get()
