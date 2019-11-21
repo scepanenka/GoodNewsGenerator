@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using GoodNews.DAL;
+using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -51,6 +52,10 @@ namespace GoodNews.API
 
             string connection = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<GoodNewsContext>(options => options.UseSqlServer(connection, x => x.MigrationsAssembly("GoodNews.DAL")));
+
+            services.AddMediatR(typeof(Startup));
+            services.AddTransient<IMediator, Mediator>();
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
         }
