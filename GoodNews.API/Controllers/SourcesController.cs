@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using GoodNews.DAL;
+using GoodNews.Data;
 using GoodNews.Data.Entities;
 
 namespace GoodNews.API.Controllers

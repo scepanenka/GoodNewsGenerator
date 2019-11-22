@@ -9,6 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using GoodNews.DAL;
 using GoodNews.DAL.Repository;
+using GoodNews.Data;
 using GoodNews.Data.Entities;
 using Services;
 using Services.Parsers;

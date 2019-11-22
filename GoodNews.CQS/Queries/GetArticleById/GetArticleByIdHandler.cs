@@ -4,6 +4,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using GoodNews.DAL;
+using GoodNews.Data;
 using GoodNews.Data.Entities;
 using MediatR;
 using Microsoft.EntityFrameworkCore;

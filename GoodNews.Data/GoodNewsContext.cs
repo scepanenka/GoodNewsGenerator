@@ -3,7 +3,7 @@ using GoodNews.Data.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace GoodNews.DAL
+namespace GoodNews.Data
 {
     public class GoodNewsContext : IdentityDbContext<User>
     {

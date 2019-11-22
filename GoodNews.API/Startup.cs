@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using GoodNews.DAL;
+using GoodNews.Data;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
