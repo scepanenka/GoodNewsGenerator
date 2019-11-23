@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.ServiceModel.Syndication;
-using System.Threading.Tasks;
-using Core;
+using GoodNews.Core;
 using GoodNews.Data.Entities;
 
-namespace Services.Parsers
+namespace GoodNews.Services.Parsers
 {
     public class NewsParser : INewsParser
     {

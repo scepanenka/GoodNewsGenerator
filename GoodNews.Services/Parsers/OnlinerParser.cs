@@ -1,27 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.ServiceModel.Syndication;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Web;
 using System.Xml;
 using System.Xml.Linq;
-using Core;
+using GoodNews.Core;
 using GoodNews.Data.Entities;
 using HtmlAgilityPack;
 using HtmlAgilityPack.CssSelectors.NetCore;
 
-namespace Services.Parsers
+namespace GoodNews.Services.Parsers
 {
-    public class S13Parser : NewsParser, IS13Parser
+    public class OnlinerParser : NewsParser, IOnlinerParser
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly string _url = @"http://s13.ru/rss";
+        private readonly string _url = @"https://people.onliner.by/feed";
 
-        public S13Parser(IUnitOfWork unitOfWork) : base(unitOfWork)
+        public OnlinerParser(IUnitOfWork unitOfWork) : base(unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }
@@ -88,13 +85,8 @@ namespace Services.Parsers
                 doc.LoadHtml(htmlText);
 
                 string content = doc.QuerySelector(".content").InnerHtml;
-                
-                thumbnailUrl = Regex.Match(content, "<img.+?src=[\"'](.+?)[\"'].+?>", RegexOptions.IgnoreCase).Groups[1].Value;
 
-                if (thumbnailUrl.StartsWith("/ru"))
-                {
-                    thumbnailUrl = thumbnailUrl.Insert(0, "http://s13.ru");
-                }
+                thumbnailUrl = Regex.Match(content, "<img.+?src=[\"'](.+?)[\"'].+?>", RegexOptions.IgnoreCase).Groups[1].Value;
             }
 
             return thumbnailUrl;
@@ -109,16 +101,27 @@ namespace Services.Parsers
 
             var doc = new HtmlAgilityPack.HtmlDocument();
             doc.LoadHtml(htmlText);
+            
+            HtmlNode article = doc.QuerySelector(".news-text");
 
-            HtmlNode article = doc.QuerySelector(".js-mediator-article");
+            var badNodes = article.ChildNodes
+                        .Where(a => (a.Attributes.Contains("style") && a.Attributes["style"].Value.Contains("text-align: right")) ||
+                                    (a.HasClass("news-media_3by2")) ||
+                                    (a.HasClass("news-widget")))
+                        .ToList();
+            foreach (var node in badNodes)
+                node.Remove();
+
+
             string content = "";
             if (article != null)
             {
                 content = article.InnerHtml;
             }
 
-            content = Regex.Replace(content, @"\s+", " ");
-            content = Regex.Replace(content, @"src=""/ru/", @"src=""http://s13.ru/ru/");
+            content = Regex.Replace(content, @"\s+", " ")
+                    .Replace("Читать далее…", "");
+
 
             return HttpUtility.HtmlDecode(content);
         }

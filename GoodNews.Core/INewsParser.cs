@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using GoodNews.Data.Entities;
 
-namespace Core
+namespace GoodNews.Core
 {
     public interface INewsParser
     {

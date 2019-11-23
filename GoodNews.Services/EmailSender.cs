@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Mail;
-using System.Threading.Tasks;
-using Core;
+using GoodNews.Core;
 
-namespace SmtpEmailService
+namespace GoodNews.Services
 {
     public class EmailSender : IEmailSender
     {

@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
-using GoodNews.Core;
 using GoodNews.Data.Entities;
 
-namespace Core
+namespace GoodNews.Core
 {
     public interface IUnitOfWork : IDisposable
     {

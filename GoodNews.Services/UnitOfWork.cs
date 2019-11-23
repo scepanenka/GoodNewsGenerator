@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Core;
 using GoodNews.Core;
-using GoodNews.DAL;
 using GoodNews.Data;
 using GoodNews.Data.Entities;
 
-namespace Services
+namespace GoodNews.Services
 {
     public class UnitOfWork : IUnitOfWork
     {

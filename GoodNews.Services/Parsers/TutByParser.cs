@@ -1,27 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.ServiceModel.Syndication;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Web;
 using System.Xml;
 using System.Xml.Linq;
-using Core;
+using GoodNews.Core;
 using GoodNews.Data.Entities;
 using HtmlAgilityPack;
 using HtmlAgilityPack.CssSelectors.NetCore;
 
-namespace Services.Parsers
+namespace GoodNews.Services.Parsers
 {
-    public class OnlinerParser : NewsParser, IOnlinerParser
+    public class TutByParser : NewsParser, ITutByParser
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly string _url = @"https://people.onliner.by/feed";
+        private readonly string _url = @"https://news.tut.by/rss/all.rss";
 
-        public OnlinerParser(IUnitOfWork unitOfWork) : base(unitOfWork)
+
+        public TutByParser(IUnitOfWork unitOfWork) : base(unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }
@@ -71,7 +69,8 @@ namespace Services.Parsers
             if (thumbnailUrl == null)
             {
                 thumbnailUrl = article.ElementExtensions
-                    .Where(extension => extension.OuterName == "content" && (string)extension.GetObject<XElement>().Attribute("type") == "image/jpeg")
+                    .Where(extension => extension.OuterName == "content" && (((string)extension.GetObject<XElement>().Attribute("type") == "image/jpeg")) 
+                                                                            || ((string)extension.GetObject<XElement>().Attribute("type") == "image/gif"))
                     .Select(extension => (string)extension.GetObject<XElement>().Attribute("url"))
                     .FirstOrDefault();
             }
@@ -79,15 +78,9 @@ namespace Services.Parsers
             if (thumbnailUrl == null)
             {
                 string link = article.Links.FirstOrDefault().Uri.ToString();
+                string articleUrl = link.Substring(0, link.LastIndexOf("?"));
 
-                WebClient wc = new WebClient();
-                string htmlText = wc.DownloadString(link);
-                wc.Dispose();
-
-                var doc = new HtmlAgilityPack.HtmlDocument();
-                doc.LoadHtml(htmlText);
-
-                string content = doc.QuerySelector(".content").InnerHtml;
+                string content = GetTextOfArticle(articleUrl);
 
                 thumbnailUrl = Regex.Match(content, "<img.+?src=[\"'](.+?)[\"'].+?>", RegexOptions.IgnoreCase).Groups[1].Value;
             }
@@ -95,38 +88,31 @@ namespace Services.Parsers
             return thumbnailUrl;
         }
 
+
         public override string GetTextOfArticle(string url)
         {
-
             WebClient wc = new WebClient();
             string htmlText = wc.DownloadString(url);
             wc.Dispose();
 
             var doc = new HtmlAgilityPack.HtmlDocument();
             doc.LoadHtml(htmlText);
-            
-            HtmlNode article = doc.QuerySelector(".news-text");
-
-            var badNodes = article.ChildNodes
-                        .Where(a => (a.Attributes.Contains("style") && a.Attributes["style"].Value.Contains("text-align: right")) ||
-                                    (a.HasClass("news-media_3by2")) ||
-                                    (a.HasClass("news-widget")))
-                        .ToList();
-            foreach (var node in badNodes)
-                node.Remove();
-
-
-            string content = "";
+            HtmlNode article = doc.QuerySelector("#article_body");
             if (article != null)
             {
+                var badNodes = article.ChildNodes
+                    .Where(a => (a.HasClass("b-addition")))
+                    .ToList();
+                foreach (var node in badNodes)
+                    node.Remove();
+                string content = "";
                 content = article.InnerHtml;
+                content = Regex.Replace(content, @"\s+", " ");
+
+                return HttpUtility.HtmlDecode(content);
             }
 
-            content = Regex.Replace(content, @"\s+", " ")
-                    .Replace("Читать далее…", "");
-
-
-            return HttpUtility.HtmlDecode(content);
+            return string.Empty;
         }
     }
 }

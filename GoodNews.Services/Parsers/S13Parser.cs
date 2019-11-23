@@ -6,20 +6,19 @@ using System.Text.RegularExpressions;
 using System.Web;
 using System.Xml;
 using System.Xml.Linq;
-using Core;
+using GoodNews.Core;
 using GoodNews.Data.Entities;
 using HtmlAgilityPack;
 using HtmlAgilityPack.CssSelectors.NetCore;
 
-namespace Services.Parsers
+namespace GoodNews.Services.Parsers
 {
-    public class TutByParser : NewsParser, ITutByParser
+    public class S13Parser : NewsParser, IS13Parser
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly string _url = @"https://news.tut.by/rss/all.rss";
+        private readonly string _url = @"http://s13.ru/rss";
 
-
-        public TutByParser(IUnitOfWork unitOfWork) : base(unitOfWork)
+        public S13Parser(IUnitOfWork unitOfWork) : base(unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }
@@ -69,8 +68,7 @@ namespace Services.Parsers
             if (thumbnailUrl == null)
             {
                 thumbnailUrl = article.ElementExtensions
-                    .Where(extension => extension.OuterName == "content" && (((string)extension.GetObject<XElement>().Attribute("type") == "image/jpeg")) 
-                                                                            || ((string)extension.GetObject<XElement>().Attribute("type") == "image/gif"))
+                    .Where(extension => extension.OuterName == "content" && (string)extension.GetObject<XElement>().Attribute("type") == "image/jpeg")
                     .Select(extension => (string)extension.GetObject<XElement>().Attribute("url"))
                     .FirstOrDefault();
             }
@@ -78,41 +76,48 @@ namespace Services.Parsers
             if (thumbnailUrl == null)
             {
                 string link = article.Links.FirstOrDefault().Uri.ToString();
-                string articleUrl = link.Substring(0, link.LastIndexOf("?"));
 
-                string content = GetTextOfArticle(articleUrl);
+                WebClient wc = new WebClient();
+                string htmlText = wc.DownloadString(link);
+                wc.Dispose();
 
+                var doc = new HtmlAgilityPack.HtmlDocument();
+                doc.LoadHtml(htmlText);
+
+                string content = doc.QuerySelector(".content").InnerHtml;
+                
                 thumbnailUrl = Regex.Match(content, "<img.+?src=[\"'](.+?)[\"'].+?>", RegexOptions.IgnoreCase).Groups[1].Value;
+
+                if (thumbnailUrl.StartsWith("/ru"))
+                {
+                    thumbnailUrl = thumbnailUrl.Insert(0, "http://s13.ru");
+                }
             }
 
             return thumbnailUrl;
         }
 
-
         public override string GetTextOfArticle(string url)
         {
+
             WebClient wc = new WebClient();
             string htmlText = wc.DownloadString(url);
             wc.Dispose();
 
             var doc = new HtmlAgilityPack.HtmlDocument();
             doc.LoadHtml(htmlText);
-            HtmlNode article = doc.QuerySelector("#article_body");
+
+            HtmlNode article = doc.QuerySelector(".js-mediator-article");
+            string content = "";
             if (article != null)
             {
-                var badNodes = article.ChildNodes
-                    .Where(a => (a.HasClass("b-addition")))
-                    .ToList();
-                foreach (var node in badNodes)
-                    node.Remove();
-                string content = "";
                 content = article.InnerHtml;
-                content = Regex.Replace(content, @"\s+", " ");
-
-                return HttpUtility.HtmlDecode(content);
             }
 
-            return string.Empty;
+            content = Regex.Replace(content, @"\s+", " ");
+            content = Regex.Replace(content, @"src=""/ru/", @"src=""http://s13.ru/ru/");
+
+            return HttpUtility.HtmlDecode(content);
         }
     }
 }

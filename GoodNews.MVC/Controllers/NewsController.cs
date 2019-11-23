@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Core;
+using GoodNews.Core;
 using GoodNews.Data.Entities;
 using GoodNews.MVC.ViewModels;
+using GoodNews.Services.Parsers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Services.Parsers;
 
 namespace GoodNews.MVC.Controllers
 {

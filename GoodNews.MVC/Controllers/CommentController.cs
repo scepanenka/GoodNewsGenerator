@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Core;
+using GoodNews.Core;
 using GoodNews.Data.Entities;
 using GoodNews.MVC.ViewModels;
 using Microsoft.AspNetCore.Authorization;

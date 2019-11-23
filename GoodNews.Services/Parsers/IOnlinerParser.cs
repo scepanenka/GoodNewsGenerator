@@ -1,6 +1,6 @@
-﻿using Core;
+﻿using GoodNews.Core;
 
-namespace Services.Parsers
+namespace GoodNews.Services.Parsers
 {
     public interface IOnlinerParser : INewsParser
     {

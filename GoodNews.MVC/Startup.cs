@@ -1,5 +1,4 @@
-﻿using Core;
-using GoodNews.Core;
+﻿using GoodNews.Core;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -11,10 +10,9 @@ using GoodNews.DAL;
 using GoodNews.DAL.Repository;
 using GoodNews.Data;
 using GoodNews.Data.Entities;
-using Services;
-using Services.Parsers;
+using GoodNews.Services;
+using GoodNews.Services.Parsers;
 using Microsoft.AspNetCore.Identity;
-using SmtpEmailService;
 
 namespace GoodNews.BL
 {
