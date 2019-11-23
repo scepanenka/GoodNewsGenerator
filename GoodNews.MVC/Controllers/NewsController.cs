@@ -38,7 +38,7 @@ namespace GoodNews.MVC.Controllers
 
 
             var news = _unitOfWork.News.AsQueryable().Include(article => article.Source)
-                                                     .OrderByDescending(article => article.DateOfPublication);
+                                                     .OrderByDescending(article => article.DatePublication);
             return View(news);
         }
 

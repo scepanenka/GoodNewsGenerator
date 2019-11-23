@@ -47,7 +47,7 @@ namespace Services.Parsers
                             {
                                 Title = article.Title.Text.Replace("&nbsp;", string.Empty),
                                 Description = Regex.Replace(article.Summary.Text, @"<[^>]+>|&nbsp;", string.Empty),
-                                DateOfPublication = article.PublishDate.UtcDateTime,
+                                DatePublication = article.PublishDate.UtcDateTime,
                                 Content = content,
                                 Url = url,
                                 Category = _unitOfWork.GetOrCreateCategory(article.Categories.FirstOrDefault().Name),

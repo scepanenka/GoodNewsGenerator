@@ -52,7 +52,7 @@ namespace GoodNews.API
                 });
 
             string connection = Configuration.GetConnectionString("DefaultConnection");
-            services.AddDbContext<GoodNewsContext>(options => options.UseSqlServer(connection, x => x.MigrationsAssembly("GoodNews.DAL")));
+            services.AddDbContext<GoodNewsContext>(options => options.UseSqlServer(connection, x => x.MigrationsAssembly("GoodNews.Migrations")));
 
             services.AddMediatR(typeof(Startup));
             services.AddTransient<IMediator, Mediator>();

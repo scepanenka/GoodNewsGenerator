@@ -15,7 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Core\Core.csproj" />
-    <ProjectReference Include="..\GoodNews.DAL\GoodNews.DAL.csproj" />
+    <ProjectReference Include="..\GoodNews.Migrations\GoodNews.Migrations.csproj" />
     <ProjectReference Include="..\Services\Services.csproj" />
   </ItemGroup>
 
