@@ -8,9 +8,9 @@ namespace GoodNews.Core
         bool Add(Article article);
         bool AddNews(IEnumerable<Article> articles);
 
-        IEnumerable<Article> GetFromRss();
-
-        string GetTextOfArticle(string url);
+        IEnumerable<Article> GetNews();
+        string GetArticleText(string url);
+        string GetArticleContent(string url);
         
         void Parse();
 

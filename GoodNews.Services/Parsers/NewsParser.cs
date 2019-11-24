@@ -6,7 +6,7 @@ using GoodNews.Data.Entities;
 
 namespace GoodNews.Services.Parsers
 {
-    public class NewsParser : INewsParser
+    public abstract class NewsParser : INewsParser
     {
         private readonly IUnitOfWork _unitOfWork;
 
@@ -39,12 +39,12 @@ namespace GoodNews.Services.Parsers
             return true;
         }
 
-        public virtual IEnumerable<Article> GetFromRss()
+        public virtual IEnumerable<Article> GetNews()
         {
             return null;
         }
 
-        public virtual string GetTextOfArticle(string url)
+        public virtual string GetArticleContent(string url)
         {
             return string.Empty;
         }
@@ -55,7 +55,12 @@ namespace GoodNews.Services.Parsers
 
         public void Parse()
         {
-            AddNews(GetFromRss());
+            AddNews(GetNews());
+        }
+
+        public string GetArticleText(string url)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+using GoodNews.Data;
+using GoodNews.Data.Entities;
+using GoodNews.MediatR.Queries.GetArticleById;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GoodNews.API.Controllers
@@ -11,5 +13,31 @@ namespace GoodNews.API.Controllers
     [ApiController]
     public class NewsController : ControllerBase
     {
+        private readonly IMediator _mediator;
+
+
+        public NewsController(IMediator mediator)
+        {
+            _mediator = mediator;
+        }
+        
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Article>> GetArticle(Guid id)
+        {
+            try
+            {
+                var article = await _mediator.Send(new GetArticleByIdQuery(id));
+                if (article == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(article);
+            }
+            catch
+            {
+                return StatusCode(500, "Internal server error");
+            }
+        }
     }
 }

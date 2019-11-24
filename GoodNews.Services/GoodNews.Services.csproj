@@ -13,7 +13,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\GoodNews.Core\GoodNews.Core.csproj" />
-    <ProjectReference Include="..\GoodNews.CQS\GoodNews.CQS.csproj" />
     <ProjectReference Include="..\GoodNews.DAL\GoodNews.DAL.csproj" />
   </ItemGroup>
 

@@ -55,7 +55,7 @@ namespace GoodNews.API.Controllers
 
         private UserModel Authenticate(LoginModel login)
         {
-            if (login.Username.Equals("Mario") && login.Password.Equals("secret"))
+            if (login.Email.Equals("Mario") && login.Password.Equals("secret"))
             {
                 return new UserModel
                 {

@@ -2,7 +2,7 @@
 using GoodNews.Data.Entities;
 using MediatR;
 
-namespace GoodNews.CQS.Queries.GetArticleById
+namespace GoodNews.MediatR.Queries.GetArticleById
 {
     public class GetArticleByIdQuery : IRequest<Article>
     {

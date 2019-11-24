@@ -23,7 +23,7 @@ namespace GoodNews.Services.Parsers
             _unitOfWork = unitOfWork;
         }
 
-        public override IEnumerable<Article> GetFromRss()
+        public override IEnumerable<Article> GetNews()
         {
             XmlReader feedReader = XmlReader.Create(_url);
             SyndicationFeed feed = SyndicationFeed.Load(feedReader);
@@ -38,7 +38,7 @@ namespace GoodNews.Services.Parsers
                     string url = article.Links.FirstOrDefault().Uri.ToString();
                     if (_unitOfWork.News.Find(a => a.Url.Equals(url)).FirstOrDefault() == null)
                     {
-                        string content = GetTextOfArticle(url);
+                        string content = GetArticleContent(url);
 
                         news.Add(new Article()
                             {
@@ -97,7 +97,7 @@ namespace GoodNews.Services.Parsers
             return thumbnailUrl;
         }
 
-        public override string GetTextOfArticle(string url)
+        public override string GetArticleContent(string url)
         {
 
             WebClient wc = new WebClient();
