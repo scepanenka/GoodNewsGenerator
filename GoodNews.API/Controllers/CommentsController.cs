@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using GoodNews.DAL;
 using GoodNews.Data;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,11 +14,11 @@ namespace GoodNews.API.Controllers
     [ApiController]
     public class CommentsController : ControllerBase
     {
-        private readonly GoodNewsContext _context;
+        private readonly IMediator _mediator;
 
-        public CommentsController(GoodNewsContext context)
+        public CommentsController(IMediator mediator)
         {
-            _context = context;
+            _mediator = mediator;
         }
         // GET: api/Comments
         [HttpGet]
