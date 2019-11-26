@@ -4,7 +4,7 @@ using System.Net;
 using System.Net.Mail;
 using GoodNews.Core;
 
-namespace GoodNews.Services
+namespace GoodNews.MvcServices
 {
     public class EmailSender : IEmailSender
     {

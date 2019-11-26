@@ -5,7 +5,7 @@ using GoodNews.Core;
 using GoodNews.Data;
 using GoodNews.Data.Entities;
 
-namespace GoodNews.Services
+namespace GoodNews.MvcServices
 {
     public class UnitOfWork : IUnitOfWork
     {

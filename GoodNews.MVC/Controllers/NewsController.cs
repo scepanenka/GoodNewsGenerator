@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using GoodNews.Core;
 using GoodNews.Data.Entities;
 using GoodNews.MVC.ViewModels;
-using GoodNews.Services.Parsers;
+using GoodNews.MvcServices.ParsersUoW;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -19,6 +19,9 @@ namespace GoodNews.MVC.Controllers
         private readonly INewsParser _onlinerParser;
         private readonly INewsParser _s13Parser;
         private readonly INewsParser _tutByParser;
+        const string ONLINER = @"https://people.onliner.by/feed";
+        const string TUTBY = @"https://news.tut.by/rss/all.rss";
+        const string S13 = @"http://s13.ru/rss";
 
         public NewsController(IUnitOfWork unitOfWork,
                                 UserManager<User> userManager,
@@ -45,9 +48,9 @@ namespace GoodNews.MVC.Controllers
         [Authorize(Roles = "admin")]
         public IActionResult Parse()
         {
-            _onlinerParser.Parse();
-            _s13Parser.Parse();
-            _tutByParser.Parse();
+            _onlinerParser.Parse(ONLINER);
+            _s13Parser.Parse(S13);
+            _tutByParser.Parse(TUTBY);
 
             return RedirectToAction("Index", "News");
         }

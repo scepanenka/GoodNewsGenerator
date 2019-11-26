@@ -11,23 +11,22 @@ using GoodNews.Data.Entities;
 using HtmlAgilityPack;
 using HtmlAgilityPack.CssSelectors.NetCore;
 
-namespace GoodNews.Services.Parsers
+namespace GoodNews.MvcServices.ParsersUoW
 {
-    public class S13Parser : NewsParser, IS13Parser
+    public class OnlinerParser : NewsParser, IOnlinerParser
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly string _url = @"http://s13.ru/rss";
 
-        public S13Parser(IUnitOfWork unitOfWork) : base(unitOfWork)
+        public OnlinerParser(IUnitOfWork unitOfWork) : base(unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }
 
-        public override IEnumerable<Article> GetNews()
+        public override IEnumerable<Article> GetNews(string onlinerUrl)
         {
-            XmlReader feedReader = XmlReader.Create(_url);
+            XmlReader feedReader = XmlReader.Create(onlinerUrl);
             SyndicationFeed feed = SyndicationFeed.Load(feedReader);
-            Source source = _unitOfWork.Sources.AsQueryable().FirstOrDefault(x => x.Url.Contains(_url));
+            Source source = _unitOfWork.Sources.AsQueryable().FirstOrDefault(x => x.Url.Contains(onlinerUrl));
 
             List<Article> news = new List<Article>();
 
@@ -43,7 +42,7 @@ namespace GoodNews.Services.Parsers
                         news.Add(new Article()
                             {
                                 Title = article.Title.Text.Replace("&nbsp;", string.Empty),
-                                Description = Regex.Replace(article.Summary.Text, @"<[^>]+>|&nbsp;", string.Empty),
+                                Description = Regex.Replace(article.Summary.Text, @"<[^>]+>|&nbsp;", string.Empty).Replace("Читать далее…", string.Empty),
                                 DatePublication = article.PublishDate.UtcDateTime,
                                 Content = content,
                                 Url = url,
@@ -85,13 +84,8 @@ namespace GoodNews.Services.Parsers
                 doc.LoadHtml(htmlText);
 
                 string content = doc.QuerySelector(".content").InnerHtml;
-                
-                thumbnailUrl = Regex.Match(content, "<img.+?src=[\"'](.+?)[\"'].+?>", RegexOptions.IgnoreCase).Groups[1].Value;
 
-                if (thumbnailUrl.StartsWith("/ru"))
-                {
-                    thumbnailUrl = thumbnailUrl.Insert(0, "http://s13.ru");
-                }
+                thumbnailUrl = Regex.Match(content, "<img.+?src=[\"'](.+?)[\"'].+?>", RegexOptions.IgnoreCase).Groups[1].Value;
             }
 
             return thumbnailUrl;
@@ -106,16 +100,27 @@ namespace GoodNews.Services.Parsers
 
             var doc = new HtmlAgilityPack.HtmlDocument();
             doc.LoadHtml(htmlText);
+            
+            HtmlNode article = doc.QuerySelector(".news-text");
 
-            HtmlNode article = doc.QuerySelector(".js-mediator-article");
+            var badNodes = article.ChildNodes
+                        .Where(a => (a.Attributes.Contains("style") && a.Attributes["style"].Value.Contains("text-align: right")) ||
+                                    (a.HasClass("news-media_3by2")) ||
+                                    (a.HasClass("news-widget")))
+                        .ToList();
+            foreach (var node in badNodes)
+                node.Remove();
+
+
             string content = "";
             if (article != null)
             {
                 content = article.InnerHtml;
             }
 
-            content = Regex.Replace(content, @"\s+", " ");
-            content = Regex.Replace(content, @"src=""/ru/", @"src=""http://s13.ru/ru/");
+            content = Regex.Replace(content, @"\s+", " ")
+                    .Replace("Читать далее…", "");
+
 
             return HttpUtility.HtmlDecode(content);
         }

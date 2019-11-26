@@ -10,8 +10,8 @@ using GoodNews.DAL;
 using GoodNews.DAL.Repository;
 using GoodNews.Data;
 using GoodNews.Data.Entities;
-using GoodNews.Services;
-using GoodNews.Services.Parsers;
+using GoodNews.MvcServices;
+using GoodNews.MvcServices.ParsersUoW;
 using Microsoft.AspNetCore.Identity;
 
 namespace GoodNews.BL

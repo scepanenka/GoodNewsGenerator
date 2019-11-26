@@ -1,6 +1,6 @@
 ﻿using GoodNews.Core;
 
-namespace GoodNews.Services.Parsers
+namespace GoodNews.MvcServices.ParsersUoW
 {
     public interface ITutByParser : INewsParser
     {

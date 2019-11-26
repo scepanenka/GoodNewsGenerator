@@ -11,12 +11,11 @@ using GoodNews.Data.Entities;
 using HtmlAgilityPack;
 using HtmlAgilityPack.CssSelectors.NetCore;
 
-namespace GoodNews.Services.Parsers
+namespace GoodNews.MvcServices.ParsersUoW
 {
     public class TutByParser : NewsParser, ITutByParser
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly string _url = @"https://news.tut.by/rss/all.rss";
 
 
         public TutByParser(IUnitOfWork unitOfWork) : base(unitOfWork)
@@ -24,11 +23,11 @@ namespace GoodNews.Services.Parsers
             _unitOfWork = unitOfWork;
         }
 
-        public override IEnumerable<Article> GetNews()
+        public override IEnumerable<Article> GetNews(string tutByUrl)
         {
-            XmlReader feedReader = XmlReader.Create(_url);
+            XmlReader feedReader = XmlReader.Create(tutByUrl);
             SyndicationFeed feed = SyndicationFeed.Load(feedReader);
-            Source source = _unitOfWork.Sources.AsQueryable().FirstOrDefault(x => x.Url.Contains(_url));
+            Source source = _unitOfWork.Sources.AsQueryable().FirstOrDefault(x => x.Url.Contains(tutByUrl));
 
             List<Article> news = new List<Article>();
 

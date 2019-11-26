@@ -4,7 +4,7 @@ using System.ServiceModel.Syndication;
 using GoodNews.Core;
 using GoodNews.Data.Entities;
 
-namespace GoodNews.Services.Parsers
+namespace GoodNews.MvcServices.ParsersUoW
 {
     public abstract class NewsParser : INewsParser
     {
@@ -39,7 +39,7 @@ namespace GoodNews.Services.Parsers
             return true;
         }
 
-        public virtual IEnumerable<Article> GetNews()
+        public virtual IEnumerable<Article> GetNews(string url)
         {
             return null;
         }
@@ -53,9 +53,9 @@ namespace GoodNews.Services.Parsers
             return string.Empty;
         }
 
-        public void Parse()
+        public void Parse(string url)
         {
-            AddNews(GetNews());
+            AddNews(GetNews(url));
         }
 
         public string GetArticleText(string url)
