@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ServiceModel.Syndication;
+using System.Threading.Tasks;
 using GoodNews.Core;
 using GoodNews.Data.Entities;
+using GoodNews.MediatR.Commands.AddNews;
 using MediatR;
 
 namespace GoodNews.ApiServices.Parsers
@@ -11,16 +13,31 @@ namespace GoodNews.ApiServices.Parsers
     {
         private readonly IMediator _mediator;
 
-        NewsParser(IMediator mediator)
+        public NewsParser(IMediator mediator)
         {
             _mediator = mediator;
         }
+        public async void Parse(string url)
+        {
+            await AddNews(GetNews(url));
+        }
+
+        public async Task<bool> AddNews(IEnumerable<Article> news)
+        {
+            if (news != null)
+            {
+                    await _mediator.Send(new AddNewsAsync(news));
+                    return true;
+            }
+            return false;
+        }
+
         public bool Add(Article article)
         {
             throw new NotImplementedException();
         }
 
-        public bool AddNews(IEnumerable<Article> articles)
+        public IEnumerable<Article> GetNews(string url)
         {
             throw new NotImplementedException();
         }
@@ -35,17 +52,7 @@ namespace GoodNews.ApiServices.Parsers
             throw new NotImplementedException();
         }
 
-        public IEnumerable<Article> GetNews()
-        {
-            throw new NotImplementedException();
-        }
-
         public string GetThumbnail(SyndicationItem article)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Parse()
         {
             throw new NotImplementedException();
         }

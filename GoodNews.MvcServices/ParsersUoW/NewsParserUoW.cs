@@ -1,16 +1,17 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.ServiceModel.Syndication;
+using System.Threading.Tasks;
 using GoodNews.Core;
 using GoodNews.Data.Entities;
 
 namespace GoodNews.MvcServices.ParsersUoW
 {
-    public abstract class NewsParser : INewsParser
+    public abstract class NewsParserUoW : INewsParser
     {
         private readonly IUnitOfWork _unitOfWork;
 
-        public NewsParser(IUnitOfWork unitOfWork)
+        protected NewsParserUoW(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }
@@ -26,16 +27,16 @@ namespace GoodNews.MvcServices.ParsersUoW
             return true;
         }
 
-        public virtual bool AddNews(IEnumerable<Article> news)
+        public virtual async Task<bool> AddNews(IEnumerable<Article> news)
         {
             foreach (var article in news)
             {
                 if (!_unitOfWork.News.Find(a => a.Url == article.Url).Any())
                 {
-                    _unitOfWork.News.Add(article);
+                    await _unitOfWork.News.AddAsync(article);
                 }
             }
-            _unitOfWork.Save();
+            await _unitOfWork.SaveAsync();
             return true;
         }
 

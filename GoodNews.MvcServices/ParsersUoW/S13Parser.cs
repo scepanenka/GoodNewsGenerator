@@ -13,7 +13,7 @@ using HtmlAgilityPack.CssSelectors.NetCore;
 
 namespace GoodNews.MvcServices.ParsersUoW
 {
-    public class S13Parser : NewsParser, IS13Parser
+    public class S13Parser : NewsParserUoW, IS13Parser
     {
         private readonly IUnitOfWork _unitOfWork;
 
