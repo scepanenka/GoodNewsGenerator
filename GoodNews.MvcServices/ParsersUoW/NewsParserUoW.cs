@@ -16,7 +16,7 @@ namespace GoodNews.MvcServices.ParsersUoW
             _unitOfWork = unitOfWork;
         }
 
-        public bool Add(Article article)
+        public bool AddArticle(Article article)
         {
             if (!_unitOfWork.News.Find(a => a.Url == article.Url).Any())
             {
@@ -40,7 +40,7 @@ namespace GoodNews.MvcServices.ParsersUoW
             return true;
         }
 
-        public virtual IEnumerable<Article> GetNews(string url)
+        public virtual async Task<IEnumerable<Article>> GetNewsAsync(string url)
         {
             return null;
         }
@@ -54,9 +54,9 @@ namespace GoodNews.MvcServices.ParsersUoW
             return string.Empty;
         }
 
-        public void Parse(string url)
+        public async void Parse(string url)
         {
-            AddNews(GetNews(url));
+            AddNews(await GetNewsAsync(url));
         }
 
         public string GetArticleText(string url)

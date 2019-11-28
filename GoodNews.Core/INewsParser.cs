@@ -7,9 +7,9 @@ namespace GoodNews.Core
 {
     public interface INewsParser
     {
-        bool Add(Article article);
+        bool AddArticle(Article article);
         Task<bool> AddNews(IEnumerable<Article> articles);
-        IEnumerable<Article> GetNews(string url);
+        Task<IEnumerable<Article>> GetNewsAsync(string url);
         string GetArticleText(string url);
         string GetArticleContent(string url);
         string GetThumbnail(SyndicationItem article);

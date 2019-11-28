@@ -3,6 +3,7 @@ using System.Linq;
 using System.Net;
 using System.ServiceModel.Syndication;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Web;
 using System.Xml;
 using System.Xml.Linq;
@@ -22,7 +23,7 @@ namespace GoodNews.MvcServices.ParsersUoW
             _unitOfWork = unitOfWork;
         }
 
-        public override IEnumerable<Article> GetNews(string onlinerUrl)
+        public override async Task<IEnumerable<Article>> GetNewsAsync(string onlinerUrl)
         {
             XmlReader feedReader = XmlReader.Create(onlinerUrl);
             SyndicationFeed feed = SyndicationFeed.Load(feedReader);
