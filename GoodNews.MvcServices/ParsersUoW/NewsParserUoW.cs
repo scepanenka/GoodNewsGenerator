@@ -27,7 +27,7 @@ namespace GoodNews.MvcServices.ParsersUoW
             return true;
         }
 
-        public virtual async Task<bool> AddNews(IEnumerable<Article> news)
+        public virtual async void AddNews(IEnumerable<Article> news)
         {
             foreach (var article in news)
             {
@@ -37,7 +37,6 @@ namespace GoodNews.MvcServices.ParsersUoW
                 }
             }
             await _unitOfWork.SaveAsync();
-            return true;
         }
 
         public virtual async Task<IEnumerable<Article>> GetNewsAsync(string url)

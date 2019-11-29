@@ -6,11 +6,11 @@ using MediatR;
 
 namespace GoodNews.MediatR.Commands.AddNews
 {
-    public class AddNewsAsync : IRequest<bool>
+    public class AddNews : IRequest<bool>
     {
         public IEnumerable<Article> News { get; }
 
-        public AddNewsAsync(IEnumerable<Article> news)
+        public AddNews(IEnumerable<Article> news)
         {
             News = news;
         }

@@ -6,7 +6,7 @@ using MediatR;
 
 namespace GoodNews.MediatR.Commands.AddNews
 {
-    class AddNewsAsyncHandler : IRequestHandler<AddNewsAsync, bool>
+    class AddNewsAsyncHandler : IRequestHandler<AddNews, bool>
     {
         private readonly GoodNewsContext _context;
 
@@ -14,7 +14,7 @@ namespace GoodNews.MediatR.Commands.AddNews
         {
             _context = context;
         }
-        public async Task<bool> Handle(AddNewsAsync request, CancellationToken cancellationToken)
+        public async Task<bool> Handle(AddNews request, CancellationToken cancellationToken)
         {
             if (request.News != null)
             {

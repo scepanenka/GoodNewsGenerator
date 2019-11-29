@@ -8,7 +8,9 @@ using System.Xml;
 using GoodNews.Core;
 using GoodNews.Data.Entities;
 using GoodNews.MediatR.Commands.AddNews;
+using GoodNews.MediatR.Commands.CreateCategory;
 using GoodNews.MediatR.Queries.ArticleExists;
+using GoodNews.MediatR.Queries.GetSourceByUrl;
 using MediatR;
 
 namespace GoodNews.ApiServices.Parsers
@@ -23,29 +25,22 @@ namespace GoodNews.ApiServices.Parsers
         }
         public async void Parse(string url)
         {
-            await AddNews(GetNewsAsync(url));
+            AddNews(await GetNewsAsync(url));
         }
 
-        public async Task<bool> AddNews(IEnumerable<Article> news)
+        public async void AddNews(IEnumerable<Article> news)
         {
             if (news != null)
             {
-                    await _mediator.Send(new AddNewsAsync(news));
-                    return true;
+                await _mediator.Send(new AddNews(news));
             }
-            return false;
-        }
-
-        public bool AddArticle(Article article)
-        {
-            throw new NotImplementedException();
         }
 
         public async Task<IEnumerable<Article>> GetNewsAsync(string url)
         {
             XmlReader feedReader = XmlReader.Create(url);
             SyndicationFeed feed = SyndicationFeed.Load(feedReader);
-            Source source = null; //_unitOfWork.Sources.AsQueryable().FirstOrDefault(x => x.Url.Contains(s13Url));
+            Source source = await _mediator.Send(new GetSourceByUrl(url));
 
             List<Article> news = new List<Article>();
 
@@ -58,6 +53,7 @@ namespace GoodNews.ApiServices.Parsers
                     if (articleExists)
                     {
                         string content = GetArticleContent(articleUrl);
+                        Category category = await _mediator.Send(new CreateCategory(article.Categories.FirstOrDefault().Name));
 
                         news.Add(new Article()
                             {
@@ -66,7 +62,7 @@ namespace GoodNews.ApiServices.Parsers
                                 DatePublication = article.PublishDate.UtcDateTime,
                                 Content = content,
                                 Url = articleUrl,
-                                Category = _unitOfWork.GetOrCreateCategory(article.Categories.FirstOrDefault().Name),
+                                Category = category,
                                 Source = source,
                                 ThumbnailUrl = GetThumbnail(article)
                             }
