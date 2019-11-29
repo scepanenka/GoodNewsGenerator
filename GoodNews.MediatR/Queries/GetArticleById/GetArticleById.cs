@@ -4,11 +4,11 @@ using MediatR;
 
 namespace GoodNews.MediatR.Queries.GetArticleById
 {
-    public class GetArticleByIdQuery : IRequest<Article>
+    public class GetArticleById : IRequest<Article>
     {
         public Guid Id { get; }
 
-        public GetArticleByIdQuery(Guid id)
+        public GetArticleById(Guid id)
         {
             Id = id;
         }

@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GoodNews.MediatR.Queries.GetArticleById
 {
-    class GetCommentsByArticleIdHandler : IRequestHandler<GetArticleByIdQuery, Article>
+    class GetCommentsByArticleIdHandler : IRequestHandler<GetArticleById, Article>
     {
         private readonly GoodNewsContext _context;
 
@@ -15,11 +15,11 @@ namespace GoodNews.MediatR.Queries.GetArticleById
         {
             _context = context;
         }
-        public async Task<Article> Handle(GetArticleByIdQuery request, CancellationToken cancellationToken)
+        public async Task<Article> Handle(GetArticleById request, CancellationToken cancellationToken)
         {
-            var result = await _context.News.FirstOrDefaultAsync(n => n.Id.Equals(request.Id),
+            var article = await _context.News.FirstOrDefaultAsync(n => n.Id.Equals(request.Id),
                 cancellationToken: cancellationToken);
-            return result;
+            return article;
         }
     }
 }

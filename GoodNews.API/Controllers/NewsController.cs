@@ -26,7 +26,7 @@ namespace GoodNews.API.Controllers
         {
             try
             {
-                var article = await _mediator.Send(new GetArticleByIdQuery(id));
+                var article = await _mediator.Send(new GetArticleById(id));
                 if (article == null)
                 {
                     return NotFound();
