@@ -9,9 +9,6 @@ namespace GoodNews.Core
     {
         void AddNews(IEnumerable<Article> articles);
         Task<IEnumerable<Article>> GetNewsAsync(string url);
-        string GetArticleText(string url);
-        string GetArticleContent(string url);
-        string GetThumbnail(SyndicationItem article);
         void Parse(string url);
 
     }

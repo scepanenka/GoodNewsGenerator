@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.ServiceModel.Syndication;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Web;
 using System.Xml;
 using GoodNews.Core;
 using GoodNews.Data.Entities;
@@ -11,6 +13,8 @@ using GoodNews.MediatR.Commands.AddNews;
 using GoodNews.MediatR.Commands.CreateCategory;
 using GoodNews.MediatR.Queries.ArticleExists;
 using GoodNews.MediatR.Queries.GetSourceByUrl;
+using HtmlAgilityPack;
+using HtmlAgilityPack.CssSelectors.NetCore;
 using MediatR;
 
 namespace GoodNews.ApiServices.Parsers
@@ -52,13 +56,15 @@ namespace GoodNews.ApiServices.Parsers
                     bool articleExists = await _mediator.Send(new ArticleExists(articleUrl));
                     if (articleExists)
                     {
-                        string content = GetArticleContent(articleUrl);
+                        string content = GetArticleContent(articleUrl, source);
                         Category category = await _mediator.Send(new CreateCategory(article.Categories.FirstOrDefault().Name));
+                        string title = article.Title.Text.Replace("&nbsp;", string.Empty);
+                        string description = Regex.Replace(article.Summary.Text, @"<[^>]+>|&nbsp;", string.Empty);
 
                         news.Add(new Article()
                             {
-                                Title = article.Title.Text.Replace("&nbsp;", string.Empty),
-                                Description = Regex.Replace(article.Summary.Text, @"<[^>]+>|&nbsp;", string.Empty),
+                                Title = title,
+                                Description = description,
                                 DatePublication = article.PublishDate.UtcDateTime,
                                 Content = content,
                                 Url = articleUrl,
@@ -73,17 +79,51 @@ namespace GoodNews.ApiServices.Parsers
             return news;
         }
 
-        public string GetArticleContent(string url)
+        private string GetArticleContent(string url, Source source)
+        {
+            
+
+            string selector = source.QuerySelector;
+            WebClient wc = new WebClient();
+            string htmlText = wc.DownloadString(url);
+            wc.Dispose();
+
+            var doc = new HtmlAgilityPack.HtmlDocument();
+            doc.LoadHtml(htmlText);
+
+            HtmlNode article = doc.QuerySelector(selector);
+            string content = "";
+            if (article != null)
+            {
+                var badNodes = article.ChildNodes
+                    .Where(a => (a.Attributes.Contains("style") && a.Attributes["style"].Value.Contains("text-align: right")) ||
+                                (a.HasClass("news-media_3by2")) ||
+                                (a.HasClass("news-widget")) ||
+                                (a.HasClass("b-addition")))
+                    .ToList();
+
+                foreach (var node in badNodes)
+                    node.Remove();
+                
+                content = article.InnerHtml;
+                content = Regex.Replace(content, @"\s+", " ").Replace("Читать далее…", ""); ;
+                if (source.Name == "S13")
+                {
+                    content = Regex.Replace(content, @"src=""/ru/", @"src=""http://s13.ru/ru/");
+                }
+                return HttpUtility.HtmlDecode(content);
+
+            }
+
+            return null;
+        }
+
+        private string GetArticleText(string url)
         {
             throw new NotImplementedException();
         }
 
-        public string GetArticleText(string url)
-        {
-            throw new NotImplementedException();
-        }
-
-        public string GetThumbnail(SyndicationItem article)
+        private string GetThumbnail(SyndicationItem article)
         {
             throw new NotImplementedException();
         }
