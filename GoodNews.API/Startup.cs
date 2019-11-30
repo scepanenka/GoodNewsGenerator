@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Text;
+using GoodNews.ApiServices.Parsers;
+using GoodNews.Core;
 using GoodNews.DAL;
 using GoodNews.Data;
 using GoodNews.Data.Entities;
@@ -59,8 +61,8 @@ namespace GoodNews.API
 
             services.AddMediatR(AppDomain.CurrentDomain.Load("GoodNews.MediatR"));
             services.AddTransient<IMediator, Mediator>();
+            services.AddTransient<INewsParser, NewsParser>();
 
-            
             services.AddIdentity<User, IdentityRole>(options =>
                 {
                     options.Password.RequiredLength = 3;

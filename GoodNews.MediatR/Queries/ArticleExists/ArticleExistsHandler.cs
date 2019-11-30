@@ -16,8 +16,8 @@ namespace GoodNews.MediatR.Queries.ArticleExists
         }
         public async Task<bool> Handle(ArticleExists request, CancellationToken cancellationToken)
         {
-            var result = _context.News.Any(a => a.Url.Equals(request.Url));
-            return result;
+            bool result = _context.News.Any(a => a.Url.Equals(request.Url));
+            return await Task.FromResult(result);
         }
     }
 }

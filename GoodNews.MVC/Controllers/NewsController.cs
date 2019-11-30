@@ -49,8 +49,8 @@ namespace GoodNews.MVC.Controllers
         public IActionResult Parse()
         {
             _onlinerParser.Parse(ONLINER);
-            _s13Parser.Parse(S13);
-            _tutByParser.Parse(TUTBY);
+            // _s13Parser.Parse(S13);
+            // _tutByParser.Parse(TUTBY);
 
             return RedirectToAction("Index", "News");
         }

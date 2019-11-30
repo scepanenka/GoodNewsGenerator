@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.ServiceModel.Syndication;
@@ -7,6 +6,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
 using System.Xml;
+using System.Xml.Linq;
 using GoodNews.Core;
 using GoodNews.Data.Entities;
 using GoodNews.MediatR.Commands.AddNews;
@@ -27,12 +27,12 @@ namespace GoodNews.ApiServices.Parsers
         {
             _mediator = mediator;
         }
-        public async void Parse(string url)
+        public async Task Parse(string url)
         {
-            AddNews(await GetNewsAsync(url));
+            await AddNews(await GetNewsAsync(url));
         }
 
-        public async void AddNews(IEnumerable<Article> news)
+        public async Task AddNews(IEnumerable<Article> news)
         {
             if (news != null)
             {
@@ -54,25 +54,32 @@ namespace GoodNews.ApiServices.Parsers
                 {
                     string articleUrl = article.Links.FirstOrDefault().Uri.ToString();
                     bool articleExists = await _mediator.Send(new ArticleExists(articleUrl));
-                    if (articleExists)
+                    if (!articleExists)
                     {
                         string content = GetArticleContent(articleUrl, source);
-                        Category category = await _mediator.Send(new CreateCategory(article.Categories.FirstOrDefault().Name));
-                        string title = article.Title.Text.Replace("&nbsp;", string.Empty);
-                        string description = Regex.Replace(article.Summary.Text, @"<[^>]+>|&nbsp;", string.Empty);
+                        if (!string.IsNullOrEmpty(content))
+                        {
+                            Category category = await _mediator.Send(new CreateCategory(article.Categories.FirstOrDefault().Name));
+                            string title = article.Title.Text.Replace("&nbsp;", string.Empty);
+                            string description = Regex.Replace(article.Summary.Text, @"<[^>]+>|&nbsp;", string.Empty);
+                            string articleText = Regex.Replace(content, @"<.*?>|\r\n", string.Empty);
+                            string thumbnail = GetThumbnail(article, source);
 
-                        news.Add(new Article()
-                            {
-                                Title = title,
-                                Description = description,
-                                DatePublication = article.PublishDate.UtcDateTime,
-                                Content = content,
-                                Url = articleUrl,
-                                Category = category,
-                                Source = source,
-                                ThumbnailUrl = GetThumbnail(article)
-                            }
-                        );
+                            news.Add(new Article()
+                                {
+                                    Title = title,
+                                    Description = description,
+                                    DatePublication = article.PublishDate.UtcDateTime,
+                                    Content = content,
+                                    Url = articleUrl,
+                                    Category = category,
+                                    Source = source,
+                                    ThumbnailUrl = thumbnail,
+                                    Text = articleText
+                                }
+                            );
+                        }
+                        
                     }
                 }
             }
@@ -96,11 +103,18 @@ namespace GoodNews.ApiServices.Parsers
             if (article != null)
             {
                 var badNodes = article.ChildNodes
-                    .Where(a => (a.Attributes.Contains("style") && a.Attributes["style"].Value.Contains("text-align: right")) ||
+                    .Where(a => (a.Attributes.Contains("style") &&
+                                 a.Attributes["style"].Value.Contains("text-align: right")) ||
+                                (a.Name == "script") ||
+                                (a.Name == "table") ||
                                 (a.HasClass("news-media_3by2")) ||
                                 (a.HasClass("news-widget")) ||
-                                (a.HasClass("b-addition")))
-                    .ToList();
+                                (a.HasClass("news-banner")) ||
+                                (a.HasClass("news-incut")) ||
+                                (a.HasClass("news-vote")) ||
+                                (a.HasClass("news-reference")) ||
+                                (a.HasClass("TitledImage")) ||
+                                (a.HasClass("b-addition"))).ToList();
 
                 foreach (var node in badNodes)
                     node.Remove();
@@ -115,17 +129,47 @@ namespace GoodNews.ApiServices.Parsers
 
             }
 
-            return null;
+            return content;
         }
 
-        private string GetArticleText(string url)
+        private string GetThumbnail(SyndicationItem article, Source source)
         {
-            throw new NotImplementedException();
-        }
+            string selector = source.QuerySelector;
+            string thumbnailUrl = article.ElementExtensions
+                .Where(extension => extension.OuterName == "thumbnail")
+                .Select(extension => (string)extension.GetObject<XElement>().Attribute("url"))
+                .FirstOrDefault();
 
-        private string GetThumbnail(SyndicationItem article)
-        {
-            throw new NotImplementedException();
+            if (thumbnailUrl == null)
+            {
+                thumbnailUrl = article.ElementExtensions
+                    .Where(extension => extension.OuterName == "content" && (string)extension.GetObject<XElement>().Attribute("type") == "image/jpeg")
+                    .Select(extension => (string)extension.GetObject<XElement>().Attribute("url"))
+                    .FirstOrDefault();
+            }
+
+            if (thumbnailUrl == null)
+            {
+                string link = article.Links.FirstOrDefault().Uri.ToString();
+
+                WebClient wc = new WebClient();
+                string htmlText = wc.DownloadString(link);
+                wc.Dispose();
+
+                var doc = new HtmlAgilityPack.HtmlDocument();
+                doc.LoadHtml(htmlText);
+
+                string content = doc.QuerySelector(selector).InnerHtml;
+
+                thumbnailUrl = Regex.Match(content, "<img.+?src=[\"'](.+?)[\"'].+?>", RegexOptions.IgnoreCase).Groups[1].Value;
+
+                if (thumbnailUrl.StartsWith("/ru"))
+                {
+                    thumbnailUrl = thumbnailUrl.Insert(0, "http://s13.ru");
+                }
+            }
+
+            return thumbnailUrl;
         }
     }
 }

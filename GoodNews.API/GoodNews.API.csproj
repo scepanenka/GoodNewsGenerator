@@ -15,6 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\GoodNews.ApiServices\GoodNews.ApiServices.csproj" />
     <ProjectReference Include="..\GoodNews.Core\GoodNews.Core.csproj" />
     <ProjectReference Include="..\GoodNews.Data\GoodNews.Data.csproj" />
     <ProjectReference Include="..\GoodNews.MediatR\GoodNews.MediatR.csproj" />

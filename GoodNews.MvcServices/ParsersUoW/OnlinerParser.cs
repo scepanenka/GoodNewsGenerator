@@ -68,7 +68,8 @@ namespace GoodNews.MvcServices.ParsersUoW
             if (thumbnailUrl == null)
             {
                 thumbnailUrl = article.ElementExtensions
-                    .Where(extension => extension.OuterName == "content" && (string)extension.GetObject<XElement>().Attribute("type") == "image/jpeg")
+                    .Where(extension => extension.OuterName == "content" && (((string)extension.GetObject<XElement>().Attribute("type") == "image/jpeg"))
+                                        || ((string)extension.GetObject<XElement>().Attribute("type") == "image/gif"))
                     .Select(extension => (string)extension.GetObject<XElement>().Attribute("url"))
                     .FirstOrDefault();
             }
