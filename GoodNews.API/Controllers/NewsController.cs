@@ -25,7 +25,7 @@ namespace GoodNews.API.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Article>> GetArticle(Guid id)
         {
-            await _newsParser.Parse("https://news.tut.by/rss/all.rss");
+            await _newsParser.Parse("http://s13.ru/rss");
             try
             {
                 var article = await _mediator.Send(new GetArticleById(id));

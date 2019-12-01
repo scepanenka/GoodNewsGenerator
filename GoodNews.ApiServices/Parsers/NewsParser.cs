@@ -54,7 +54,7 @@ namespace GoodNews.ApiServices.Parsers
                 {
                     string articleUrl = article.Links.FirstOrDefault().Uri.ToString();
                     bool articleExists = await _mediator.Send(new ArticleExists(articleUrl));
-                    if (!articleExists)
+                    if (!articleExists && !news.Any(a=>a.Url.Equals(articleUrl)))
                     {
                         string content = GetArticleContent(articleUrl, source);
                         if (!string.IsNullOrEmpty(content))
@@ -134,7 +134,7 @@ namespace GoodNews.ApiServices.Parsers
 
         private string GetThumbnail(SyndicationItem article, Source source)
         {
-            string selector = source.QuerySelector;
+            string selector = source.Name == "S13" ? ".content" : source.QuerySelector;
             string thumbnailUrl = article.ElementExtensions
                 .Where(extension => extension.OuterName == "thumbnail")
                 .Select(extension => (string)extension.GetObject<XElement>().Attribute("url"))
