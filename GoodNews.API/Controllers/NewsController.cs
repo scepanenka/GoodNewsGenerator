@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using GoodNews.Core;
 using GoodNews.Data.Entities;
 using GoodNews.MediatR.Queries.GetArticleById;
 using MediatR;
@@ -13,19 +12,15 @@ namespace GoodNews.API.Controllers
     public class NewsController : ControllerBase
     {
         private readonly IMediator _mediator;
-        private readonly INewsParser _newsParser;
 
-
-        public NewsController(IMediator mediator, INewsParser newsParser)
+        public NewsController(IMediator mediator)
         {
             _mediator = mediator;
-            _newsParser = newsParser;
         }
         
         [HttpGet("{id}")]
         public async Task<ActionResult<Article>> GetArticle(Guid id)
         {
-            await _newsParser.Parse("http://s13.ru/rss");
             try
             {
                 var article = await _mediator.Send(new GetArticleById(id));

@@ -17,9 +17,9 @@ using HtmlAgilityPack;
 using HtmlAgilityPack.CssSelectors.NetCore;
 using MediatR;
 
-namespace GoodNews.ApiServices.Parsers
+namespace GoodNews.ApiServices
 {
-    public class NewsParser : INewsParser
+    public class NewsParser : IParser
     {
         private readonly IMediator _mediator;
 
@@ -32,7 +32,7 @@ namespace GoodNews.ApiServices.Parsers
             await AddNews(await GetNewsAsync(url));
         }
 
-        public async Task AddNews(IEnumerable<Article> news)
+        private async Task AddNews(IEnumerable<Article> news)
         {
             if (news != null)
             {
@@ -40,7 +40,7 @@ namespace GoodNews.ApiServices.Parsers
             }
         }
 
-        public async Task<IEnumerable<Article>> GetNewsAsync(string url)
+        private async Task<IEnumerable<Article>> GetNewsAsync(string url)
         {
             XmlReader feedReader = XmlReader.Create(url);
             SyndicationFeed feed = SyndicationFeed.Load(feedReader);
@@ -162,11 +162,7 @@ namespace GoodNews.ApiServices.Parsers
                 string content = doc.QuerySelector(selector).InnerHtml;
 
                 thumbnailUrl = Regex.Match(content, "<img.+?src=[\"'](.+?)[\"'].+?>", RegexOptions.IgnoreCase).Groups[1].Value;
-
-                if (thumbnailUrl.StartsWith("/ru"))
-                {
-                    thumbnailUrl = thumbnailUrl.Insert(0, "http://s13.ru");
-                }
+                thumbnailUrl = thumbnailUrl.StartsWith("/ru") ? thumbnailUrl.Insert(0, "http://s13.ru") : thumbnailUrl;
             }
 
             return thumbnailUrl;

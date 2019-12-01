@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Text;
-using GoodNews.ApiServices.Parsers;
+using GoodNews.API.Filters;
+using GoodNews.ApiServices;
 using GoodNews.Core;
-using GoodNews.DAL;
 using GoodNews.Data;
 using GoodNews.Data.Entities;
+using Hangfire;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -57,11 +58,15 @@ namespace GoodNews.API
                 });
 
             string connection = Configuration.GetConnectionString("DefaultConnection");
-            services.AddDbContext<GoodNewsContext>(options => options.UseSqlServer(connection, x => x.MigrationsAssembly("GoodNews.Migrations")));
+            services.AddDbContext<GoodNewsContext>(options => options.UseSqlServer(
+                connection, x => x.MigrationsAssembly("GoodNews.Migrations")));
 
             services.AddMediatR(AppDomain.CurrentDomain.Load("GoodNews.MediatR"));
             services.AddTransient<IMediator, Mediator>();
-            services.AddTransient<INewsParser, NewsParser>();
+            services.AddTransient<IParser, NewsParser>();
+
+            services.AddHangfire(config => config.UseSqlServerStorage(
+                        Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddIdentity<User, IdentityRole>(options =>
                 {
@@ -100,6 +105,21 @@ namespace GoodNews.API
             app.UseAuthentication();
             app.UseHttpsRedirection();
             app.UseMvc();
+
+            app.UseHangfireServer();
+
+
+
+            app.UseHangfireDashboard("/admin/hangfire", new DashboardOptions
+            {
+                Authorization = new[] { new HangfireAuthorizationFilter() }
+            });
+
+            var parserService = app.ApplicationServices.GetService<IParser>();
+
+            RecurringJob.AddOrUpdate(
+                () => parserService.Parse("https://people.onliner.by/feed"),
+                Cron.Hourly(25));
         }
     }
 }

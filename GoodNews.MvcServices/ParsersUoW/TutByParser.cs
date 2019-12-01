@@ -14,7 +14,7 @@ using HtmlAgilityPack.CssSelectors.NetCore;
 
 namespace GoodNews.MvcServices.ParsersUoW
 {
-    public class TutByParser : NewsParserUoW, ITutByParser
+    public class TutByParser : ParserUoW, ITutByParser
     {
         private readonly IUnitOfWork _unitOfWork;
 

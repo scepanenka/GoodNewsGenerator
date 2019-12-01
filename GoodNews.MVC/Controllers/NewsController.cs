@@ -16,9 +16,9 @@ namespace GoodNews.MVC.Controllers
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly UserManager<User> _userManager;
-        private readonly INewsParser _onlinerParser;
-        private readonly INewsParser _s13Parser;
-        private readonly INewsParser _tutByParser;
+        private readonly IParser _onlinerParser;
+        private readonly IParser _s13Parser;
+        private readonly IParser _tutByParser;
         const string ONLINER = @"https://people.onliner.by/feed";
         const string TUTBY = @"https://news.tut.by/rss/all.rss";
         const string S13 = @"http://s13.ru/rss";
