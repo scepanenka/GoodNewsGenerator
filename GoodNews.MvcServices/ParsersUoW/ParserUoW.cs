@@ -53,7 +53,7 @@ namespace GoodNews.MvcServices.ParsersUoW
             return string.Empty;
         }
 
-        public async void Parse(string url)
+        public async Task Parse(string url)
         {
             AddNews(await GetNewsAsync(url));
         }

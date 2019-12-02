@@ -61,7 +61,7 @@ namespace GoodNews.ApiServices
                         {
                             Category category = await _mediator.Send(new CreateCategory(article.Categories.FirstOrDefault().Name));
                             string title = article.Title.Text.Replace("&nbsp;", string.Empty);
-                            string description = Regex.Replace(article.Summary.Text, @"<[^>]+>|&nbsp;", string.Empty);
+                            string description = Regex.Replace(article.Summary.Text, @"<[^>]+>|&nbsp;", string.Empty).Replace("Читать далее…", string.Empty);
                             string articleText = Regex.Replace(content, @"<.*?>|\r\n", string.Empty);
                             string thumbnail = GetThumbnail(article, source);
 

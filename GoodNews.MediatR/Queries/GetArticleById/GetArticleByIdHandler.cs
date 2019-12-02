@@ -7,11 +7,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GoodNews.MediatR.Queries.GetArticleById
 {
-    class GetCommentsByArticleIdHandler : IRequestHandler<GetArticleById, Article>
+    class GetArticleByIdHandler : IRequestHandler<GetArticleById, Article>
     {
         private readonly GoodNewsContext _context;
 
-        public GetCommentsByArticleIdHandler(GoodNewsContext context)
+        public GetArticleByIdHandler(GoodNewsContext context)
         {
             _context = context;
         }
