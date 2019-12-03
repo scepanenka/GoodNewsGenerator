@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text;
+using AutoMapper;
 using GoodNews.API.Filters;
 using GoodNews.ApiServices;
 using GoodNews.Core;
@@ -60,6 +61,7 @@ namespace GoodNews.API
             string connection = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<GoodNewsContext>(options => options.UseSqlServer(
                 connection, x => x.MigrationsAssembly("GoodNews.Migrations")));
+            services.AddAutoMapper(typeof(Startup));
 
             services.AddMediatR(AppDomain.CurrentDomain.Load("GoodNews.MediatR"));
             services.AddTransient<IMediator, Mediator>();
