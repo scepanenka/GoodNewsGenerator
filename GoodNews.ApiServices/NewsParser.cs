@@ -66,7 +66,7 @@ namespace GoodNews.ApiServices
                             string description = Regex.Replace(article.Summary.Text, @"<[^>]+>|&nbsp;", string.Empty).Replace("Читать далее…", string.Empty);
                             string articleText = Regex.Replace(content, @"<.*?>|\r\n", string.Empty);
                             string thumbnail = GetThumbnail(article, source);
-                            float indexPositivity = GetIndexPositivity(articleText);
+                            // float indexPositivity = await GetWords(articleText);
 
                             news.Add(new Article()
                                 {
@@ -79,7 +79,7 @@ namespace GoodNews.ApiServices
                                     Source = source,
                                     ThumbnailUrl = thumbnail,
                                     Text = articleText,
-                                    IndexPositivity = indexPositivity
+                                    // IndexPositivity = indexPositivity
                                 }
                             );
                         }
@@ -90,19 +90,7 @@ namespace GoodNews.ApiServices
             return news;
         }
 
-        private float GetIndexPositivity(string articleText)
-        {
-            var client = new HttpClient();
-            client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));//ACCEPT header
 
-            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post,
-                "http://api.ispras.ru/texterra/v1/nlp?targetType=lemma&apikey=de7e616f3ec4bd9b67d7923692a692eddf4478ef");
-            request.Content = new StringContent("[{\"text\":\" 123   \"}]",
-                Encoding.UTF8,
-                "application/json");//CONTENT-TYPE header
-
-            var x = client.SendAsync(request).Result;
-        }
 
         private string GetArticleContent(string url, Source source)
         {

@@ -2,7 +2,10 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
+using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace GoodNews.ApiServices.PositivityScorer
 {
@@ -52,6 +55,21 @@ namespace GoodNews.ApiServices.PositivityScorer
             }
         }
         #endregion
+
+        private async Task<string> GetWords(string articleText)
+        {
+            var client = new HttpClient();
+            client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post,
+                "http://api.ispras.ru/texterra/v1/nlp?targetType=lemma&apikey=de7e616f3ec4bd9b67d7923692a692eddf4478ef");
+            request.Content = new StringContent("[ { \"text\" : \"" + articleText + "\" } ]",
+                Encoding.UTF8, "application/json");
+
+            var response = await client.SendAsync(request);
+            string result = await response.Content.ReadAsStringAsync();
+            return result;
+        }
 
         /// <summary>
         /// Tokenizes a string. This method first removes non-alpha characters,

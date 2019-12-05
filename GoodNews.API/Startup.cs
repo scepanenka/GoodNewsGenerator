@@ -110,7 +110,8 @@ namespace GoodNews.API
 
             app.UseHangfireServer();
 
-
+            var service = app.ApplicationServices.GetService<IParser>();
+            service.Parse(@"https://news.tut.by/rss/all.rss");
 
             app.UseHangfireDashboard("/admin/hangfire", new DashboardOptions
             {
