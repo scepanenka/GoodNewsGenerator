@@ -9,7 +9,7 @@ namespace GoodNews.API.Mappings
     {
         public ArticleProfile()
         {
-            CreateMap<Article, ArticleDTO>();
+            CreateMap<Article, ArticleNewsPageViewModel>();
         }
         
     }

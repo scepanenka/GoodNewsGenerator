@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace GoodNews.API.Models
 {
-    public class ArticleDTO
+    public class ArticleNewsPageViewModel
     {
         public string Title { get; set; }
         public string Description { get; set; }

@@ -25,10 +25,10 @@ namespace GoodNews.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<ArticleDTO>> GetAllNews()
+        public async Task<IEnumerable<ArticleNewsPageViewModel>> GetAllNews()
         {
             IEnumerable<Article> news = await _mediator.Send(new GetNews());
-            var newsDto = _mapper.Map<IEnumerable<ArticleDTO>>(news);
+            var newsDto = _mapper.Map<IEnumerable<ArticleNewsPageViewModel>>(news);
             return newsDto;
         }
 
