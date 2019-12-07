@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace GoodNews.Core
 {
-    public interface IPositityScorer
+    public interface IPositivityScorer
     {
-        float GetPositivity(string text);
+        Task<float> GetIndexPositivity(string text);
     }
 }

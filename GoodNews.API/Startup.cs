@@ -3,6 +3,7 @@ using System.Text;
 using AutoMapper;
 using GoodNews.API.Filters;
 using GoodNews.ApiServices;
+using GoodNews.ApiServices.PositivityScorer;
 using GoodNews.Core;
 using GoodNews.Data;
 using GoodNews.Data.Entities;
@@ -66,6 +67,7 @@ namespace GoodNews.API
             services.AddMediatR(AppDomain.CurrentDomain.Load("GoodNews.MediatR"));
             services.AddTransient<IMediator, Mediator>();
             services.AddTransient<IParser, NewsParser>();
+            services.AddTransient<IPositivityScorer, PositivityScorer>();
 
             services.AddHangfire(config => config.UseSqlServerStorage(
                         Configuration.GetConnectionString("DefaultConnection")));
@@ -110,19 +112,17 @@ namespace GoodNews.API
 
             app.UseHangfireServer();
 
-            var service = app.ApplicationServices.GetService<IParser>();
-            service.Parse(@"https://news.tut.by/rss/all.rss");
-
             app.UseHangfireDashboard("/admin/hangfire", new DashboardOptions
             {
                 Authorization = new[] { new HangfireAuthorizationFilter() }
             });
 
             var parserService = app.ApplicationServices.GetService<IParser>();
+            parserService.Parse(@"https://news.tut.by/rss/all.rss");
 
-            RecurringJob.AddOrUpdate(
-                () => parserService.Parse("https://people.onliner.by/feed"),
-                Cron.Hourly(25));
+            //RecurringJob.AddOrUpdate(
+            //    () => parserService.Parse("https://people.onliner.by/feed"),
+            //    Cron.Hourly(25));
         }
     }
 }

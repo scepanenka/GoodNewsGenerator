@@ -24,10 +24,12 @@ namespace GoodNews.ApiServices
     public class NewsParser : IParser
     {
         private readonly IMediator _mediator;
+        private readonly IPositivityScorer _positivityScorer;
 
-        public NewsParser(IMediator mediator)
+        public NewsParser(IMediator mediator, IPositivityScorer positivityScorer)
         {
             _mediator = mediator;
+            _positivityScorer = positivityScorer;
         }
         public async Task Parse(string url)
         {
@@ -66,7 +68,7 @@ namespace GoodNews.ApiServices
                             string description = Regex.Replace(article.Summary.Text, @"<[^>]+>|&nbsp;", string.Empty).Replace("Читать далее…", string.Empty);
                             string articleText = Regex.Replace(content, @"<.*?>|\r\n", string.Empty);
                             string thumbnail = GetThumbnail(article, source);
-                            // float indexPositivity = await GetWords(articleText);
+                            float indexPositivity = _positivityScorer.GetIndexPositivity(articleText).Result;
 
                             news.Add(new Article()
                                 {
@@ -79,7 +81,7 @@ namespace GoodNews.ApiServices
                                     Source = source,
                                     ThumbnailUrl = thumbnail,
                                     Text = articleText,
-                                    // IndexPositivity = indexPositivity
+                                    IndexPositivity = indexPositivity
                                 }
                             );
                         }

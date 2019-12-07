@@ -6,22 +6,18 @@ using System.Net.Http;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using GoodNews.ApiServices.PositivityScorer.Models;
+using GoodNews.Core;
+using Newtonsoft.Json;
 
 namespace GoodNews.ApiServices.PositivityScorer
 {
-    public class PositivityScorer
+    public class PositivityScorer : IPositivityScorer
     {
-        #region Fields
+        
         private static volatile PositivityScorer _instance;
         private static readonly object SyncRoot = new Object();
-        private readonly IDictionary<string, int> _words;
-        #endregion
-
-        #region Properties
-        public IDictionary<string, int> Words { get { return _words; } }
-        public int WordsCount { get { return _words.Count; } }
-        #endregion
-
+        
         public static PositivityScorer Instance
         {
             get
@@ -39,129 +35,106 @@ namespace GoodNews.ApiServices.PositivityScorer
             }
         }
 
-        #region ctor
-        private PositivityScorer()
-        {
-            _words = new Dictionary<string, int>();
 
-            using (var file = new StreamReader("AFINN-ru.json"))
+        public async Task<float> GetIndexPositivity(string articleText)
+        {
+            var _words = GetBaseDictionary();
+
+            float result = 0;
+            int summResult = 0;
+            int countResult = 0;
+
+            var jsonLemma = await GetLemmasFromArticle(articleText);
+
+
+            var dictionary = GetWordsDictionary(jsonLemma);
+
+            foreach (var word in dictionary.Keys)
             {
-                string line;
-                while ((line = file.ReadLine()) != null)
+                if (_words.ContainsKey(word))
                 {
-                    var bits = line.Split('\t');
-                    _words.Add(bits[0], int.Parse(bits[1]));
+                    summResult += Convert.ToInt32(_words[word]) * dictionary[word];
+                    countResult += dictionary[word];
                 }
             }
-        }
-        #endregion
 
-        private async Task<string> GetWords(string articleText)
-        {
-            var client = new HttpClient();
-            client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+            result = (float)(summResult / countResult);
 
-            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post,
-                "http://api.ispras.ru/texterra/v1/nlp?targetType=lemma&apikey=de7e616f3ec4bd9b67d7923692a692eddf4478ef");
-            request.Content = new StringContent("[ { \"text\" : \"" + articleText + "\" } ]",
-                Encoding.UTF8, "application/json");
-
-            var response = await client.SendAsync(request);
-            string result = await response.Content.ReadAsStringAsync();
             return result;
         }
 
-        /// <summary>
-        /// Tokenizes a string. This method first removes non-alpha characters,
-        /// removes multiple spaces, and lowercases every word. Then splits the
-        /// string into an array of words.
-        /// </summary>
-        /// <param name="input">String to be tokenized</param>
-        /// <returns>Array of words (tokens)</returns>
-        private static IEnumerable<string> Tokenize(string input)
+        private async Task<string> GetLemmasFromArticle(string input)
         {
-            input = Regex.Replace(input, "[^a-zA-Z ]+", "");
+            var matches = Regex.Matches(input, @"\b[а-яА-Я]{2,}\b");
+            input = String.Join(" ", matches.Cast<Match>().Select(m => m.Value));
             input = Regex.Replace(input, @"\s+", " ");
             input = input.ToLower();
-            return input.Split(' ');
-        }
-
-        /// <summary>
-        /// Calculates sentiment score of a sentence
-        /// </summary>
-        /// <param name="input">Sentence</param>
-        /// <returns>Score object</returns>
-        public Score GetScore(string input)
-        {
-            var score = new Score { Tokens = Tokenize(input) };
-
-            foreach (var token in score.Tokens)
+            using (var client = new HttpClient())
             {
-                if (!_words.ContainsKey(token)) continue;
+                // client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
 
-                var item = _words[token];
-                score.Words.Add(token);
+                using (HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post,
+                    "http://api.ispras.ru/texterra/v1/nlp?targetType=lemma&apikey=de7e616f3ec4bd9b67d7923692a692eddf4478ef")
+                )
+                {
+                    request.Content = new StringContent("[ { \"text\" : \"" + input + "\" } ]",
+                        Encoding.UTF8, "application/json");
 
-                if (item > 0) score.Positive.Add(token);
-                if (item < 0) score.Negative.Add(token);
-
-                score.Sentiment += item;
-            }
-
-            return score;
-        }
-
-        /// <summary>
-        /// Add extra words for scoring
-        /// </summary>
-        /// <param name="words">Dictionary of string keys and int values</param>
-        public void InjectWords(IDictionary<string, int> words)
-        {
-            foreach (var word in words.Where(word => !_words.ContainsKey(word.Key)))
-            {
-                _words.Add(word.Key, word.Value);
+                    var response = await client.SendAsync(request);
+                    string result = await response.Content.ReadAsStringAsync();
+                    return result;
+                }
             }
         }
 
-        #region Inner Score Class
-        public class Score
+        public Dictionary<string, string> GetBaseDictionary()
         {
-            /// <summary>
-            /// Tokens which were scored
-            /// </summary>
-            public IEnumerable<string> Tokens { get; set; }
-            /// <summary>
-            /// Total sentiment score of the tokens
-            /// </summary>
-            public int Sentiment { get; set; }
-            /// <summary>
-            /// Average sentiment score Sentiment/Tokens.Count
-            /// </summary>
-            public double AverageSentimentTokens { get { return (double)Sentiment / Tokens.Count(); } }
-            /// <summary>
-            /// Average sentiment score Sentiment/Words.Count
-            /// </summary>
-            public double AverageSentimentWords { get { return (double)Sentiment / Words.Count(); } }
-            /// <summary>
-            /// Words that were used from AFINN
-            /// </summary>
-            public IList<string> Words { get; set; }
-            /// <summary>
-            /// Words that had negative sentiment
-            /// </summary>
-            public IList<string> Negative { get; set; }
-            /// <summary>
-            /// Words that had positive sentiment
-            /// </summary>
-            public IList<string> Positive { get; set; }
-
-            public Score()
             {
-                Words = new List<string>();
-                Negative = new List<string>();
-                Positive = new List<string>();
+                try
+                {
+                    var fileData = File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + "\\.." + "\\.." + "\\.." + "\\.." + @"\GoodNews.ApiServices\PositivityScorer\AFINN-ru.json");
+                    var baseDictionary = JsonConvert.DeserializeObject<Dictionary<string, string>>(fileData);
+
+                    return baseDictionary;
+                }
+                catch (Exception ex)
+                {
+                    return null;
+                }
+
             }
         }
-        #endregion
+
+        public Dictionary<string, int> GetWordsDictionary(string jsonLemma)
+        {
+            Dictionary<string, int> wordsDictionary = new Dictionary<string, int>();
+
+            try
+            {
+                var dictionary = JsonConvert.DeserializeObject<List<JsonLemma>>(jsonLemma);
+                var annotation = dictionary[0].annotations;
+
+                foreach (var lemma in annotation.Lemmas)
+                {
+                    if (lemma.Value != "")
+                    {
+                        if (wordsDictionary.ContainsKey(lemma.Value))
+                        {
+                            wordsDictionary[lemma.Value] += 1;
+                        }
+                        else
+                        {
+                            wordsDictionary[lemma.Value] = 1;
+                        }
+                    }
+                }
+
+                return wordsDictionary;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
     }
 }
