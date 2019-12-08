@@ -9,7 +9,7 @@ using System.Xml;
 using System.Xml.Linq;
 using GoodNews.Core;
 using GoodNews.Data.Entities;
-using GoodNews.MediatR.Commands.AddNews;
+using GoodNews.MediatR.Commands.AddArticle;
 using GoodNews.MediatR.Commands.CreateCategory;
 using GoodNews.MediatR.Queries.ArticleExists;
 using GoodNews.MediatR.Queries.GetSourceByUrl;
@@ -31,14 +31,18 @@ namespace GoodNews.ApiServices
         }
         public async Task Parse(string url)
         {
-            await AddNews(await GetNewsAsync(url));
+            var news = await GetNewsAsync(url);
+            await AddNews(news);
         }
 
         private async Task AddNews(IEnumerable<Article> news)
         {
             if (news != null)
             {
-                await _mediator.Send(new AddNews(news));
+                foreach (var article in news)
+                {
+                    await _mediator.Send(new AddArticle(article));
+                }
             }
         }
 

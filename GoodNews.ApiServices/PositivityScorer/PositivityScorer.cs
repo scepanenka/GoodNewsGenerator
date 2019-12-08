@@ -34,7 +34,7 @@ namespace GoodNews.ApiServices.PositivityScorer
                     }
                 }
 
-                double result = (double) totalScore / wordsCount;
+                double result = (wordsCount != 0) ? (double) totalScore / wordsCount : 0;
                 return Math.Round(result, 2);
             }
             catch

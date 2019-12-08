@@ -6,7 +6,7 @@ using MediatR;
 
 namespace GoodNews.MediatR.Commands.AddNews
 {
-    public class AddNews : IRequest<bool>
+    public class AddNews: IRequest<bool>
     {
         public IEnumerable<Article> News { get; }
 

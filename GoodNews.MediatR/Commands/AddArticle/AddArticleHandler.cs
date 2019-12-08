@@ -5,9 +5,9 @@ using GoodNews.Data;
 using MediatR;
 using Serilog;
 
-namespace GoodNews.MediatR.Commands.AddNews
+namespace GoodNews.MediatR.Commands.AddArticle
 {
-    class AddNewsAsyncHandler : IRequestHandler<AddNews, bool>
+    class AddNewsAsyncHandler : IRequestHandler<AddArticle, bool>
     {
         private readonly GoodNewsContext _context;
 
@@ -15,19 +15,19 @@ namespace GoodNews.MediatR.Commands.AddNews
         {
             _context = context;
         }
-        public async Task<bool> Handle(AddNews request, CancellationToken cancellationToken)
+        public async Task<bool> Handle(AddArticle request, CancellationToken cancellationToken)
         {
-            if (request.News != null)
+            if (request.Article != null)
             {
                 try
                 {
-                    await _context.News.AddRangeAsync(request.News, cancellationToken);
+                    _context.News.Add(request.Article);
                     await _context.SaveChangesAsync(cancellationToken);
                     return true;
                 }
                 catch (Exception e)
                 {
-                    Log.Error($"GoodNews.MediatR.Commands.AddNews.AddRangeAsync -> Error adding news: {Environment.NewLine} {e.Message}");
+                    Log.Error($"GoodNews.MediatR.Commands.AddNews.AddRangeAsync -> Error adding article: {Environment.NewLine} {e.Message}");
                     return false; 
                     throw;
                 }
