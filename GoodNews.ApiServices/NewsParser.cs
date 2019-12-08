@@ -1,9 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.ServiceModel.Syndication;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
@@ -65,8 +63,12 @@ namespace GoodNews.ApiServices
                         {
                             Category category = await _mediator.Send(new CreateCategory(article.Categories.FirstOrDefault().Name));
                             string title = article.Title.Text.Replace("&nbsp;", string.Empty);
-                            string description = Regex.Replace(article.Summary.Text, @"<[^>]+>|&nbsp;", string.Empty).Replace("Читать далее…", string.Empty);
-                            string articleText = Regex.Replace(content, @"<.*?>|\r\n", string.Empty);
+                            string description = Regex.Replace(article.Summary.Text, @"<[^>]+>|&nbsp;", string.Empty)
+                                .Replace(@"\s+", " ")
+                                .Replace("Читать далее…", string.Empty)
+                                 ;
+                            string articleText = Regex.Replace(content, @"<.*?>|\r\n", string.Empty)
+                                .Replace(@"\s+", " ");
                             string thumbnail = GetThumbnail(article, source);
                             float indexPositivity = _positivityScorer.GetIndexPositivity(articleText).Result;
 

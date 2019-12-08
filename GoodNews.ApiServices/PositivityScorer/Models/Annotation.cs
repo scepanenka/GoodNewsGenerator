@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace GoodNews.ApiServices.PositivityScorer.Models
 {
     public class Annotations
     {
-        public List<Lemma> Lemmas { get; set; }
+        [JsonProperty("lemma")]
+        public Lemma[] Lemmas { get; set; }
     }
 }

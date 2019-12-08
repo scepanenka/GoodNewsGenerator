@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using GoodNews.Core;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GoodNews.API.Controllers
@@ -10,10 +11,16 @@ namespace GoodNews.API.Controllers
     [ApiController]
     public class ValuesController : ControllerBase
     {
+        private readonly IParser _parser;
+        public ValuesController(IParser parser)
+        {
+            _parser = parser;
+        }
         // GET api/values
         [HttpGet]
-        public ActionResult<IEnumerable<string>> Get()
+        public async Task<ActionResult<IEnumerable<string>>> Get()
         {
+            await _parser.Parse(@"https://news.tut.by/rss/all.rss");
             return new string[] { "value1", "value2" };
         }
 

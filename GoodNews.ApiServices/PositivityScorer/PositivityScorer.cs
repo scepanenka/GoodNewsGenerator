@@ -14,65 +14,35 @@ namespace GoodNews.ApiServices.PositivityScorer
 {
     public class PositivityScorer : IPositivityScorer
     {
-        
-        private static volatile PositivityScorer _instance;
-        private static readonly object SyncRoot = new Object();
-        
-        public static PositivityScorer Instance
-        {
-            get
-            {
-                if (_instance == null)
-                {
-                    lock (SyncRoot)
-                    {
-                        if (_instance == null)
-                            _instance = new PositivityScorer();
-                    }
-                }
-
-                return _instance;
-            }
-        }
-
-
         public async Task<float> GetIndexPositivity(string articleText)
         {
-            var _words = GetBaseDictionary();
-
-            float result = 0;
-            int summResult = 0;
-            int countResult = 0;
-
+            var affinDictionary = GetAfinnDictionary();
             var jsonLemma = await GetLemmasFromArticle(articleText);
+            var articleWords = GetDictionaryFromResponse(jsonLemma);
 
-
-            var dictionary = GetWordsDictionary(jsonLemma);
-
-            foreach (var word in dictionary.Keys)
+            int totalScore = 0;
+            int wordsCount = 0;
+            foreach (var key in articleWords.Keys)
             {
-                if (_words.ContainsKey(word))
+                if (affinDictionary.ContainsKey(key))
                 {
-                    summResult += Convert.ToInt32(_words[word]) * dictionary[word];
-                    countResult += dictionary[word];
+                    totalScore += Convert.ToInt32(affinDictionary[key]) * articleWords[key];
+                    wordsCount += articleWords[key];
                 }
             }
 
-            result = (float)(summResult / countResult);
+            float result = (float)totalScore / wordsCount;
 
             return result;
         }
 
         private async Task<string> GetLemmasFromArticle(string input)
         {
-            var matches = Regex.Matches(input, @"\b[а-яА-Я]{2,}\b");
-            input = String.Join(" ", matches.Cast<Match>().Select(m => m.Value));
-            input = Regex.Replace(input, @"\s+", " ");
             input = input.ToLower();
+            var wordsCollection = Regex.Matches(input, @"\b[а-я]{3,}\b");
+            input = String.Join(" ", wordsCollection.Cast<Match>().Select(m => m.Value));
             using (var client = new HttpClient())
             {
-                // client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
-
                 using (HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post,
                     "http://api.ispras.ru/texterra/v1/nlp?targetType=lemma&apikey=de7e616f3ec4bd9b67d7923692a692eddf4478ef")
                 )
@@ -87,54 +57,38 @@ namespace GoodNews.ApiServices.PositivityScorer
             }
         }
 
-        public Dictionary<string, string> GetBaseDictionary()
+        public Dictionary<string, string> GetAfinnDictionary()
         {
-            {
-                try
-                {
-                    var fileData = File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + "\\.." + "\\.." + "\\.." + "\\.." + @"\GoodNews.ApiServices\PositivityScorer\AFINN-ru.json");
-                    var baseDictionary = JsonConvert.DeserializeObject<Dictionary<string, string>>(fileData);
-
-                    return baseDictionary;
-                }
-                catch (Exception ex)
-                {
-                    return null;
-                }
-
-            }
-        }
-
-        public Dictionary<string, int> GetWordsDictionary(string jsonLemma)
-        {
-            Dictionary<string, int> wordsDictionary = new Dictionary<string, int>();
-
             try
             {
-                var dictionary = JsonConvert.DeserializeObject<List<JsonLemma>>(jsonLemma);
-                var annotation = dictionary[0].annotations;
+                var afinnJson = File.ReadAllText("src/AFINN-ru.json");
+                var baseDictionary = JsonConvert.DeserializeObject<Dictionary<string, string>>(afinnJson);
 
-                foreach (var lemma in annotation.Lemmas)
-                {
-                    if (lemma.Value != "")
-                    {
-                        if (wordsDictionary.ContainsKey(lemma.Value))
-                        {
-                            wordsDictionary[lemma.Value] += 1;
-                        }
-                        else
-                        {
-                            wordsDictionary[lemma.Value] = 1;
-                        }
-                    }
-                }
-
-                return wordsDictionary;
+                return baseDictionary;
             }
-            catch (Exception ex)
+            catch 
             {
                 return null;
             }
+        }
+
+        public Dictionary<string, int> GetDictionaryFromResponse(string responseText)
+        {
+            Dictionary<string, int> dictionary = new Dictionary<string, int>();
+
+
+            var responseJson = JsonConvert.DeserializeObject<List<JsonLemma>>(responseText);
+            var annotation = responseJson[0].Annotations;
+
+            foreach (var item in annotation.Lemmas)
+            {
+                if (!string.IsNullOrEmpty(item.Value))
+                {
+                    dictionary[item.Value] = (dictionary.ContainsKey(item.Value)) ? ++dictionary[item.Value] : 1;
+                }
+            }
+
+            return dictionary;
         }
     }
 }

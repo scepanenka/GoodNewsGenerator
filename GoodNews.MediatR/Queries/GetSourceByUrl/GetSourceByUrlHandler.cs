@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using GoodNews.Data;
@@ -20,9 +18,8 @@ namespace GoodNews.MediatR.Queries.GetSourceByUrl
 
         public async Task<Source> Handle(GetSourceByUrl request, CancellationToken cancellationToken)
         {
-            var source = await _context.Sources.FirstOrDefaultAsync(n => n.Url.Equals(request.Url),
-                cancellationToken: cancellationToken);
-            return source;
+            var source = _context.Sources.FirstOrDefault(n => n.Url.Equals(request.Url));
+            return await Task.FromResult(source);
         }
     }
 }

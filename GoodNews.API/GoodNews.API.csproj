@@ -6,6 +6,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="src\AFINN-ru.json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
     <PackageReference Include="Hangfire.AspNetCore" Version="1.7.7" />
     <PackageReference Include="Hangfire.Core" Version="1.7.7" />
@@ -29,6 +33,10 @@
     <ProjectReference Include="..\GoodNews.Data\GoodNews.Data.csproj" />
     <ProjectReference Include="..\GoodNews.MediatR\GoodNews.MediatR.csproj" />
     <ProjectReference Include="..\GoodNews.Migrations\GoodNews.Migrations.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="src\AFINN-ru.json" />
   </ItemGroup>
 
 </Project>

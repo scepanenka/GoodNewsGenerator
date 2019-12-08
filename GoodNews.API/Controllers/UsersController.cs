@@ -37,7 +37,7 @@ namespace GoodNews.API.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult> Get(string userId)
+        public ActionResult Get(string userId)
         {
             try
             {

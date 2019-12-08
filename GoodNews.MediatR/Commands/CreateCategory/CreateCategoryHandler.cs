@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using GoodNews.Data;
 using GoodNews.Data.Entities;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace GoodNews.MediatR.Commands.CreateCategory
 {
@@ -19,7 +20,7 @@ namespace GoodNews.MediatR.Commands.CreateCategory
         {
             
             
-            Category category = _context.Categories.FirstOrDefault(n => n.Name.Equals(request.Name));
+            Category category = await _context.Categories.FirstOrDefaultAsync(n => n.Name.Equals(request.Name), cancellationToken);
 
             if (category == null)
             {
@@ -27,10 +28,10 @@ namespace GoodNews.MediatR.Commands.CreateCategory
                 {
                     Name = request.Name
                 };
-                _context.Categories.Add(category);
-                _context.SaveChanges();
+                await _context.Categories.AddAsync(category, cancellationToken);
+                await _context.SaveChangesAsync(cancellationToken);
             }
-            return await Task.FromResult(category);
+            return category;
         }
     }
 }

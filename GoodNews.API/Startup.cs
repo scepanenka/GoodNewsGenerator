@@ -117,8 +117,7 @@ namespace GoodNews.API
                 Authorization = new[] { new HangfireAuthorizationFilter() }
             });
 
-            var parserService = app.ApplicationServices.GetService<IParser>();
-            parserService.Parse(@"https://news.tut.by/rss/all.rss");
+            
 
             //RecurringJob.AddOrUpdate(
             //    () => parserService.Parse("https://people.onliner.by/feed"),
