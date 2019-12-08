@@ -14,26 +14,36 @@ namespace GoodNews.ApiServices.PositivityScorer
 {
     public class PositivityScorer : IPositivityScorer
     {
-        public async Task<float> GetIndexPositivity(string articleText)
+
+        private static readonly Dictionary<string, string> _affinDictionary = GetAfinnDictionary();
+        public async Task<double> GetIndexPositivity(string articleText)
         {
-            var affinDictionary = GetAfinnDictionary();
-            var jsonLemma = await GetLemmasFromArticle(articleText);
-            var articleWords = GetDictionaryFromResponse(jsonLemma);
-
-            int totalScore = 0;
-            int wordsCount = 0;
-            foreach (var key in articleWords.Keys)
+            try
             {
-                if (affinDictionary.ContainsKey(key))
+                var jsonLemma = await GetLemmasFromArticle(articleText);
+                var articleWords = GetDictionaryFromResponse(jsonLemma);
+
+                int totalScore = 0;
+                int wordsCount = 0;
+                foreach (var key in articleWords.Keys)
                 {
-                    totalScore += Convert.ToInt32(affinDictionary[key]) * articleWords[key];
-                    wordsCount += articleWords[key];
+                    if (_affinDictionary.ContainsKey(key))
+                    {
+                        totalScore += Convert.ToInt32(_affinDictionary[key]) * articleWords[key];
+                        wordsCount += articleWords[key];
+                    }
                 }
+
+                double result = (double) totalScore / wordsCount;
+                return Math.Round(result, 2);
             }
+            catch
+            {
+                return 0;
+            }
+            
 
-            float result = (float)totalScore / wordsCount;
-
-            return result;
+            
         }
 
         private async Task<string> GetLemmasFromArticle(string input)
@@ -57,7 +67,7 @@ namespace GoodNews.ApiServices.PositivityScorer
             }
         }
 
-        public Dictionary<string, string> GetAfinnDictionary()
+        public static Dictionary<string, string> GetAfinnDictionary()
         {
             try
             {

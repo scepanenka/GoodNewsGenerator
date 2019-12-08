@@ -12,7 +12,7 @@ namespace GoodNews.Data.Entities
         public string Url { get; set; }        
         public string ThumbnailUrl { get; set; }        
         public DateTime DatePublication { get; set; }
-        public float IndexPositivity { get; set; }
+        public double IndexPositivity { get; set; }
 
         public Guid CategoryId { get; set; }
         public Category Category { get; set; }

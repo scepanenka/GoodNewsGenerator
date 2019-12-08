@@ -70,7 +70,7 @@ namespace GoodNews.ApiServices
                             string articleText = Regex.Replace(content, @"<.*?>|\r\n", string.Empty)
                                 .Replace(@"\s+", " ");
                             string thumbnail = GetThumbnail(article, source);
-                            float indexPositivity = _positivityScorer.GetIndexPositivity(articleText).Result;
+                            double indexPositivity = _positivityScorer.GetIndexPositivity(articleText).Result;
 
                             news.Add(new Article()
                                 {
@@ -144,38 +144,50 @@ namespace GoodNews.ApiServices
 
         private string GetThumbnail(SyndicationItem article, Source source)
         {
-            string selector = source.Name == "S13" ? ".content" : source.QuerySelector;
-            string thumbnailUrl = article.ElementExtensions
-                .Where(extension => extension.OuterName == "thumbnail")
-                .Select(extension => (string)extension.GetObject<XElement>().Attribute("url"))
-                .FirstOrDefault();
-
-            if (thumbnailUrl == null)
+            try
             {
-                thumbnailUrl = article.ElementExtensions
-                    .Where(extension => extension.OuterName == "content" && (string)extension.GetObject<XElement>().Attribute("type") == "image/jpeg")
-                    .Select(extension => (string)extension.GetObject<XElement>().Attribute("url"))
+                string selector = source.Name == "S13" ? ".content" : source.QuerySelector;
+                string thumbnailUrl = article.ElementExtensions
+                    .Where(extension => extension.OuterName == "thumbnail")
+                    .Select(extension => (string) extension.GetObject<XElement>().Attribute("url"))
                     .FirstOrDefault();
-            }
 
-            if (thumbnailUrl == null)
+                if (thumbnailUrl == null)
+                {
+                    thumbnailUrl = article.ElementExtensions
+                        .Where(extension =>
+                            extension.OuterName == "content" &&
+                            (string) extension.GetObject<XElement>().Attribute("type") == "image/jpeg")
+                        .Select(extension => (string) extension.GetObject<XElement>().Attribute("url"))
+                        .FirstOrDefault();
+                }
+
+                if (thumbnailUrl == null)
+                {
+                    string link = article.Links.FirstOrDefault().Uri.ToString();
+
+                    WebClient wc = new WebClient();
+                    string htmlText = wc.DownloadString(link);
+                    wc.Dispose();
+
+                    var doc = new HtmlAgilityPack.HtmlDocument();
+                    doc.LoadHtml(htmlText);
+
+                    string content = doc.QuerySelector(selector).InnerHtml;
+
+                    thumbnailUrl = Regex.Match(content, "<img.+?src=[\"'](.+?)[\"'].+?>", RegexOptions.IgnoreCase)
+                        .Groups[1].Value;
+                    thumbnailUrl = thumbnailUrl.StartsWith("/ru")
+                        ? thumbnailUrl.Insert(0, "http://s13.ru")
+                        : thumbnailUrl;
+                }
+
+                return thumbnailUrl;
+            }
+            catch
             {
-                string link = article.Links.FirstOrDefault().Uri.ToString();
-
-                WebClient wc = new WebClient();
-                string htmlText = wc.DownloadString(link);
-                wc.Dispose();
-
-                var doc = new HtmlAgilityPack.HtmlDocument();
-                doc.LoadHtml(htmlText);
-
-                string content = doc.QuerySelector(selector).InnerHtml;
-
-                thumbnailUrl = Regex.Match(content, "<img.+?src=[\"'](.+?)[\"'].+?>", RegexOptions.IgnoreCase).Groups[1].Value;
-                thumbnailUrl = thumbnailUrl.StartsWith("/ru") ? thumbnailUrl.Insert(0, "http://s13.ru") : thumbnailUrl;
+                return "src/GoodNews.png";
             }
-
-            return thumbnailUrl;
         }
     }
 }
