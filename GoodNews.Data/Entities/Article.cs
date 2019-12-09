@@ -12,14 +12,13 @@ namespace GoodNews.Data.Entities
         public string Url { get; set; }        
         public string ThumbnailUrl { get; set; }        
         public DateTime DatePublication { get; set; }
-        public double IndexPositivity { get; set; }
+        public double? SentimentRating { get; set; }
 
-        public Guid CategoryId { get; set; }
+        public Guid? CategoryId { get; set; }
         public Category Category { get; set; }
 
         public Guid SourceId { get; set; }
         public Source Source { get; set; }
         public List<Comment> Comments { get; set; }
-
     }
 }

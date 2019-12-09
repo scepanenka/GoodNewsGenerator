@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GoodNews.Migrations.Migrations
 {
     [DbContext(typeof(GoodNewsContext))]
-    [Migration("20191123084633_SourcseSeed")]
-    partial class SourcseSeed
+    [Migration("20191209193058_AlterToNullable")]
+    partial class AlterToNullable
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -26,7 +26,7 @@ namespace GoodNews.Migrations.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<Guid>("CategoryId");
+                    b.Property<Guid?>("CategoryId");
 
                     b.Property<string>("Content");
 
@@ -34,7 +34,7 @@ namespace GoodNews.Migrations.Migrations
 
                     b.Property<string>("Description");
 
-                    b.Property<float>("SentimentRating");
+                    b.Property<double?>("SentimentRating");
 
                     b.Property<Guid>("SourceId");
 
@@ -113,7 +113,7 @@ namespace GoodNews.Migrations.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("3d08bbba-a424-41be-8b2c-8c7d44668809"),
+                            Id = new Guid("1ead68d1-4040-46f9-9fc9-d4324c7cc3e7"),
                             Description = "Новости onliner.by",
                             Name = "Onliner",
                             QuerySelector = ".news-text",
@@ -121,7 +121,7 @@ namespace GoodNews.Migrations.Migrations
                         },
                         new
                         {
-                            Id = new Guid("34cdff13-b882-44fe-a8d9-c7a7182e0a3c"),
+                            Id = new Guid("6324afd1-2e0a-4ef7-95f9-eaec4fd3f49b"),
                             Description = "Новости s13",
                             Name = "S13",
                             QuerySelector = ".js-mediator-article",
@@ -129,7 +129,7 @@ namespace GoodNews.Migrations.Migrations
                         },
                         new
                         {
-                            Id = new Guid("b95be1d9-d5c5-46aa-88a7-d6832d08c3fe"),
+                            Id = new Guid("f6640d51-e294-4cb5-aa70-aebd8392c074"),
                             Description = "Новости tut.by",
                             Name = "Tut.by",
                             QuerySelector = "#article_body",
@@ -304,8 +304,7 @@ namespace GoodNews.Migrations.Migrations
                 {
                     b.HasOne("GoodNews.Data.Entities.Category", "Category")
                         .WithMany("News")
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("CategoryId");
 
                     b.HasOne("GoodNews.Data.Entities.Source", "Source")
                         .WithMany("News")

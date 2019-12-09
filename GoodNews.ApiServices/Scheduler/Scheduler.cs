@@ -16,7 +16,7 @@ namespace GoodNews.ApiServices.Scheduler
         public async Task Run()
         {
             await parseOnliner();
-            BackgroundJob.ContinueWith(context.BackgroundJob.Id, () => ChildFunc(args));
+           // BackgroundJob.ContinueWith(context.BackgroundJob.Id, () => ChildFunc(args));
         }
 
         private async Task parseOnliner()

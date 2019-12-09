@@ -87,7 +87,7 @@ namespace GoodNews.ApiServices
                                     Source = source,
                                     ThumbnailUrl = thumbnail,
                                     Text = articleText,
-                                    IndexPositivity = indexPositivity
+                                    SentimentRating = indexPositivity
                                 }
                             );
                         }
