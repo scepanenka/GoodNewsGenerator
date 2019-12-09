@@ -117,11 +117,15 @@ namespace GoodNews.API
                 Authorization = new[] { new HangfireAuthorizationFilter() }
             });
 
-            
 
-            //RecurringJob.AddOrUpdate(
+            //var parserService = app.ApplicationServices.GetService<IParser>();
+            //var JobIdOnliner = "JobIdOnliner";
+            //var JobIdTutby = "JobIdTutby";
+            //var JobIdS13 = "JobIdS13";
+            //RecurringJob.AddOrUpdate(JobIdOnliner,
             //    () => parserService.Parse("https://people.onliner.by/feed"),
-            //    Cron.Hourly(25));
+            //    Cron.Hourly(0));
+            //BackgroundJob.ContinueWith(JobIdOnliner, () => parserService.Parse("http://s13.ru/rss"));
         }
     }
 }
