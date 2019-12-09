@@ -111,7 +111,7 @@ namespace GoodNews.Migrations.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("9e4d666e-2404-4b7e-8a6e-833c05298a3b"),
+                            Id = new Guid("7c7a34a9-8461-4cfc-af65-a2f6f66a73bf"),
                             Description = "Новости onliner.by",
                             Name = "Onliner",
                             QuerySelector = ".news-text",
@@ -119,7 +119,7 @@ namespace GoodNews.Migrations.Migrations
                         },
                         new
                         {
-                            Id = new Guid("1d76760d-62f8-4c3e-bba7-9b865c4a4680"),
+                            Id = new Guid("73124e55-88dd-4c38-b737-85fd4276e6c3"),
                             Description = "Новости s13",
                             Name = "S13",
                             QuerySelector = ".js-mediator-article",
@@ -127,7 +127,7 @@ namespace GoodNews.Migrations.Migrations
                         },
                         new
                         {
-                            Id = new Guid("c392e735-c68e-4265-ac60-33cb973c6add"),
+                            Id = new Guid("99294381-aa53-4cbf-b844-f80d7aae676a"),
                             Description = "Новости tut.by",
                             Name = "Tut.by",
                             QuerySelector = "#article_body",

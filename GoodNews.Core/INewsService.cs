@@ -4,8 +4,8 @@ using GoodNews.Data.Entities;
 
 namespace GoodNews.Core
 {
-    public interface IParser
+    public interface INewsService
     {
-        Task<IEnumerable<Article>> Parse(string url);
+        Task<bool> AddNewsToDb();
     }
 }

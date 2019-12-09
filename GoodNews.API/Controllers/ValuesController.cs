@@ -9,16 +9,16 @@ namespace GoodNews.API.Controllers
     [ApiController]
     public class ValuesController : ControllerBase
     {
-        private readonly IParser _parser;
-        public ValuesController(IParser parser)
+        private readonly INewsService _newsService;
+        public ValuesController(IParser parser, INewsService newsService)
         {
-            _parser = parser;
+            _newsService = newsService;
         }
         // GET api/values
         [HttpGet]
         public async Task<ActionResult<IEnumerable<string>>> Get()
         {
-            await _parser.Parse(@"https://news.tut.by/rss/all.rss");
+            await _newsService.AddNewsToDb();
             return new string[] { "value1", "value2" };
         }
 

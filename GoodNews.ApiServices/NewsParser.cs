@@ -9,7 +9,6 @@ using System.Xml;
 using System.Xml.Linq;
 using GoodNews.Core;
 using GoodNews.Data.Entities;
-using GoodNews.MediatR.Commands.AddArticle;
 using GoodNews.MediatR.Commands.CreateCategory;
 using GoodNews.MediatR.Queries.ArticleExists;
 using GoodNews.MediatR.Queries.GetSourceByUrl;
@@ -29,22 +28,22 @@ namespace GoodNews.ApiServices
             _mediator = mediator;
             _positivityScorer = positivityScorer;
         }
-        public async Task Parse(string url)
+        public async Task<IEnumerable<Article>> Parse(string url)
         {
             var news = await GetNewsAsync(url);
-            await AddNews(news);
+            return news;
         }
 
-        private async Task AddNews(IEnumerable<Article> news)
-        {
-            if (news != null)
-            {
-                foreach (var article in news)
-                {
-                    await _mediator.Send(new AddArticle(article));
-                }
-            }
-        }
+        //private async Task AddNews(IEnumerable<Article> news)
+        //{
+        //    if (news != null)
+        //    {
+        //        foreach (var article in news)
+        //        {
+        //            await _mediator.Send(new AddArticle(article));
+        //        }
+        //    }
+        //}
 
         private async Task<IEnumerable<Article>> GetNewsAsync(string url)
         {

@@ -3,6 +3,7 @@ using System.Text;
 using AutoMapper;
 using GoodNews.API.Filters;
 using GoodNews.ApiServices;
+using GoodNews.ApiServices.NewsService;
 using GoodNews.ApiServices.PositivityScorer;
 using GoodNews.Core;
 using GoodNews.Data;
@@ -67,6 +68,7 @@ namespace GoodNews.API
             services.AddMediatR(AppDomain.CurrentDomain.Load("GoodNews.MediatR"));
             services.AddTransient<IMediator, Mediator>();
             services.AddTransient<IParser, NewsParser>();
+            services.AddTransient<INewsService, NewsService>();
             services.AddTransient<IPositivityScorer, PositivityScorer>();
 
             services.AddHangfire(config => config.UseSqlServerStorage(
