@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using Core;
+using GoodNews.Core;
 using GoodNews.Data.Entities;
 using GoodNews.MVC.ViewModels;
 using Microsoft.AspNetCore.Authorization;

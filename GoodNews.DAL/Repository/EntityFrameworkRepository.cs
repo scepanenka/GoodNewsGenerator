@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using GoodNews.Core;
+using GoodNews.Data;
 using GoodNews.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 

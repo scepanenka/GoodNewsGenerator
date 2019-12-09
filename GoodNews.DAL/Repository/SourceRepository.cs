@@ -1,4 +1,5 @@
-﻿using GoodNews.Data.Entities;
+﻿using GoodNews.Data;
+using GoodNews.Data.Entities;
 
 namespace GoodNews.DAL.Repository
 {

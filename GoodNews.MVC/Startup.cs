@@ -1,5 +1,4 @@
-﻿using Core;
-using GoodNews.Core;
+﻿using GoodNews.Core;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -9,11 +8,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using GoodNews.DAL;
 using GoodNews.DAL.Repository;
+using GoodNews.Data;
 using GoodNews.Data.Entities;
-using Services;
-using Services.Parsers;
+using GoodNews.MvcServices;
+using GoodNews.MvcServices.ParsersUoW;
 using Microsoft.AspNetCore.Identity;
-using SmtpEmailService;
 
 namespace GoodNews.BL
 {
@@ -38,7 +37,7 @@ namespace GoodNews.BL
 
 
             string connection = Configuration.GetConnectionString("DefaultConnection");
-            services.AddDbContext<GoodNewsContext>(options => options.UseSqlServer(connection, x => x.MigrationsAssembly("GoodNews.DAL")));
+            services.AddDbContext<GoodNewsContext>(options => options.UseSqlServer(connection, x => x.MigrationsAssembly("GoodNews.Migrations")));
             services.AddTransient<IRepository<Article>, ArticleRepository>();
             services.AddTransient<IRepository<Source>, SourceRepository>();
             services.AddTransient<IRepository<Category>, CategoryRepository>();

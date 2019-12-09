@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using GoodNews.Data;
 using GoodNews.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Core;
+using GoodNews.Core;
 using GoodNews.DAL;
 using GoodNews.Data.Entities;
 using Microsoft.AspNetCore.Authorization;
