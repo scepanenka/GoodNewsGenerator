@@ -28,24 +28,8 @@ namespace GoodNews.ApiServices
             _mediator = mediator;
             _positivityScorer = positivityScorer;
         }
+
         public async Task<IEnumerable<Article>> Parse(string url)
-        {
-            var news = await GetNewsAsync(url);
-            return news;
-        }
-
-        //private async Task AddNews(IEnumerable<Article> news)
-        //{
-        //    if (news != null)
-        //    {
-        //        foreach (var article in news)
-        //        {
-        //            await _mediator.Send(new AddArticle(article));
-        //        }
-        //    }
-        //}
-
-        private async Task<IEnumerable<Article>> GetNewsAsync(string url)
         {
             XmlReader feedReader = XmlReader.Create(url);
             SyndicationFeed feed = SyndicationFeed.Load(feedReader);

@@ -7,7 +7,7 @@ using GoodNews.Data.Entities;
 
 namespace GoodNews.MvcServices.ParsersUoW
 {
-    public abstract class ParserUoW : IParser
+    public abstract class ParserUoW : IParserMvc
     {
         private readonly IUnitOfWork _unitOfWork;
 

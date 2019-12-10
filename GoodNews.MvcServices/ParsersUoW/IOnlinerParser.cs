@@ -2,7 +2,7 @@
 
 namespace GoodNews.MvcServices.ParsersUoW
 {
-    public interface IOnlinerParser : IParser
+    public interface IOnlinerParser : IParserMvc
     {
     }
 }
