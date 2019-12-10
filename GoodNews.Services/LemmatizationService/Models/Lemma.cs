@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
+﻿using Newtonsoft.Json;
 
-namespace GoodNews.ApiServices.PositivityScorer.Models
+namespace LemmatizationService.Models
 {
     public class Lemma
     {

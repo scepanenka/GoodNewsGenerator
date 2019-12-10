@@ -21,12 +21,10 @@ namespace GoodNews.ApiServices
     public class NewsParser : IParser
     {
         private readonly IMediator _mediator;
-        private readonly IPositivityScorer _positivityScorer;
 
-        public NewsParser(IMediator mediator, IPositivityScorer positivityScorer)
+        public NewsParser(IMediator mediator)
         {
             _mediator = mediator;
-            _positivityScorer = positivityScorer;
         }
 
         public async Task<IEnumerable<Article>> Parse(string url)
@@ -57,7 +55,6 @@ namespace GoodNews.ApiServices
                             string articleText = Regex.Replace(content, @"<.*?>|\r\n", string.Empty)
                                 .Replace(@"\s+", " ");
                             string thumbnail = GetThumbnail(article, source);
-                            double indexPositivity = _positivityScorer.GetIndexPositivity(articleText).Result;
 
                             news.Add(new Article()
                                 {
@@ -69,8 +66,7 @@ namespace GoodNews.ApiServices
                                     Category = category,
                                     Source = source,
                                     ThumbnailUrl = thumbnail,
-                                    Text = articleText,
-                                    SentimentRating = indexPositivity
+                                    Text = articleText
                                 }
                             );
                         }
