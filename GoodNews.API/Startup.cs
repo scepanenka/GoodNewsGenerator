@@ -70,6 +70,7 @@ namespace GoodNews.API
             services.AddTransient<INewsService, NewsService.NewsService>();
             services.AddTransient<ILemmatization, LemmatizationService.LemmatizationService>();
             services.AddTransient<IAffinService, AffinRuDictionary>();
+            services.AddTransient<IRatingService, SentimentRatingService.SentimentRatingService>();
 
             services.AddHangfire(config => config.UseSqlServerStorage(
                         Configuration.GetConnectionString("DefaultConnection")));

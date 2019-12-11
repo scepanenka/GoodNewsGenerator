@@ -36,6 +36,7 @@
     <ProjectReference Include="..\GoodNews.Services\LemmatizationService\LemmatizationService.csproj" />
     <ProjectReference Include="..\GoodNews.Services\NewsService\NewsService.csproj" />
     <ProjectReference Include="..\GoodNews.Services\ParserService\ParserService.csproj" />
+    <ProjectReference Include="..\GoodNews.Services\SentimentRatingService\SentimentRatingService.csproj" />
   </ItemGroup>
 
   <ItemGroup>

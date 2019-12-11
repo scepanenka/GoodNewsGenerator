@@ -9,7 +9,7 @@ using MediatR;
 
 namespace SentimentRatingService
 {
-    public class SentimentRatingService
+    public class SentimentRatingService : IRatingService
     {
         private readonly IMediator _mediator;
         private readonly ILemmatization _lemmatization;
@@ -23,18 +23,18 @@ namespace SentimentRatingService
             _affin = affin;
         }
 
-        public async Task<bool> SaveScoredRatingsToDB(IEnumerable<Article> news)
+        public async Task<bool> SaveRatingsToDB(IEnumerable<Article> news)
         {
             return await _mediator.Send(new UpdateNews(news));
         }
 
-        public async Task<IEnumerable<Article>> GetUnratedNews()
+        public async Task<IEnumerable<Article>> GetUnratedFromDb()
         {
             IEnumerable<Article> news = await _mediator.Send(new GetNewsWithoutRating());
             return news;
         }
 
-        public async Task<IEnumerable<Article>> ScoreUnscoredRatings(IEnumerable<Article> news)
+        public async Task<IEnumerable<Article>> ScoreNewsRatings(IEnumerable<Article> news)
         {
             foreach (var article in news)
             {
@@ -45,7 +45,7 @@ namespace SentimentRatingService
             return news;
         }
 
-        private async Task<double> ScoreArticleRating(string articleText)
+        public async Task<double> ScoreArticleRating(string articleText)
         {
             Dictionary<string, int> affinDictionary = await _affin.GetDictionary();
             try

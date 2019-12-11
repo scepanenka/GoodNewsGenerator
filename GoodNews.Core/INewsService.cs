@@ -6,6 +6,6 @@ namespace GoodNews.Core
 {
     public interface INewsService
     {
-        Task<bool> AddNewsToDb();
+        Task<bool> Run();
     }
 }

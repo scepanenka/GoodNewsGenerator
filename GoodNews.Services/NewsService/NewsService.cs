@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using GoodNews.Core;
 using GoodNews.Data.Entities;
 using GoodNews.MediatR.Commands.AddNews;
+using GoodNews.MediatR.Queries.GetSources;
 using MediatR;
 
 namespace GoodNews.NewsService
@@ -12,25 +14,48 @@ namespace GoodNews.NewsService
     {
         private readonly IMediator _mediator;
         private readonly IParser _parser;
+        private readonly IRatingService _rating;
 
-        public NewsService(IMediator mediator, IParser parser)
+        public NewsService(IMediator mediator, IParser parser, IRatingService rating)
         {
             _mediator = mediator;
             _parser = parser;
+            _rating = rating;
         }
 
-        public async Task<bool> AddNewsToDb()
+        public async Task<bool> Run()
+        {
+            var news = await ParseNews();
+            await AddNewsToDb(news);
+            var unratedNews = await _rating.GetUnratedFromDb();
+            var ratedNews = await _rating.ScoreNewsRatings(unratedNews);
+            await _rating.SaveRatingsToDB(ratedNews);
+
+            return true;
+        }
+
+        private async Task<IEnumerable<Article>> ParseNews()
+        {
+            IEnumerable<Source> sources = await GetSourcesFromDb();
+            List<Article> news = new List<Article>();
+            foreach (Source source in sources)
+            {
+                news.AddRange(await _parser.Parse(source.Url));
+            }
+
+            return news;
+        }
+        
+        private async Task<IEnumerable<Source>> GetSourcesFromDb()
+        {
+            return await _mediator.Send(new GetSources());
+        }
+
+        
+        public async Task<bool> AddNewsToDb(IEnumerable<Article> news)
         {
             try
             {
-                List<Article> news = new List<Article>();
-                // var tutByNews = await _parser.Parse(@"https://news.tut.by/rss/all.rss");
-                var s13Ru = await _parser.Parse(@"http://s13.ru/rss");
-                // var onlinerBy = await _parser.Parse(@"https://people.onliner.by/feed");
-                // news.AddRange(tutByNews);
-                // news.AddRange(s13Ru);
-                news.AddRange(s13Ru);
-
                 await _mediator.Send(new AddNews(news));
                 return true;
             }
