@@ -27,7 +27,7 @@ namespace GoodNews.Migrations.Migrations
                 keyValue: new Guid("b95be1d9-d5c5-46aa-88a7-d6832d08c3fe"));
 
             migrationBuilder.AlterColumn<double>(
-                name: "SentimentRating",
+                name: "IndexPositivity",
                 table: "News",
                 nullable: true,
                 oldClrType: typeof(float));

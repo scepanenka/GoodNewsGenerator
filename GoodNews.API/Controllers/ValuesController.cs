@@ -10,6 +10,7 @@ namespace GoodNews.API.Controllers
     public class ValuesController : ControllerBase
     {
         private readonly INewsService _newsService;
+
         public ValuesController(IParser parser, INewsService newsService)
         {
             _newsService = newsService;
