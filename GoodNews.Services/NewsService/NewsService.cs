@@ -1,14 +1,13 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using GoodNews.Core;
 using GoodNews.Data.Entities;
-using GoodNews.MediatR.Commands.AddNews;
+using GoodNews.MediatR.Commands.AddNewsAndCategories;
 using GoodNews.MediatR.Queries.GetSources;
 using MediatR;
 
-namespace GoodNews.NewsService
+namespace NewsService
 {
     public class NewsService : INewsService
     {
@@ -26,7 +25,10 @@ namespace GoodNews.NewsService
         public async Task<bool> Run()
         {
             var news = await ParseNews();
+            var categories = news.Select(a => a.Category.Name).Distinct().ToList();
+
             await AddNewsToDb(news);
+            
             var unratedNews = await _rating.GetUnratedFromDb();
             var ratedNews = await _rating.ScoreNewsRatings(unratedNews);
             await _rating.SaveRatingsToDB(ratedNews);
@@ -42,7 +44,7 @@ namespace GoodNews.NewsService
             {
                 news.AddRange(await _parser.Parse(source.Url));
             }
-
+            
             return news;
         }
         
@@ -52,18 +54,16 @@ namespace GoodNews.NewsService
         }
 
         
-        public async Task<bool> AddNewsToDb(IEnumerable<Article> news)
+        private async Task<bool> AddNewsToDb(IEnumerable<Article> news)
         {
             try
             {
-                await _mediator.Send(new AddNews(news));
+                await _mediator.Send(new AddNewsAndCategories(news));
                 return true;
             }
-            catch (Exception e)
+            catch 
             {
-                Console.WriteLine(e);
                 return false;
-                throw;
             }
         }
     }

@@ -2,13 +2,13 @@
 using GoodNews.Data.Entities;
 using MediatR;
 
-namespace GoodNews.MediatR.Commands.AddNews
+namespace GoodNews.MediatR.Commands.AddNewsAndCategories
 {
-    public class AddNews: IRequest<bool>
+    public class AddNewsAndCategories : IRequest<bool>
     {
         public IEnumerable<Article> News { get; }
 
-        public AddNews(IEnumerable<Article> news)
+        public AddNewsAndCategories(IEnumerable<Article> news)
         {
             News = news;
         }

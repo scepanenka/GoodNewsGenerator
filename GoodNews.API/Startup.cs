@@ -3,7 +3,6 @@ using System.Text;
 using AffinRuService;
 using AutoMapper;
 using GoodNews.API.Filters;
-using GoodNews.ApiServices;
 using GoodNews.Core;
 using GoodNews.Data;
 using GoodNews.Data.Entities;
@@ -18,6 +17,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using ParserService;
 using Swashbuckle.AspNetCore.Swagger;
 
 namespace GoodNews.API

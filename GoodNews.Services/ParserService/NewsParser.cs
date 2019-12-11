@@ -16,7 +16,7 @@ using HtmlAgilityPack;
 using HtmlAgilityPack.CssSelectors.NetCore;
 using MediatR;
 
-namespace GoodNews.ApiServices
+namespace ParserService
 {
     public class NewsParser : IParser
     {
@@ -46,7 +46,7 @@ namespace GoodNews.ApiServices
                         string content = GetArticleContent(articleUrl, source);
                         if (!string.IsNullOrEmpty(content))
                         {
-                            Category category = await _mediator.Send(new CreateCategory(article.Categories.FirstOrDefault().Name));
+                            Category category = new Category() {Name = article.Categories.FirstOrDefault().Name};
                             string title = article.Title.Text.Replace("&nbsp;", string.Empty);
                             string description = Regex.Replace(article.Summary.Text, @"<[^>]+>|&nbsp;", string.Empty)
                                 .Replace(@"\s+", " ")
