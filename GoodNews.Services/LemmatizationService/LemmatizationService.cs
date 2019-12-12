@@ -13,7 +13,7 @@ namespace LemmatizationService
 {
     public class LemmatizationService : ILemmatization
     {
-        public async Task<string> GetLemmas(string input)
+        public async Task<string> RequestLemmas(string input)
         {
             input = input.ToLower();
             var wordsCollection = Regex.Matches(input, @"\b[а-я]{3,}\b");
@@ -34,23 +34,21 @@ namespace LemmatizationService
             }
         }
 
-        public Dictionary<string, int> GetDictionaryFromLemmas(string responseText)
+        public string[] GetLemmas(string responseText)
         {
             Dictionary<string, int> dictionary = new Dictionary<string, int>();
 
 
             var responseJson = JsonConvert.DeserializeObject<List<JsonLemma>>(responseText);
             var annotation = responseJson[0].Annotations;
-
-            foreach (var item in annotation.Lemmas)
+            var lemmas = new string[annotation.Lemmas.Length];
+            int i = 0;
+            foreach (var lemma in annotation.Lemmas)
             {
-                if (!string.IsNullOrEmpty(item.Value))
-                {
-                    dictionary[item.Value] = (dictionary.ContainsKey(item.Value)) ? ++dictionary[item.Value] : 1;
-                }
+                lemmas[i] = lemma.Value;
+                i++;
             }
-
-            return dictionary;
+            return lemmas;
         }
 
     }

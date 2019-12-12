@@ -50,17 +50,22 @@ namespace SentimentRatingService
             Dictionary<string, int> affinDictionary = await _affin.GetDictionary();
             try
             {
-                var jsonLemma = await _lemmatization.GetLemmas(articleText);
-                var articleWords = _lemmatization.GetDictionaryFromLemmas(jsonLemma);
+                var jsonLemma = await _lemmatization.RequestLemmas(articleText);
+                var lemmas = _lemmatization.GetLemmas(jsonLemma);
 
                 int totalScore = 0;
                 int wordsCount = 0;
-                foreach (var key in articleWords.Keys)
+
+                for (var i = 0; i < lemmas.Length; i++)
                 {
-                    if (affinDictionary.ContainsKey(key))
+                    string lemma = lemmas[i];
+                    if (lemma != string.Empty)
                     {
-                        totalScore += affinDictionary[key] * articleWords[key];
-                        wordsCount += articleWords[key];
+                        if (affinDictionary.ContainsKey(lemma))
+                        {
+                            wordsCount++;
+                            totalScore += affinDictionary[lemma];
+                        }
                     }
                 }
 

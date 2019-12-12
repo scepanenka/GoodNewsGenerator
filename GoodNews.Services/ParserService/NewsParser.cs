@@ -9,7 +9,6 @@ using System.Xml;
 using System.Xml.Linq;
 using GoodNews.Core;
 using GoodNews.Data.Entities;
-using GoodNews.MediatR.Commands.CreateCategory;
 using GoodNews.MediatR.Queries.ArticleExists;
 using GoodNews.MediatR.Queries.GetSourceByUrl;
 using HtmlAgilityPack;

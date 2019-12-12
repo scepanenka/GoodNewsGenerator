@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using GoodNews.Core;
 using GoodNews.Data.Entities;
@@ -25,10 +24,8 @@ namespace NewsService
         public async Task<bool> Run()
         {
             var news = await ParseNews();
-            var categories = news.Select(a => a.Category.Name).Distinct().ToList();
-
             await AddNewsToDb(news);
-            
+
             var unratedNews = await _rating.GetUnratedFromDb();
             var ratedNews = await _rating.ScoreNewsRatings(unratedNews);
             await _rating.SaveRatingsToDB(ratedNews);
@@ -44,16 +41,16 @@ namespace NewsService
             {
                 news.AddRange(await _parser.Parse(source.Url));
             }
-            
+
             return news;
         }
-        
+
         private async Task<IEnumerable<Source>> GetSourcesFromDb()
         {
             return await _mediator.Send(new GetSources());
         }
 
-        
+
         private async Task<bool> AddNewsToDb(IEnumerable<Article> news)
         {
             try
@@ -61,7 +58,7 @@ namespace NewsService
                 await _mediator.Send(new AddNewsAndCategories(news));
                 return true;
             }
-            catch 
+            catch
             {
                 return false;
             }

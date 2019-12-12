@@ -7,7 +7,7 @@ namespace GoodNews.Core
 {
     public interface ILemmatization
     {
-        Task<string> GetLemmas(string input);
-        Dictionary<string, int> GetDictionaryFromLemmas(string responseText);
+        Task<string> RequestLemmas(string input);
+        string[] GetLemmas(string responseText);
     }
 }
