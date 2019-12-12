@@ -50,14 +50,7 @@ namespace GoodNews.API
                     };
                 });
 
-            services.AddSwaggerGen(c =>
-                {
-                    c.SwaggerDoc("v1", new Info()
-                    {
-                        Title = "GoodNews API",
-                        Version = "v1.0"
-                    });
-                });
+           
 
             string connection = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<GoodNewsContext>(options => options.UseSqlServer(
@@ -74,6 +67,15 @@ namespace GoodNews.API
 
             services.AddHangfire(config => config.UseSqlServerStorage(
                         Configuration.GetConnectionString("DefaultConnection")));
+
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new Info()
+                {
+                    Title = "GoodNews API",
+                    Version = "v1.0"
+                });
+            });
 
             services.AddIdentity<User, IdentityRole>(options =>
                 {
