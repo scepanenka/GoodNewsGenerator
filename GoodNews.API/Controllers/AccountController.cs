@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using GoodNews.API.Models;
 using GoodNews.Data.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -39,6 +40,7 @@ namespace GoodNews.API.Controllers
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
+        [Route("login")]
         public async Task<object> Login([FromBody] LoginModel model)
         {
             var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, false, false);
@@ -46,7 +48,7 @@ namespace GoodNews.API.Controllers
             if (result.Succeeded)
             {
                 var appUser = _userManager.Users.SingleOrDefault(r => r.Email == model.Email);
-                return await GenerateJwtToken(model.Email, appUser);
+                return GenerateJwtToken(model.Email, appUser);
             }
 
             throw new ApplicationException("INVALID_LOGIN_ATTEMPT");
@@ -57,6 +59,8 @@ namespace GoodNews.API.Controllers
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
+        [AllowAnonymous]
+        [Route("register")]
         [HttpPost]
         public async Task<object> Register([FromBody] RegisterModel model)
         {
@@ -70,13 +74,13 @@ namespace GoodNews.API.Controllers
             if (result.Succeeded)
             {
                 await _signInManager.SignInAsync(user, false);
-                return await GenerateJwtToken(model.Email, user);
+                return GenerateJwtToken(model.Email, user);
             }
 
             throw new ApplicationException("UNKNOWN_ERROR");
         }
 
-        private async Task<object> GenerateJwtToken(string email, User user)
+        private object GenerateJwtToken(string email, User user)
         {
             var claims = new List<Claim>
             {
@@ -85,13 +89,13 @@ namespace GoodNews.API.Controllers
                 new Claim(ClaimTypes.NameIdentifier, user.Id)
             };
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtKey"]));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-            var expires = DateTime.Now.AddDays(Convert.ToDouble(_configuration["JwtExpireDays"]));
+            var expires = DateTime.Now.AddDays(Convert.ToDouble(_configuration["Jwt:JwtExpireDays"]));
 
             var token = new JwtSecurityToken(
-                _configuration["JwtIssuer"],
-                _configuration["JwtIssuer"],
+                _configuration["Issuer"],
+                _configuration["Issuer"],
                 claims,
                 expires: expires,
                 signingCredentials: creds
