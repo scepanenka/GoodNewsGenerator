@@ -15,7 +15,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace GoodNews.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]/[action]")]
     [ApiController]
     public class AccountController : ControllerBase
     {
@@ -40,7 +40,6 @@ namespace GoodNews.API.Controllers
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
-        [Route("login")]
         public async Task<object> Login([FromBody] LoginModel model)
         {
             var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, false, false);
@@ -60,7 +59,6 @@ namespace GoodNews.API.Controllers
         /// <param name="model"></param>
         /// <returns></returns>
         [AllowAnonymous]
-        [Route("register")]
         [HttpPost]
         public async Task<object> Register([FromBody] RegisterModel model)
         {
