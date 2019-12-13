@@ -24,7 +24,7 @@ namespace GoodNews.Migrations.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<Guid>("CategoryId");
+                    b.Property<Guid?>("CategoryId");
 
                     b.Property<string>("Content");
 
@@ -32,7 +32,7 @@ namespace GoodNews.Migrations.Migrations
 
                     b.Property<string>("Description");
 
-                    b.Property<float>("IndexPositivity");
+                    b.Property<double?>("SentimentRating");
 
                     b.Property<Guid>("SourceId");
 
@@ -111,7 +111,7 @@ namespace GoodNews.Migrations.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("3d08bbba-a424-41be-8b2c-8c7d44668809"),
+                            Id = new Guid("82710e08-eb54-48fc-90fc-c0dac9ab6369"),
                             Description = "Новости onliner.by",
                             Name = "Onliner",
                             QuerySelector = ".news-text",
@@ -119,7 +119,7 @@ namespace GoodNews.Migrations.Migrations
                         },
                         new
                         {
-                            Id = new Guid("34cdff13-b882-44fe-a8d9-c7a7182e0a3c"),
+                            Id = new Guid("dbc12a3d-318c-43a6-a464-828435f7ffc7"),
                             Description = "Новости s13",
                             Name = "S13",
                             QuerySelector = ".js-mediator-article",
@@ -127,7 +127,7 @@ namespace GoodNews.Migrations.Migrations
                         },
                         new
                         {
-                            Id = new Guid("b95be1d9-d5c5-46aa-88a7-d6832d08c3fe"),
+                            Id = new Guid("7a2dc6ad-1afb-4cf6-9554-cbe891a12cad"),
                             Description = "Новости tut.by",
                             Name = "Tut.by",
                             QuerySelector = "#article_body",
@@ -302,8 +302,7 @@ namespace GoodNews.Migrations.Migrations
                 {
                     b.HasOne("GoodNews.Data.Entities.Category", "Category")
                         .WithMany("News")
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("CategoryId");
 
                     b.HasOne("GoodNews.Data.Entities.Source", "Source")
                         .WithMany("News")

@@ -29,7 +29,6 @@ namespace GoodNews.MediatR.Commands.AddNews
                 {
                     Log.Error($"GoodNews.MediatR.Commands.AddNews.AddRangeAsync -> Error adding news: {Environment.NewLine} {e.Message}");
                     return false; 
-                    throw;
                 }
             }
 

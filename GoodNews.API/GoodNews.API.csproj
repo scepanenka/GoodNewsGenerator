@@ -28,11 +28,15 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\GoodNews.ApiServices\GoodNews.ApiServices.csproj" />
     <ProjectReference Include="..\GoodNews.Core\GoodNews.Core.csproj" />
     <ProjectReference Include="..\GoodNews.Data\GoodNews.Data.csproj" />
     <ProjectReference Include="..\GoodNews.MediatR\GoodNews.MediatR.csproj" />
     <ProjectReference Include="..\GoodNews.Migrations\GoodNews.Migrations.csproj" />
+    <ProjectReference Include="..\GoodNews.Services\AffinRuService\AffinRuService.csproj" />
+    <ProjectReference Include="..\GoodNews.Services\LemmatizationService\LemmatizationService.csproj" />
+    <ProjectReference Include="..\GoodNews.Services\NewsService\NewsService.csproj" />
+    <ProjectReference Include="..\GoodNews.Services\ParserService\ParserService.csproj" />
+    <ProjectReference Include="..\GoodNews.Services\SentimentRatingService\SentimentRatingService.csproj" />
   </ItemGroup>
 
   <ItemGroup>

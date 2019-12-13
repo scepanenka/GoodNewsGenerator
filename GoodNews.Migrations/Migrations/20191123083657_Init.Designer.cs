@@ -34,7 +34,7 @@ namespace GoodNews.Migrations.Migrations
 
                     b.Property<string>("Description");
 
-                    b.Property<float>("IndexPositivity");
+                    b.Property<float>("SentimentRating");
 
                     b.Property<Guid>("SourceId");
 

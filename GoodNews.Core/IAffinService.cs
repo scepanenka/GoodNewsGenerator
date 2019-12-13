@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 
 namespace GoodNews.Core
 {
-    public interface IScheduler
+    public interface IAffinService
     {
-        Task Run();
+        Task<Dictionary<string, int>> GetDictionary();
     }
 }

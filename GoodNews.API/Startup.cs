@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Text;
+using AffinRuService;
 using AutoMapper;
 using GoodNews.API.Filters;
-using GoodNews.ApiServices;
-using GoodNews.ApiServices.PositivityScorer;
 using GoodNews.Core;
 using GoodNews.Data;
 using GoodNews.Data.Entities;
@@ -18,6 +17,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using ParserService;
 using Swashbuckle.AspNetCore.Swagger;
 
 namespace GoodNews.API
@@ -50,14 +50,7 @@ namespace GoodNews.API
                     };
                 });
 
-            services.AddSwaggerGen(c =>
-                {
-                    c.SwaggerDoc("v1", new Info()
-                    {
-                        Title = "GoodNews API",
-                        Version = "v1.0"
-                    });
-                });
+           
 
             string connection = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<GoodNewsContext>(options => options.UseSqlServer(
@@ -67,10 +60,22 @@ namespace GoodNews.API
             services.AddMediatR(AppDomain.CurrentDomain.Load("GoodNews.MediatR"));
             services.AddTransient<IMediator, Mediator>();
             services.AddTransient<IParser, NewsParser>();
-            services.AddTransient<IPositivityScorer, PositivityScorer>();
+            services.AddTransient<INewsService, NewsService.NewsService>();
+            services.AddTransient<ILemmatization, LemmatizationService.LemmatizationService>();
+            services.AddTransient<IAffinService, AffinRuDictionary>();
+            services.AddTransient<IRatingService, SentimentRatingService.SentimentRatingService>();
 
             services.AddHangfire(config => config.UseSqlServerStorage(
                         Configuration.GetConnectionString("DefaultConnection")));
+
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new Info()
+                {
+                    Title = "GoodNews API",
+                    Version = "v1.0"
+                });
+            });
 
             services.AddIdentity<User, IdentityRole>(options =>
                 {

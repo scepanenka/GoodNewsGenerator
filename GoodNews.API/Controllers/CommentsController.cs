@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using GoodNews.API.Models;
 using GoodNews.DAL;
 using GoodNews.Data;
 using GoodNews.Data.Entities;
+using GoodNews.MediatR.Commands.AddComment;
 using GoodNews.MediatR.Queries.GetArticleById;
 using GoodNews.MediatR.Queries.GetCommentsByArticleId;
 using MediatR;
@@ -30,6 +32,11 @@ namespace GoodNews.API.Controllers
         }
         
         // GET: api/Comments/5
+        /// <summary>
+        /// Get comments by article id
+        /// </summary>
+        /// <param name="articleId"></param>
+        /// <returns></returns>
         [HttpGet("{id}", Name = "Get")]
         public async Task<ActionResult> Get(Guid articleId)
         {
@@ -44,7 +51,7 @@ namespace GoodNews.API.Controllers
                     Comments = comments
                 };
 
-                Log.Information("Article loaded");
+                Log.Debug($"Article '{article.Title}'  loaded");
                 return Ok(articleModel);
             }
             catch (Exception e)
@@ -56,21 +63,37 @@ namespace GoodNews.API.Controllers
         }
 
         // POST: api/Comments
+        /// <summary>
+        /// Add comment
+        /// </summary>
+        /// <param name="value"></param>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public async Task<IActionResult> Post([FromBody] string input, Guid id)
         {
-        }
+            try
+            {
+                var user = _userManager.FindByIdAsync(User.FindFirst(ClaimTypes.NameIdentifier).Value).Result;
 
-        // PUT: api/Comments/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
+                var comment = new Comment()
+                {
+                    User = user,
+                    Content = input,
+                    Date = DateTime.Now.ToLocalTime(),
+                    Article = await _mediator.Send(new GetArticleById(id))
+                };
 
-        // DELETE: api/ApiWithActions/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
+                await _mediator.Send(new AddComment(comment));
+
+                Log.Information($"Comment was added successfully");
+
+                return StatusCode(201, comment);
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Error adding comment:{Environment.NewLine}{ex.Message}");
+                return BadRequest();
+            }
+
         }
     }
 }

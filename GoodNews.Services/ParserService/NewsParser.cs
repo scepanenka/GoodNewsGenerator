@@ -9,44 +9,24 @@ using System.Xml;
 using System.Xml.Linq;
 using GoodNews.Core;
 using GoodNews.Data.Entities;
-using GoodNews.MediatR.Commands.AddArticle;
-using GoodNews.MediatR.Commands.CreateCategory;
 using GoodNews.MediatR.Queries.ArticleExists;
 using GoodNews.MediatR.Queries.GetSourceByUrl;
 using HtmlAgilityPack;
 using HtmlAgilityPack.CssSelectors.NetCore;
 using MediatR;
 
-namespace GoodNews.ApiServices
+namespace ParserService
 {
     public class NewsParser : IParser
     {
         private readonly IMediator _mediator;
-        private readonly IPositivityScorer _positivityScorer;
 
-        public NewsParser(IMediator mediator, IPositivityScorer positivityScorer)
+        public NewsParser(IMediator mediator)
         {
             _mediator = mediator;
-            _positivityScorer = positivityScorer;
-        }
-        public async Task Parse(string url)
-        {
-            var news = await GetNewsAsync(url);
-            await AddNews(news);
         }
 
-        private async Task AddNews(IEnumerable<Article> news)
-        {
-            if (news != null)
-            {
-                foreach (var article in news)
-                {
-                    await _mediator.Send(new AddArticle(article));
-                }
-            }
-        }
-
-        private async Task<IEnumerable<Article>> GetNewsAsync(string url)
+        public async Task<IEnumerable<Article>> Parse(string url)
         {
             XmlReader feedReader = XmlReader.Create(url);
             SyndicationFeed feed = SyndicationFeed.Load(feedReader);
@@ -65,7 +45,7 @@ namespace GoodNews.ApiServices
                         string content = GetArticleContent(articleUrl, source);
                         if (!string.IsNullOrEmpty(content))
                         {
-                            Category category = await _mediator.Send(new CreateCategory(article.Categories.FirstOrDefault().Name));
+                            Category category = new Category() {Name = article.Categories.FirstOrDefault().Name};
                             string title = article.Title.Text.Replace("&nbsp;", string.Empty);
                             string description = Regex.Replace(article.Summary.Text, @"<[^>]+>|&nbsp;", string.Empty)
                                 .Replace(@"\s+", " ")
@@ -74,7 +54,6 @@ namespace GoodNews.ApiServices
                             string articleText = Regex.Replace(content, @"<.*?>|\r\n", string.Empty)
                                 .Replace(@"\s+", " ");
                             string thumbnail = GetThumbnail(article, source);
-                            double indexPositivity = _positivityScorer.GetIndexPositivity(articleText).Result;
 
                             news.Add(new Article()
                                 {
@@ -86,8 +65,7 @@ namespace GoodNews.ApiServices
                                     Category = category,
                                     Source = source,
                                     ThumbnailUrl = thumbnail,
-                                    Text = articleText,
-                                    IndexPositivity = indexPositivity
+                                    Text = articleText
                                 }
                             );
                         }
