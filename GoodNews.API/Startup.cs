@@ -18,6 +18,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using ParserService;
+using Serilog;
 using Swashbuckle.AspNetCore.Swagger;
 
 namespace GoodNews.API
@@ -27,6 +28,12 @@ namespace GoodNews.API
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+
+            Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Debug()
+                .WriteTo.Console()
+                .WriteTo.File("logs\\GoodNews.log", rollingInterval: RollingInterval.Day)
+                .CreateLogger();
         }
 
         public IConfiguration Configuration { get; }
