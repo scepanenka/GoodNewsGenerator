@@ -1,47 +1,32 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
+import s from './style.module.scss'
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
+import Typography from "@material-ui/core/Typography";
+import {NavLink} from "react-router-dom";
 
-const useStyles = makeStyles(theme => ({
-    root: {
-        flexGrow: 1,
-    },
-    menuButton: {
-        marginRight: theme.spacing(2),
-    },
-    title: {
-        flexGrow: 1,
-    },
-    logo: {
-        flexGrow: 1,
-    },
-    logo__img: {
-        maxHeight: 70,
-    }
-}));
-
-export default function Index() {
-    const classes = useStyles();
-
-    return (
-        <div className={classes.root}>
+const Header = () => {
+    return(
+        <div>
             <AppBar position="static">
-                <Toolbar>
-                    <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
-                        <MenuIcon />
-                    </IconButton>
-                    <div className={classes.logo}>
-                        < img className={classes.logo__img} src="goodNewsWhite.png" alt="logo" />
+                <Toolbar className={s.wrapper}>
+                    <div className={s.left}>
+                        <IconButton edge="start" className={s.menuButton} color="inherit" aria-label="menu">
+                            <MenuIcon />
+                        </IconButton>
+                        <NavLink to='/news'><Button color="inherit">GoodNews</Button></NavLink>
                     </div>
-                    <Button color="inherit">GoodNews</Button>
-                    <Button color="inherit">Register</Button>
-                    <Button color="inherit">Login</Button>
+                    <div>
+                        <NavLink to='/login'><Button color="inherit">Login</Button></NavLink>
+                        <NavLink to='/register'><Button color="inherit">Register</Button></NavLink>
+
+                    </div>
                 </Toolbar>
             </AppBar>
         </div>
-    );
+    )
 }
+export default Header;

@@ -1,0 +1,15 @@
+.wrapper {
+  display: flex;
+  justify-content: space-between;
+
+  .left {
+    .menuButton {
+      margin-right: 10px;
+    }
+  }
+
+  a {
+    text-decoration: none;
+    color: white;
+  }
+}
