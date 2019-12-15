@@ -1,4 +1,6 @@
 import React, {useEffect, useState} from "react";
+import ArticlePreview from "./ArticlePreview";
+import Container from '@material-ui/core/Container';
 
 const News = (props) => {
 
@@ -18,13 +20,11 @@ const News = (props) => {
     }, []);
 
     return (
-        <div>
-                { news.map(article =>
-                    <p key={article.id}>{article.title}</p>
-                )}
-
-            <hr/>
-        </div>
+        <Container>
+            {news.map(article =>
+                <ArticlePreview key={article.id} article={article}/>
+            )}
+        </Container>
     );
 };
 export default News;

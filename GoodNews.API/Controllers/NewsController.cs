@@ -34,7 +34,7 @@ namespace GoodNews.API.Controllers
                 IEnumerable<Article> news = await _mediator.Send(new GetNews());
                 var newsDto = _mapper.Map<IEnumerable<ArticleNewsPageViewModel>>(news);
                 Log.Information("News received from database");
-                return newsDto.Take(10);
+                return newsDto.Take(20);
                 
             }
             catch (Exception e)
