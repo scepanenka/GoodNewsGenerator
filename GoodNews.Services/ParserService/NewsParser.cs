@@ -45,7 +45,7 @@ namespace ParserService
                         string content = GetArticleContent(articleUrl, source);
                         if (!string.IsNullOrEmpty(content))
                         {
-                            Category category = new Category() {Name = article.Categories.FirstOrDefault().Name};
+                            Category category = new Category() {Name = article.Categories.FirstOrDefault().Name.ToUpper()};
                             string title = article.Title.Text.Replace("&nbsp;", string.Empty);
                             string description = Regex.Replace(article.Summary.Text, @"<[^>]+>|&nbsp;", string.Empty)
                                 .Replace(@"\s+", " ")

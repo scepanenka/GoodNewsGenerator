@@ -5,7 +5,6 @@ import s from './style.module.scss'
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
-import Typography from "@material-ui/core/Typography";
 import {NavLink} from "react-router-dom";
 
 const Header = () => {
@@ -22,7 +21,6 @@ const Header = () => {
                     <div>
                         <NavLink to='/login'><Button color="inherit">Login</Button></NavLink>
                         <NavLink to='/register'><Button color="inherit">Register</Button></NavLink>
-
                     </div>
                 </Toolbar>
             </AppBar>

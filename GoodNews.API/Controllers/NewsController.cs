@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using GoodNews.API.Models;
@@ -8,6 +9,7 @@ using GoodNews.MediatR.Queries.GetArticleById;
 using GoodNews.MediatR.Queries.GetNews;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Serilog;
 
 namespace GoodNews.API.Controllers
 {
@@ -27,9 +29,20 @@ namespace GoodNews.API.Controllers
         [HttpGet]
         public async Task<IEnumerable<ArticleNewsPageViewModel>> GetAllNews()
         {
-            IEnumerable<Article> news = await _mediator.Send(new GetNews());
-            var newsDto = _mapper.Map<IEnumerable<ArticleNewsPageViewModel>>(news);
-            return newsDto;
+            try
+            {
+                IEnumerable<Article> news = await _mediator.Send(new GetNews());
+                var newsDto = _mapper.Map<IEnumerable<ArticleNewsPageViewModel>>(news);
+                Log.Information("News received from database");
+                return newsDto.Take(10);
+                
+            }
+            catch (Exception e)
+            {
+                Log.Error($"Error receiving news from database: {Environment.NewLine}{e.Message}");
+                throw;
+            }
+            
         }
 
         [HttpGet("{id}")]
@@ -42,11 +55,12 @@ namespace GoodNews.API.Controllers
                 {
                     return NotFound();
                 }
-
+                Log.Information($"Article '{article.Title}' received from database");
                 return Ok(article);
             }
-            catch
+            catch (Exception e)
             {
+                Log.Error($"Error receiving article from database: {Environment.NewLine}{e.Message}");
                 return StatusCode(500, "Internal server error");
             }
         }

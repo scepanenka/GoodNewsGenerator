@@ -9,7 +9,9 @@ namespace GoodNews.API.Mappings
     {
         public ArticleProfile()
         {
-            CreateMap<Article, ArticleNewsPageViewModel>();
+            CreateMap<Article, ArticleNewsPageViewModel>()
+                .ForMember(dest => dest.Source, source => source.MapFrom(src => src.Source.Name));
+            ;
         }
         
     }

@@ -113,6 +113,8 @@ namespace GoodNews.API
                 app.UseHsts();
             }
 
+            app.UseCors(builder =>
+                builder.AllowAnyOrigin());
             app.UseSwagger();
             app.UseSwaggerUI(sw =>
             {

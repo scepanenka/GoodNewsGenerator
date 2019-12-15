@@ -37,8 +37,8 @@ namespace GoodNews.API.Controllers
         {
             try
             {
-                return await _mediator.Send(new GetSources());
                 Log.Information("Sources loaded");
+                return await _mediator.Send(new GetSources());
             }
             catch (Exception e)
             {
