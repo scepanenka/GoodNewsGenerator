@@ -1,6 +1,9 @@
 import React, {useEffect, useState} from "react";
-import ArticlePreview from "./ArticlePreview";
-import Container from '@material-ui/core/Container';
+import ArticleCard from "./ArticleCard";
+import Grid from "@material-ui/core/Grid";
+import {Container} from "@material-ui/core";
+import s from './style.module.scss'
+
 
 const News = (props) => {
 
@@ -20,10 +23,12 @@ const News = (props) => {
     }, []);
 
     return (
-        <Container>
-            {news.map(article =>
-                <ArticlePreview key={article.id} article={article}/>
-            )}
+        <Container maxWidth="lg" className={s.newsContainer}>
+            <Grid container justify="center" spacing={5} >
+                {news.map(article =>
+                    <ArticleCard key={article.id} article={article}/>
+                )}
+            </Grid>
         </Container>
     );
 };

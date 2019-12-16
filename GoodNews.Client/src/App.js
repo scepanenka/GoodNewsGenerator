@@ -5,6 +5,7 @@ import Login from "./Components/Login";
 import Register from "./Components/Register";
 import Header from "./Components/Header";
 import News from "./Components/News";
+import ArticleDetails from "./Components/News/ArticleDetails";
 
 const App = () => {
     return (
@@ -13,6 +14,7 @@ const App = () => {
                 <Header/>
                 <div className='app-content-wrapper'>
                     <Route path='/News' component={News}/>
+                    <Route path='/News/id' component={ArticleDetails}/>
                     <Route path='/login' component={Login}/>
                     <Route path='/register' component={Register}/>
                 </div>
