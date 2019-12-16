@@ -12,7 +12,7 @@ const News = (props) => {
 
     useEffect(() => {
         async function fetchData() {
-            const res = await fetch("https://localhost:44317/api/News");
+            const res = await fetch("https://localhost:44317/api/news");
             res
                 .json()
                 .then(res => setNews(res))

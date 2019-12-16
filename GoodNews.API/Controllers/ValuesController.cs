@@ -19,7 +19,7 @@ namespace GoodNews.API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<string>>> Get()
         {
-            await _newsService.Run();
+            // await _newsService.Run();
             return new string[] { "value1", "value2" };
         }
     }

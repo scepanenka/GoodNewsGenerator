@@ -8,22 +8,29 @@ import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Grid from "@material-ui/core/Grid";
-import {NavLink} from "react-router-dom";
 
 const useStyles = makeStyles({
     card: {
         maxWidth: 345,
     },
-    media: {
-        height: 140,
+    title: {
+        height: 60,
+        overflow: "hidden",
     },
+    media: {
+        height: 180,
+    },
+    description: {
+        height: 100,
+        overflow: "hidden",
+    }
 });
 
 const ArticleCard = (props) => {
     const classes = useStyles();
 
     return (
-        <Grid item >
+        <Grid item>
             <Card className={classes.card}>
                 <CardActionArea>
                     <CardMedia
@@ -31,16 +38,24 @@ const ArticleCard = (props) => {
                         image={props.article.thumbnailUrl}
                     />
                     <CardContent>
-                        <Typography gutterBottom variant="h6" component="h6">
-                            {props.article.title}
+                        <Typography
+                            className={classes.title}
+                            gutterBottom
+                            variant="subtitle2"
+                            component="h3">
+                            <strong>{props.article.title}</strong>
                         </Typography>
-                        <Typography variant="body2" color="textSecondary" component="p" >
+                        <Typography
+                            className={classes.description}
+                            variant="body2"
+                            color="textSecondary"
+                            component="p">
                             {props.article.description}
                         </Typography>
                     </CardContent>
                 </CardActionArea>
                 <CardActions>
-                    <Button variant="contained" color="primary" size="small" href={'news/'+ props.article.id}>
+                    <Button variant="contained" color="primary" size="small">
                         Подробнее
                     </Button>
                 </CardActions>

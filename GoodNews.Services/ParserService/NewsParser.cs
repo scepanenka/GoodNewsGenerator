@@ -126,25 +126,18 @@ namespace ParserService
 
         private string GetThumbnail(SyndicationItem article, Source source)
         {
+            
             try
             {
                 string selector = source.Name == "S13" ? ".content" : source.QuerySelector;
                 string thumbnailUrl = article.ElementExtensions
-                    .Where(extension => extension.OuterName == "thumbnail")
-                    .Select(extension => (string) extension.GetObject<XElement>().Attribute("url"))
+                    .Where(extension =>
+                        extension.OuterName == "content" &&
+                        (string)extension.GetObject<XElement>().Attribute("type") == "image/jpeg")
+                    .Select(extension => (string)extension.GetObject<XElement>().Attribute("url"))
                     .FirstOrDefault();
 
-                if (thumbnailUrl == null)
-                {
-                    thumbnailUrl = article.ElementExtensions
-                        .Where(extension =>
-                            extension.OuterName == "content" &&
-                            (string) extension.GetObject<XElement>().Attribute("type") == "image/jpeg")
-                        .Select(extension => (string) extension.GetObject<XElement>().Attribute("url"))
-                        .FirstOrDefault();
-                }
-
-                if (thumbnailUrl == null)
+                if (string.IsNullOrEmpty(thumbnailUrl))
                 {
                     string link = article.Links.FirstOrDefault().Uri.ToString();
 
@@ -159,16 +152,23 @@ namespace ParserService
 
                     thumbnailUrl = Regex.Match(content, "<img.+?src=[\"'](.+?)[\"'].+?>", RegexOptions.IgnoreCase)
                         .Groups[1].Value;
-                    thumbnailUrl = thumbnailUrl.StartsWith("/ru")
+                    thumbnailUrl = thumbnailUrl.StartsWith("/ru") && source.Name.Equals("S13")
                         ? thumbnailUrl.Insert(0, "http://s13.ru")
                         : thumbnailUrl;
+                }
+                if (string.IsNullOrEmpty(thumbnailUrl))
+                {
+                        thumbnailUrl = article.ElementExtensions
+                        .Where(extension => extension.OuterName == "thumbnail")
+                        .Select(extension => (string)extension.GetObject<XElement>().Attribute("url"))
+                        .FirstOrDefault();
                 }
 
                 return thumbnailUrl;
             }
             catch
             {
-                return "src/GoodNews.png";
+                return null;
             }
         }
     }
