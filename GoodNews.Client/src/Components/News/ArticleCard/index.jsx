@@ -8,6 +8,8 @@ import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Grid from "@material-ui/core/Grid";
+import {NavLink} from "react-router-dom";
+import s from './style.module.scss'
 
 const useStyles = makeStyles({
     card: {
@@ -31,6 +33,7 @@ const ArticleCard = (props) => {
 
     return (
         <Grid item>
+            <NavLink to={`/news/${props.article.id}`}>
             <Card className={classes.card}>
                 <CardActionArea>
                     <CardMedia
@@ -55,11 +58,16 @@ const ArticleCard = (props) => {
                     </CardContent>
                 </CardActionArea>
                 <CardActions>
-                    <Button variant="contained" color="primary" size="small">
+                    <NavLink to={`/news/${props.article.id}`}>
+                        <Button variant="contained"
+                            color="primary"
+                            size="small">
                         Подробнее
                     </Button>
+                    </NavLink>
                 </CardActions>
             </Card>
+            </NavLink>
         </Grid>
     );
 }

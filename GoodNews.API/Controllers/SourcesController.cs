@@ -50,7 +50,7 @@ namespace GoodNews.API.Controllers
 
         // GET: api/Sources/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Source>> GetSource(Guid id)
+        public async Task<ActionResult> GetSource(Guid id)
         {
             var source = await _mediator.Send(new GetSourceById(id));
 
@@ -59,7 +59,7 @@ namespace GoodNews.API.Controllers
                 return NotFound();
             }
 
-            return source;
+            return Ok(source);
         }
 
         // PUT: api/Sources/5
@@ -142,7 +142,7 @@ namespace GoodNews.API.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Source>> DeleteSource(Guid id)
+        public async Task<ActionResult> DeleteSource(Guid id)
         {
             var source = await _mediator.Send(new GetSourceById(id));
             if (source == null)
