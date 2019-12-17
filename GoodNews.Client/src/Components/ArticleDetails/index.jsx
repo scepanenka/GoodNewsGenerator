@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {matchPath} from "react-router";
 import Container from "@material-ui/core/Container";
+import Parser from 'html-react-parser';
 
 const ArticleDetails = (props) => {
 
@@ -28,14 +29,15 @@ const ArticleDetails = (props) => {
         fetchData();
     }, []);
 
-    const getContent = () => {
 
-    }
+    // const getContent = () => {__html: 'First &middot; Second'};
 
     return (
-        <Container id="articleContent">
+        <Container align="justify">
             <h1>{article.title}</h1>
-            <div>{article.text}</div>
+            {require('html-react-parser')(
+                `${article.content}`
+            )}
         </Container>
     )
 }

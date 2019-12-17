@@ -19,7 +19,8 @@ namespace GoodNews.MediatR.Queries.GetNews
         }
         public async Task<IEnumerable<Article>> Handle(GetNews request, CancellationToken cancellationToken)
         {
-            var news = await _context.News.OrderByDescending(a=>a.DatePublication).ToListAsync(cancellationToken);
+            var news = await _context.News.Include(a=>a.Source.Name)
+                .OrderByDescending(a=>a.DatePublication).Take(30).ToListAsync(cancellationToken);
             return news;
         }
     }

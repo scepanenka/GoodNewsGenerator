@@ -52,8 +52,14 @@ const ArticleCard = (props) => {
                             className={classes.description}
                             variant="body2"
                             color="textSecondary"
+                            align="justify"
                             component="p">
                             {props.article.description}
+                        </Typography>
+                    </CardContent>
+                    <CardContent>
+                        <Typography>
+                            {props.article.source}
                         </Typography>
                     </CardContent>
                 </CardActionArea>
