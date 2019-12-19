@@ -20,7 +20,7 @@ const ArticleDetails = (props) => {
 
     useEffect(() => {
         async function fetchData() {
-            const res = await fetch(`https://localhost:44317/api/news/${articleId}`);
+            const res = await fetch(`https://good-news-server.azurewebsites.net/api/News/${articleId}`);
             res
                 .json()
                 .then(res => setArticle(res))

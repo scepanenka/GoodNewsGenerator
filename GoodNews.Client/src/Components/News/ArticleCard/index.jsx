@@ -33,49 +33,51 @@ const ArticleCard = (props) => {
 
     return (
         <Grid item>
-            <NavLink to={`/news/${props.article.id}`}>
             <Card className={classes.card}>
-                <CardActionArea>
-                    <CardMedia
-                        className={classes.media}
-                        image={props.article.thumbnailUrl}
-                    />
-                    <CardContent>
-                        <Typography
-                            className={classes.title}
-                            gutterBottom
-                            variant="subtitle2"
-                            component="h3">
-                            <strong>{props.article.title}</strong>
-                        </Typography>
-                        <Typography
-                            className={classes.description}
-                            variant="body2"
-                            color="textSecondary"
-                            align="justify"
-                            component="p">
-                            {props.article.description}
-                        </Typography>
-                    </CardContent>
-                    <CardContent>
-                        <Typography>
-                            {props.article.source}
-                        </Typography>
-                    </CardContent>
-                </CardActionArea>
+                <NavLink to={`/news/${props.article.id}`}>
+                    <CardActionArea>
+                        <CardMedia
+                            className={classes.media}
+                            image={props.article.thumbnailUrl}
+                        />
+                        <CardContent>
+                            <Typography
+                                className={classes.title}
+                                gutterBottom
+                                variant="subtitle2"
+                                component="h3">
+                                <strong>{props.article.title}</strong>
+                            </Typography>
+                            <Typography
+                                className={classes.description}
+                                variant="body2"
+                                color="textSecondary"
+                                align="justify"
+                                component="p">
+                                {props.article.description}
+                            </Typography>
+                        </CardContent>
+                        <CardContent>
+                            <Typography>
+                                {props.article.source}
+                            </Typography>
+                        </CardContent>
+                    </CardActionArea>
+                </NavLink>
                 <CardActions>
                     <NavLink to={`/news/${props.article.id}`}>
                         <Button variant="contained"
-                            color="primary"
-                            size="small">
-                        Подробнее
-                    </Button>
+                                color="primary"
+                                size="small">
+                            Подробнее
+                        </Button>
                     </NavLink>
                 </CardActions>
             </Card>
-            </NavLink>
+
         </Grid>
-    );
+    )
+        ;
 }
 
 export default ArticleCard;
