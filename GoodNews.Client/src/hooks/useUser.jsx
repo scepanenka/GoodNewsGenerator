@@ -1,51 +1,49 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, {createContext, useContext, useEffect, useState} from 'react';
 
-function getCurrentUser(accessToken) {
-    if (accessToken === 'awesomeAccessToken123456789') {
-        return {
-            name: 'Thomas',
-        };
-    }
+const getCurrentUser = (accessToken) => {
+    accessToken.json().then(user => {
+    console.log('in getCurrentUser', user)
+    return user.name})
 }
 
-const initialState = {
-    user: {},
-    accessToken: undefined,
-};
+    const initialState = {
+        user: {},
+        accessToken: undefined,
+    };
 
-const UserContext = createContext(initialState);
+    const UserContext = createContext(initialState);
 
-export function UserProvider({ children }) {
-    const [accessToken, setAccessToken] = useState(localStorage.getItem('access_token'));
-    const [user, setUser] = useState({});
+    export function UserProvider({children}) {
+        const [accessToken, setAccessToken] = useState(localStorage.getItem('access_token'));
+        const [user, setUser] = useState({});
 
-    function handleAccessTokenChange() {
-        const savedAccessToken = localStorage.getItem('access_token');
-        if (!savedAccessToken || savedAccessToken === 'null') {
-            localStorage.setItem('access_token', accessToken);
+        function handleAccessTokenChange() {
+            const savedAccessToken = localStorage.getItem('access_token');
+            if (!savedAccessToken || savedAccessToken === 'null') {
+                localStorage.setItem('access_token', accessToken);
+            }
+
+            if (!user.name && accessToken) {
+                const user = getCurrentUser(accessToken);
+                setUser(user);
+            } else if (!accessToken) {
+                // Log Out
+                localStorage.removeItem('access_token');
+                setUser({});
+            }
         }
 
-        if (!user.name && accessToken) {
-            const user = getCurrentUser(accessToken);
-            setUser(user);
-        } else if (!accessToken) {
-            // Log Out
-            localStorage.removeItem('access_token');
-            setUser({});
-        }
+        useEffect(() => {
+            handleAccessTokenChange();
+        }, [accessToken]);
+
+        return (
+            <UserContext.Provider value={{user, accessToken, setAccessToken}}>
+                <>
+                    {children}
+                </>
+            </UserContext.Provider>
+        );
     }
 
-    useEffect(() => {
-        handleAccessTokenChange();
-    }, [accessToken]);
-
-    return (
-        <UserContext.Provider value={{ user, accessToken, setAccessToken }}>
-            <>
-                {children}
-            </>
-        </UserContext.Provider>
-    );
-}
-
-export const useUser = () => useContext(UserContext);
+    export const useUser = () => useContext(UserContext);

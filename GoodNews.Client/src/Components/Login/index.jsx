@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -12,8 +12,10 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+import {useUser} from "../../hooks/useUser";
+import {API_BASE_URL} from "../../config";
 
-function Copyright() {
+const Copyright = () => {
     return (
         <Typography variant="body2" color="textSecondary" align="center">
             {'Copyright © '}
@@ -46,8 +48,33 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
-export default function Login() {
+const Login = () =>  {
     const classes = useStyles();
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const { setAccessToken } = useUser();
+
+    function handleEmailChange(event) {
+        setEmail(event.target.value);
+    };
+
+    function handlePasswordChange(event) {
+        setPassword(event.target.value);
+    };
+
+    function handleFormSubmit(event) {
+        event.preventDefault();
+        getToken(email, password).then(setAccessToken);
+    };
+
+    const getToken = (email, password) => {
+        const requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json'
+            }
+        };
+        return fetch(`${API_BASE_URL}/Account/Login?email=${email}&password=${password}`, requestOptions);
+    };
 
     return (
         <Container component="main" maxWidth="xs">
@@ -57,9 +84,9 @@ export default function Login() {
                     <LockOutlinedIcon />
                 </Avatar>
                 <Typography component="h1" variant="h5">
-                    Вход
+                    Sign In
                 </Typography>
-                <form className={classes.form} noValidate>
+                <form className={classes.form} onSubmit={handleFormSubmit}>
                     <TextField
                         variant="outlined"
                         margin="normal"
@@ -70,6 +97,8 @@ export default function Login() {
                         name="email"
                         autoComplete="email"
                         autoFocus
+                        onChange={handleEmailChange}
+                        value={email}
                     />
                     <TextField
                         variant="outlined"
@@ -81,6 +110,8 @@ export default function Login() {
                         type="password"
                         id="password"
                         autoComplete="current-password"
+                        onChange={handlePasswordChange}
+                        value={password}
                     />
                     <FormControlLabel
                         control={<Checkbox value="remember" color="primary" />}
@@ -93,7 +124,7 @@ export default function Login() {
                         color="primary"
                         className={classes.submit}
                     >
-                        Sign In
+                        Вход
                     </Button>
                     <Grid container>
                         <Grid item xs>
@@ -115,3 +146,5 @@ export default function Login() {
         </Container>
     );
 }
+
+export default Login;

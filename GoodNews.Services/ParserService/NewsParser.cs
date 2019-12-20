@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.ServiceModel.Syndication;
@@ -14,6 +15,7 @@ using GoodNews.MediatR.Queries.GetSourceByUrl;
 using HtmlAgilityPack;
 using HtmlAgilityPack.CssSelectors.NetCore;
 using MediatR;
+using Serilog;
 
 namespace ParserService
 {
@@ -39,23 +41,26 @@ namespace ParserService
                 foreach (var article in feed.Items)
                 {
                     string articleUrl = article.Links.FirstOrDefault().Uri.ToString();
+                    articleUrl = articleUrl.IndexOf("?") < 0 ? articleUrl : articleUrl.Remove(articleUrl.IndexOf("?"));
                     bool articleExists = await _mediator.Send(new ArticleExists(articleUrl));
                     if (!articleExists && !news.Any(a=>a.Url.Equals(articleUrl)))
                     {
                         string content = GetArticleContent(articleUrl, source);
                         if (!string.IsNullOrEmpty(content))
                         {
-                            Category category = new Category() {Name = article.Categories.FirstOrDefault().Name.ToUpper()};
+                            Category category = new Category()
+                                {Name = article.Categories.FirstOrDefault().Name.ToUpper()};
                             string title = article.Title.Text.Replace("&nbsp;", string.Empty);
                             string description = Regex.Replace(article.Summary.Text, @"<[^>]+>|&nbsp;", string.Empty)
-                                .Replace(@"\s+", " ")
-                                .Replace("Читать далее…", string.Empty)
-                                 ;
+                                    .Replace(@"\s+", " ")
+                                    .Replace("Читать далее…", string.Empty)
+                                ;
                             string articleText = Regex.Replace(content, @"<.*?>|\r\n", string.Empty)
                                 .Replace(@"\s+", " ");
                             string thumbnail = GetThumbnail(article, source);
-
-                            news.Add(new Article()
+                            if (!news.Any(a => a.Url.Equals(articleUrl)))
+                            {
+                                news.Add(new Article()
                                 {
                                     Title = title,
                                     Description = description,
@@ -66,13 +71,14 @@ namespace ParserService
                                     Source = source,
                                     ThumbnailUrl = thumbnail,
                                     Text = articleText
-                                }
-                            );
+                                });
+                            }
                         }
                         
                     }
                 }
             }
+            news = news.GroupBy(x => x.Url).Select(x => x.FirstOrDefault()).ToList();
             return news;
         }
 
@@ -80,48 +86,55 @@ namespace ParserService
 
         private string GetArticleContent(string url, Source source)
         {
-            
 
-            string selector = source.QuerySelector;
-            WebClient wc = new WebClient();
-            string htmlText = wc.DownloadString(url);
-            wc.Dispose();
-
-            var doc = new HtmlAgilityPack.HtmlDocument();
-            doc.LoadHtml(htmlText);
-
-            HtmlNode article = doc.QuerySelector(selector);
-            string content = "";
-            if (article != null)
+            try
             {
-                var badNodes = article.ChildNodes
-                    .Where(a => (a.Attributes.Contains("style") &&
-                                 a.Attributes["style"].Value.Contains("text-align: right")) ||
-                                (a.Name == "script") ||
-                                (a.Name == "table") ||
-                                (a.HasClass("news-media_3by2")) ||
-                                (a.HasClass("news-widget")) ||
-                                (a.HasClass("news-banner")) ||
-                                (a.HasClass("news-incut")) ||
-                                (a.HasClass("news-vote")) ||
-                                (a.HasClass("news-reference")) ||
-                                (a.HasClass("TitledImage")) ||
-                                (a.HasClass("b-addition"))).ToList();
+                string selector = source.QuerySelector;
+                WebClient wc = new WebClient();
+                string htmlText = wc.DownloadString(url);
+                wc.Dispose();
 
-                foreach (var node in badNodes)
-                    node.Remove();
-                
-                content = article.InnerHtml;
-                content = Regex.Replace(content, @"\s+", " ").Replace("Читать далее…", ""); ;
-                if (source.Name == "S13")
+                var doc = new HtmlAgilityPack.HtmlDocument();
+                doc.LoadHtml(htmlText);
+
+                HtmlNode article = doc.QuerySelector(selector);
+                string content = "";
+                if (article != null)
                 {
-                    content = Regex.Replace(content, @"src=""/ru/", @"src=""http://s13.ru/ru/");
+                    var badNodes = article.ChildNodes
+                        .Where(a => (a.Attributes.Contains("style") &&
+                                     a.Attributes["style"].Value.Contains("text-align: right")) ||
+                                    (a.Name == "script") ||
+                                    (a.Name == "table") ||
+                                    (a.HasClass("news-media_3by2")) ||
+                                    (a.HasClass("news-widget")) ||
+                                    (a.HasClass("news-banner")) ||
+                                    (a.HasClass("news-incut")) ||
+                                    (a.HasClass("news-vote")) ||
+                                    (a.HasClass("news-reference")) ||
+                                    (a.HasClass("TitledImage")) ||
+                                    (a.HasClass("b-addition"))).ToList();
+
+                    foreach (var node in badNodes)
+                        node.Remove();
+
+                    content = article.InnerHtml;
+                    content = Regex.Replace(content, @"\s+", " ").Replace("Читать далее…", ""); ;
+                    if (source.Name == "S13")
+                    {
+                        content = Regex.Replace(content, @"src=""/ru/", @"src=""http://s13.ru/ru/");
+                    }
+                    return HttpUtility.HtmlDecode(content);
+
                 }
-                return HttpUtility.HtmlDecode(content);
 
+                return content;
             }
-
-            return content;
+            catch (Exception e)
+            {
+                Log.Error("Enable parse content");
+                return null;
+            }
         }
 
         private string GetThumbnail(SyndicationItem article, Source source)

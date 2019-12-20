@@ -41,16 +41,16 @@ namespace GoodNews.API.Controllers
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult> Login([FromBody] LoginModel model)
+        public async Task<IActionResult> Login(string email, string password)
         {
             try
             {
-                var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, false, false);
+                var result = await _signInManager.PasswordSignInAsync(email, password, false, false);
 
                 if (result.Succeeded)
                 {
-                    var user = _userManager.Users.SingleOrDefault(r => r.Email == model.Email);
-                    string token = GenerateJwtToken(model.Email, user);
+                    var user = _userManager.Users.SingleOrDefault(r => r.Email == email);
+                    string token = GenerateJwtToken(email, user);
                     return Ok(token);
                 }
             }

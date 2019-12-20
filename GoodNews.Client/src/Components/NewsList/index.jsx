@@ -14,7 +14,8 @@ const NewsList = () => {
 
     useEffect(() => {
         async function fetchData() {
-            const res = await fetch(`https://good-news-server.azurewebsites.net/api/News?page=${pageNumber}`);
+            // const res = await fetch(`https://good-news-server.azurewebsites.net/api/News?page=${pageNumber}`);
+            const res = await fetch(`https://localhost:44317/api/News?page=${pageNumber}`);
             res
                 .json()
                 .then(res => {

@@ -59,7 +59,7 @@ namespace GoodNews.API
 
            
 
-            string connection = Configuration.GetConnectionString("AzureConnection");
+            string connection = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<GoodNewsContext>(options => options.UseSqlServer(
                 connection, x => x.MigrationsAssembly("GoodNews.Migrations")));
             services.AddAutoMapper(typeof(Startup));
@@ -71,9 +71,10 @@ namespace GoodNews.API
             services.AddTransient<ILemmatization, LemmatizationService.LemmatizationService>();
             services.AddTransient<IAffinService, AffinRuDictionary>();
             services.AddTransient<IRatingService, SentimentRatingService.SentimentRatingService>();
+            services.AddCors();
 
             services.AddHangfire(config => config.UseSqlServerStorage(
-                        Configuration.GetConnectionString("AzureConnection")));
+                        Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddSwaggerGen(c =>
             {
@@ -113,8 +114,13 @@ namespace GoodNews.API
                 app.UseHsts();
             }
 
-            app.UseCors(builder =>
-                builder.AllowAnyOrigin());
+            app.UseCors(builder => builder
+                .AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .AllowCredentials()
+            );
+
             app.UseSwagger();
             app.UseSwaggerUI(sw =>
             {
@@ -132,9 +138,9 @@ namespace GoodNews.API
             });
 
 
-            var newsService = app.ApplicationServices.GetService<INewsService>();
-            RecurringJob.AddOrUpdate(() => newsService.Run(),
-                Cron.Hourly(32));
+            //var newsService = app.ApplicationServices.GetService<INewsService>();
+            //RecurringJob.AddOrUpdate(() => newsService.Run(),
+            //    Cron.Hourly(32));
         }
     }
 }

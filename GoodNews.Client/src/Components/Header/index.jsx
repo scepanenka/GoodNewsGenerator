@@ -6,8 +6,25 @@ import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import {NavLink} from "react-router-dom";
+import {useUser} from "../../hooks/useUser";
+import Typography from "@material-ui/core/Typography";
 
-const Header = () => {
+const styles = {
+    grow: {
+        flexGrow: 1,
+    },
+    menuButton: {
+        marginLeft: -12,
+        marginRight: 20,
+    },
+};
+
+const Header = (props) => {
+    const { user, setAccessToken } = useUser();
+
+    function logout() {
+        setAccessToken(null);
+    }
     return(
         <div>
             <AppBar position="static">
@@ -19,6 +36,10 @@ const Header = () => {
                         <NavLink to='/news'><Button color="inherit">GoodNews</Button></NavLink>
                     </div>
                     <div>
+                        <Typography variant="h6" color="inherit" >
+                            {user.name ? user.name : 'Please, log in'}
+                        </Typography>
+                        {user.name && <Button color="inherit" onClick={logout}>Log Out</Button>}
                         <NavLink to='/login'><Button color="inherit">Login</Button></NavLink>
                         <NavLink to='/register'><Button color="inherit">Register</Button></NavLink>
                     </div>
