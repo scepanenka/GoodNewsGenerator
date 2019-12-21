@@ -63,10 +63,10 @@ namespace GoodNews.API.Controllers
             catch (Exception e)
             {
                 Log.Error($"INVALID_LOGIN_ATTEMPT {e.Message}");
-                return StatusCode(501, "INVALID_LOGIN_ATTEMPT");
+                return StatusCode(500, "INVALID_LOGIN_ATTEMPT");
             }
 
-            return StatusCode(501, "INVALID_LOGIN_ATTEMPT");
+            return StatusCode(500, "INVALID_LOGIN_ATTEMPT");
         }
 
         /// <summary>
@@ -93,7 +93,8 @@ namespace GoodNews.API.Controllers
                     string token = GenerateJwtToken(model.Email, user);
                     return Ok(token);
                 }
-                return StatusCode(501);
+                Log.Error("INVALID_REGISTER_ATTEMPT");
+                return StatusCode(500);
             }
             catch (Exception e)
             {

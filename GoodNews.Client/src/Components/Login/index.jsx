@@ -48,7 +48,7 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
-const Login = () => {
+const Login = (props) => {
     const classes = useStyles();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -79,6 +79,7 @@ const Login = () => {
             .then(text => {
                 const email = JSON.parse(text).email;
                 setAccessToken(email);
+                props.history.push("/");
             })
     };
 

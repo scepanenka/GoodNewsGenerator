@@ -3,42 +3,37 @@ import ArticleCard from "../News/ArticleCard";
 import Grid from "@material-ui/core/Grid";
 import {Container} from "@material-ui/core";
 import s from './style.module.scss'
+import {API_BASE_URL} from "../../config";
+import axios from "axios";
+import InfiniteScroll from "react-infinite-scroll-component";
 
 
 const NewsList = () => {
 
-    const [hasError, setErrors] = useState(false);
     const [news, setNews] = useState([]);
-    const [pageNumber, setPageNumber] = useState(1);
-    const [hasMore, setHasMore] = useState(true);
+    const [page, setPage] = useState(1);
 
     useEffect(() => {
-        async function fetchData() {
-            // const res = await fetch(`https://good-news-server.azurewebsites.net/api/News?page=${pageNumber}`);
-            const res = await fetch(`https://localhost:44317/api/News?page=${pageNumber}`);
-            res
-                .json()
-                .then(res => {
-                    setNews(news.concat(res.data));
-                    setPageNumber(pageNumber + 1)
-                })
-                .catch(err => {
-                    console.error(err);
-                    setHasMore(false);
-                });
-            ;
-        }
-
-        fetchData();
+            axios.get(`${API_BASE_URL}/News/GetNews?page=${page}`)
+                .then(res => {setNews(res.data)});
     }, []);
+
+    const fetchData = async () => {
+        setPage(page + 1);
+        await axios
+            .get(`${API_BASE_URL}/News/GetNews?page=${page + 1}`)
+            .then(res => setNews(news.concat(res.data)));
+    };
 
     return (
         <Container maxWidth="lg" className={s.newsContainer}>
-            <Grid container justify="center" spacing={5}>
+            <InfiniteScroll dataLength={news.length} next={fetchData} hasMore={true}>
+            <Grid container justify="center" spacing={5} overflow="hidden" className={s.newsContainer}>
                 {news.map(article =>
                     <ArticleCard key={article.id} article={article}/>
                 )}
             </Grid>
+            </InfiniteScroll>
         </Container>
     );
 };

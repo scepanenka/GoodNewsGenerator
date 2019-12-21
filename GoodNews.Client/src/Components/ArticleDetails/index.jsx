@@ -1,9 +1,10 @@
 import React, {useEffect, useState} from 'react';
 import {matchPath} from "react-router";
 import Container from "@material-ui/core/Container";
-import parse from 'html-react-parser';
 import {API_BASE_URL} from "../../config";
 import Login from "../Login";
+import ArticleContent from "./ArticleContent";
+import ArticleComments from "./ArticleComments";
 
 const ArticleDetails = (props) => {
 
@@ -21,8 +22,7 @@ const ArticleDetails = (props) => {
 
     useEffect(() => {
         async function fetchData() {
-            //const res = await fetch(`https://good-news-server.azurewebsites.net/api/News/${articleId}`);
-            const res = await fetch(`${API_BASE_URL}/api/News/${articleId}`);
+            const res = await fetch(`${API_BASE_URL}/News/GetArticle/${articleId}`);
             res
                 .json()
                 .then(res => setArticle(res))
@@ -33,9 +33,11 @@ const ArticleDetails = (props) => {
     }, []);
 
 
-    return (<Container align="justify">
-        <h1>{article.title}</h1>
-        {parse(`${article.content}`)}
-    </Container>)
+    return (
+        <Container>
+        <ArticleContent article={article}/>
+        <ArticleComments artticleId={articleId}/>
+        </Container>
+    )
 }
 export default ArticleDetails;

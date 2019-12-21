@@ -15,8 +15,7 @@ const News = (props) => {
 
     useEffect(() => {
         async function fetchData() {
-            //const res = await fetch("https://good-news-server.azurewebsites.net/api/News");
-            const res = await fetch(`${API_BASE_URL}/api/News`);
+            const res = await fetch(`${API_BASE_URL}/News/GetNews`);
             res
                 .json()
                 .then(res => setNews(res))

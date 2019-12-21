@@ -8,6 +8,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 import {NavLink} from "react-router-dom";
 import {UserProvider, useUser} from "../../hooks/useUser";
 import Typography from "@material-ui/core/Typography";
+import Box from "@material-ui/core/Box";
 
 const styles = {
     grow: {
@@ -27,7 +28,7 @@ const Header = (props) => {
     }
 
     return (
-        <div>
+        <Box>
             <AppBar position="static">
                 <Toolbar className={s.wrapper}>
                     <div className={s.left}>
@@ -36,17 +37,22 @@ const Header = (props) => {
                         </IconButton>
                         <NavLink to='/news'><Button color="inherit">GoodNews</Button></NavLink>
                     </div>
-                    <div>
-                        <Typography variant="h6" color="inherit">
+                    <Box component="div" display="inline" mr={3}>
+                        <Typography  variant="subtitle2" color="inherit" display="inline" >
                             {user.email ? user.email : 'Please, log in'}
                         </Typography>
-                        {user.email && <Button color="inherit" onClick={logout}>Log Out</Button>}
-                        <NavLink to='/login'><Button color="inherit">Login</Button></NavLink>
-                        <NavLink to='/register'><Button color="inherit">Register</Button></NavLink>
-                    </div>
+                        {user.email
+                            ? <Button color="inherit"  onClick={logout} ml={2}>Log Out</Button>
+                            :
+                            <Box display="inline" ml={2}>
+                                <NavLink to='/login'><Button color="inherit">Login</Button></NavLink>
+                                <NavLink to='/register'><Button color="inherit">Register</Button></NavLink>
+                            </Box>
+                        }
+                    </Box>
                 </Toolbar>
             </AppBar>
-        </div>
+        </Box>
     )
 }
 export default Header;
