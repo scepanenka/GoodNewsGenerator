@@ -59,7 +59,7 @@ namespace GoodNews.API
 
            
 
-            string connection = Configuration.GetConnectionString("DefaultConnection");
+            string connection = Configuration.GetConnectionString("AzureConnection");
             services.AddDbContext<GoodNewsContext>(options => options.UseSqlServer(
                 connection, x => x.MigrationsAssembly("GoodNews.Migrations")));
             services.AddAutoMapper(typeof(Startup));
@@ -138,9 +138,9 @@ namespace GoodNews.API
             });
 
 
-            //var newsService = app.ApplicationServices.GetService<INewsService>();
-            //RecurringJob.AddOrUpdate(() => newsService.Run(),
-            //    Cron.Hourly(32));
+            var newsService = app.ApplicationServices.GetService<INewsService>();
+            RecurringJob.AddOrUpdate(() => newsService.Start(),
+                Cron.Daily);
         }
     }
 }

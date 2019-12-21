@@ -50,8 +50,14 @@ namespace GoodNews.API.Controllers
                 if (result.Succeeded)
                 {
                     var user = _userManager.Users.SingleOrDefault(r => r.Email == email);
-                    string token = GenerateJwtToken(email, user);
-                    return Ok(token);
+                    return Ok(new
+                    {
+                        id = user.Id,
+                        userName = user.UserName,
+                        email = user.Email,
+                        roles = await _userManager.GetRolesAsync(user),
+                        token = GenerateJwtToken(email, user),
+                    }); ;
                 }
             }
             catch (Exception e)

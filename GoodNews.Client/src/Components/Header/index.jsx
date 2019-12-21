@@ -6,7 +6,7 @@ import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import {NavLink} from "react-router-dom";
-import {useUser} from "../../hooks/useUser";
+import {UserProvider, useUser} from "../../hooks/useUser";
 import Typography from "@material-ui/core/Typography";
 
 const styles = {
@@ -20,26 +20,27 @@ const styles = {
 };
 
 const Header = (props) => {
-    const { user, setAccessToken } = useUser();
+    const {user, setAccessToken} = useUser();
 
     function logout() {
         setAccessToken(null);
     }
-    return(
+
+    return (
         <div>
             <AppBar position="static">
                 <Toolbar className={s.wrapper}>
                     <div className={s.left}>
                         <IconButton edge="start" className={s.menuButton} color="inherit" aria-label="menu">
-                            <MenuIcon />
+                            <MenuIcon/>
                         </IconButton>
                         <NavLink to='/news'><Button color="inherit">GoodNews</Button></NavLink>
                     </div>
                     <div>
-                        <Typography variant="h6" color="inherit" >
-                            {user.name ? user.name : 'Please, log in'}
+                        <Typography variant="h6" color="inherit">
+                            {user.email ? user.email : 'Please, log in'}
                         </Typography>
-                        {user.name && <Button color="inherit" onClick={logout}>Log Out</Button>}
+                        {user.email && <Button color="inherit" onClick={logout}>Log Out</Button>}
                         <NavLink to='/login'><Button color="inherit">Login</Button></NavLink>
                         <NavLink to='/register'><Button color="inherit">Register</Button></NavLink>
                     </div>

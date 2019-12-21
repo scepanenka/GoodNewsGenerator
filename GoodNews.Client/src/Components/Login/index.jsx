@@ -10,7 +10,7 @@ import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
+import {makeStyles} from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import {useUser} from "../../hooks/useUser";
 import {API_BASE_URL} from "../../config";
@@ -48,11 +48,11 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
-const Login = () =>  {
+const Login = () => {
     const classes = useStyles();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const { setAccessToken } = useUser();
+    const {setAccessToken} = useUser();
 
     function handleEmailChange(event) {
         setEmail(event.target.value);
@@ -64,24 +64,30 @@ const Login = () =>  {
 
     function handleFormSubmit(event) {
         event.preventDefault();
-        getToken(email, password).then(setAccessToken);
+        getToken(email, password);
     };
 
-    const getToken = (email, password) => {
+    const getToken = async (email, password) => {
         const requestOptions = {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json'
+            headers: {
+                'Content-Type': 'application/json'
             }
         };
-        return fetch(`${API_BASE_URL}/Account/Login?email=${email}&password=${password}`, requestOptions);
+        fetch(`${API_BASE_URL}/Account/Login?email=${email}&password=${password}`, requestOptions)
+            .then(response => response.text())
+            .then(text => {
+                const email = JSON.parse(text).email;
+                setAccessToken(email);
+            })
     };
 
     return (
         <Container component="main" maxWidth="xs">
-            <CssBaseline />
+            <CssBaseline/>
             <div className={classes.paper}>
                 <Avatar className={classes.avatar}>
-                    <LockOutlinedIcon />
+                    <LockOutlinedIcon/>
                 </Avatar>
                 <Typography component="h1" variant="h5">
                     Sign In
@@ -114,7 +120,7 @@ const Login = () =>  {
                         value={password}
                     />
                     <FormControlLabel
-                        control={<Checkbox value="remember" color="primary" />}
+                        control={<Checkbox value="remember" color="primary"/>}
                         label="Запомнить"
                     />
                     <Button
@@ -141,7 +147,7 @@ const Login = () =>  {
                 </form>
             </div>
             <Box mt={8}>
-                <Copyright />
+                <Copyright/>
             </Box>
         </Container>
     );

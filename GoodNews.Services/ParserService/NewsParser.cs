@@ -78,7 +78,7 @@ namespace ParserService
                     }
                 }
             }
-            news = news.GroupBy(x => x.Url).Select(x => x.FirstOrDefault()).ToList();
+            
             return news;
         }
 

@@ -12,8 +12,8 @@ import {UserProvider} from "./hooks/useUser";
 const App = () => {
     return (
         <BrowserRouter>
-            <UserProvider>
-                <div className="App">
+            <div className="App">
+                <UserProvider>
                     <Header/>
                     <div className='app-content-wrapper'>
                         <Route exact path='/' component={News}/>
@@ -22,8 +22,8 @@ const App = () => {
                         <Route path='/login' component={Login}/>
                         <Route path='/register' component={Register}/>
                     </div>
-                </div>
-            </UserProvider>
+                </UserProvider>
+            </div>
         </BrowserRouter>
     );
 }
