@@ -74,7 +74,7 @@ namespace GoodNews.API
             services.AddCors();
 
             services.AddHangfire(config => config.UseSqlServerStorage(
-                        Configuration.GetConnectionString("DefaultConnection")));
+                        Configuration.GetConnectionString("AzureConnection")));
 
             services.AddSwaggerGen(c =>
             {

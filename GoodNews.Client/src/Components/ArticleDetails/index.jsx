@@ -86,9 +86,7 @@ const ArticleDetails = (props) => {
                     value={newComment}
                 />
                 <Button type="submit"
-                        fullWidth
-                        variant="contained"
-                        color="primary">
+                        fullWidth>
                     SEND
                 </Button>
             </form>

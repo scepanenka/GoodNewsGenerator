@@ -10,6 +10,7 @@ import Typography from '@material-ui/core/Typography';
 import Grid from "@material-ui/core/Grid";
 import {NavLink} from "react-router-dom";
 import s from './style.module.scss'
+import {CardHeader} from "@material-ui/core";
 
 const useStyles = makeStyles({
     card: {
@@ -25,7 +26,7 @@ const useStyles = makeStyles({
     description: {
         height: 100,
         overflow: "hidden",
-    }
+    },
 });
 
 const ArticleCard = (props) => {
@@ -39,8 +40,13 @@ const ArticleCard = (props) => {
                         <CardMedia
                             className={classes.media}
                             image={props.article.thumbnailUrl}
+                            children={<div className={s.mediaChild}>
+                                <span className={s.source}>{props.article.source}</span>
+                                <span className={s.rating}>{props.article.sentimentRating}</span>
+                            </div>}
                         />
-                        <CardContent>
+
+                        <div className={s.cardContent}>
                             <Typography
                                 className={classes.title}
                                 gutterBottom
@@ -56,15 +62,10 @@ const ArticleCard = (props) => {
                                 component="p">
                                 {props.article.description}
                             </Typography>
-                        </CardContent>
-                        <CardContent className={classes.source}>
-                            <Typography >
-                                {props.article.source}
-                            </Typography>
-                        </CardContent>
+                        </div>
                     </CardActionArea>
                 </NavLink>
-                <CardActions>
+                <div className={s.cardBottom}>
                     <NavLink to={`/news/${props.article.id}`}>
                         <Button variant="contained"
                                 color="primary"
@@ -72,7 +73,8 @@ const ArticleCard = (props) => {
                             Подробнее
                         </Button>
                     </NavLink>
-                </CardActions>
+                    <span>{props.article.category}</span>
+                </div>
             </Card>
 
         </Grid>

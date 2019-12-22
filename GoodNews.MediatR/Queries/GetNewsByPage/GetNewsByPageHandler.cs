@@ -23,7 +23,7 @@ namespace GoodNews.MediatR.Queries.GetNewsByPage
         public async Task<IEnumerable<Article>> Handle(GetNewsByPage request, CancellationToken cancellationToken)
         {
             int newsPerPage = 15;
-            var news = await _context.News.Where(a=>a.SentimentRating > 0).Include(a => a.Source)
+            var news = await _context.News.Where(a=>a.SentimentRating > 0).Include(a => a.Source).Include(a => a.Category)
                 .OrderByDescending(a => a.DatePublication).Skip((request.Page - 1) * newsPerPage).Take(newsPerPage).ToListAsync(cancellationToken);
             return news;
         }

@@ -57,7 +57,7 @@ namespace GoodNews.API.Controllers
                         email = user.Email,
                         roles = await _userManager.GetRolesAsync(user),
                         token = GenerateJwtToken(email, user),
-                    }); ;
+                    });
                 }
             }
             catch (Exception e)
@@ -90,9 +90,16 @@ namespace GoodNews.API.Controllers
                 if (result.Succeeded)
                 {
                     await _signInManager.SignInAsync(user, false);
-                    string token = GenerateJwtToken(model.Email, user);
-                    return Ok(token);
+                    return Ok(new
+                    {
+                        id = user.Id,
+                        userName = user.UserName,
+                        email = user.Email,
+                        roles = await _userManager.GetRolesAsync(user),
+                        token = GenerateJwtToken(model.Email, user)
+                    });
                 }
+
                 Log.Error("INVALID_REGISTER_ATTEMPT");
                 return StatusCode(500);
             }
