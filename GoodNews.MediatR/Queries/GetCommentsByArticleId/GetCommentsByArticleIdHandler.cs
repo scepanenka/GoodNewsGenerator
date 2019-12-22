@@ -19,8 +19,8 @@ namespace GoodNews.MediatR.Queries.GetCommentsByArticleId
         }
         public async Task<IEnumerable<Comment>> Handle(GetCommentsByArticleId request, CancellationToken cancellationToken)
         {
-            var  result = await _context.Comments.Include(c => c.User)
-                    .Where(c => c.ArticleId.Equals(request.ArticleId)).OrderByDescending(c => c.Date).ToListAsync(cancellationToken);
+            var  result = await _context.Comments.Where(c => c.ArticleId.Equals(request.ArticleId))
+                .Include(c => c.User).OrderByDescending(c => c.Date).ToListAsync(cancellationToken);
             return result;
         }
     }

@@ -14,6 +14,7 @@ using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Serilog;
 
 namespace GoodNews.API.Controllers
@@ -30,33 +31,32 @@ namespace GoodNews.API.Controllers
             _mediator = mediator;
             _userManager = userManager;
         }
-        
+
         // GET: api/Comments/5
         /// <summary>
         /// Get comments by article id
         /// </summary>
         /// <param name="articleId"></param>
         /// <returns></returns>
-        [HttpGet("{id}", Name = "Get")]
-        public async Task<ActionResult> Get(Guid articleId)
+        [HttpGet("{articleId}")]
+        public async Task<ActionResult<IEnumerable<Comment>>> Get(Guid articleId)
         {
             try
             {
-                var article = await _mediator.Send(new GetArticleById(articleId));
-                var comments = await _mediator.Send(new GetCommentsByArticleId(articleId));
+                IEnumerable<Comment> comments = await _mediator.Send(new GetCommentsByArticleId(articleId));
 
-                var articleModel = new ArticleDetailPageViewModel()
+
+                Log.Debug($"Comments loaded");
+
+                if (comments.Any())
                 {
-                    Article = article,
-                    Comments = comments
-                };
-
-                Log.Debug($"Article '{article.Title}'  loaded");
-                return Ok(articleModel);
+                    return Ok(comments);
+                }
+                return StatusCode(204, "No comments");
             }
             catch (Exception e)
             {
-                Log.Error($"Article was not loaded: {e.Message}");
+                Log.Error($"Comments was not loaded: {e.Message}");
 
                 return StatusCode(500);
             }
@@ -66,34 +66,34 @@ namespace GoodNews.API.Controllers
         /// <summary>
         /// Add comment
         /// </summary>
-        /// <param name="value"></param>
+        /// <param name="model"></param>
+        /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] string input, Guid id)
+        public async Task<IActionResult> Post(CommentPostModel model)
         {
             try
             {
-                var user = _userManager.FindByIdAsync(User.FindFirst(ClaimTypes.NameIdentifier).Value).Result;
+                var user = await _userManager.FindByEmailAsync(model.Email);
 
                 var comment = new Comment()
                 {
                     User = user,
-                    Content = input,
+                    Content = model.Content,
                     Date = DateTime.Now.ToLocalTime(),
-                    Article = await _mediator.Send(new GetArticleById(id))
+                    Article = await _mediator.Send(new GetArticleById(model.ArticleId))
                 };
 
                 await _mediator.Send(new AddComment(comment));
 
-                Log.Information($"Comment was added successfully");
+                Log.Information($"Comment added successfully");
 
-                return StatusCode(201, comment);
+                return StatusCode(201, "Comment added successfully");
             }
             catch (Exception ex)
             {
                 Log.Error($"Error adding comment:{Environment.NewLine}{ex.Message}");
                 return BadRequest();
             }
-
         }
     }
 }

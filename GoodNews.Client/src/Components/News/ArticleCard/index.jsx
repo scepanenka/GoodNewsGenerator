@@ -57,8 +57,8 @@ const ArticleCard = (props) => {
                                 {props.article.description}
                             </Typography>
                         </CardContent>
-                        <CardContent>
-                            <Typography>
+                        <CardContent className={classes.source}>
+                            <Typography >
                                 {props.article.source}
                             </Typography>
                         </CardContent>
