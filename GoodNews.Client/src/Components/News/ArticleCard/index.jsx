@@ -2,15 +2,15 @@ import React from 'react';
 import {makeStyles} from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
+import { Rating } from '@material-ui/lab'
 import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Grid from "@material-ui/core/Grid";
 import {NavLink} from "react-router-dom";
 import s from './style.module.scss'
-import {CardHeader} from "@material-ui/core";
+import StarBorderIcon from '@material-ui/icons/StarBorder';
+import Moment from "react-moment";
 
 const useStyles = makeStyles({
     card: {
@@ -39,11 +39,13 @@ const ArticleCard = (props) => {
                     <CardActionArea>
                         <CardMedia
                             className={classes.media}
-                            image={props.article.thumbnailUrl}
-                            children={<div className={s.mediaChild}>
-                                <span className={s.source}>{props.article.source}</span>
-                                <span className={s.rating}>{props.article.sentimentRating}</span>
-                            </div>}
+                            image={props.article.thumbnailUrl || 'gn3.jpg'}
+                            children={
+                                    <div className={s.mediaChildTop}>
+                                        <span className={s.source}>{props.article.source}</span>
+                                        <span>{props.article.category}</span>
+                                    </div>
+                            }
                         />
 
                         <div className={s.cardContent}>
@@ -54,6 +56,7 @@ const ArticleCard = (props) => {
                                 component="h3">
                                 <strong>{props.article.title}</strong>
                             </Typography>
+                            <div className={s.date}><span>{<Moment format="YYYY/MM/DD HH:mm">{props.article.datePublication}</Moment>}</span></div>
                             <Typography
                                 className={classes.description}
                                 variant="body2"
@@ -73,7 +76,16 @@ const ArticleCard = (props) => {
                             Подробнее
                         </Button>
                     </NavLink>
-                    <span>{props.article.category}</span>
+                    <div>
+                        <Rating name="sentiment"
+                                value={props.article.sentimentRating +1.5}
+                                readOnly
+                                size="medium"
+                                precision={0.1}
+                                emptyIcon={<StarBorderIcon fontSize="inherit" />}
+                        />
+                        <span className={s.rating}>{(props.article.sentimentRating +1.5).toFixed(2)}</span>
+                    </div>
                 </div>
             </Card>
 

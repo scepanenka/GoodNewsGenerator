@@ -140,7 +140,7 @@ namespace GoodNews.API
 
             var newsService = app.ApplicationServices.GetService<INewsService>();
             RecurringJob.AddOrUpdate(() => newsService.Start(),
-                Cron.Daily);
+                Cron.Hourly(15));
         }
     }
 }

@@ -1,6 +1,7 @@
 .wrapper {
   display: flex;
   justify-content: space-between;
+  max-height: 60px;
 
   .left {
     .menuButton {
@@ -12,4 +13,10 @@
     text-decoration: none;
     color: white;
   }
+}
+
+.logo {
+  position: absolute;
+  overflow: visible;
+  height: 60px;
 }
