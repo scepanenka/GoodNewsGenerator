@@ -133,7 +133,5 @@ namespace GoodNews.API.Controllers
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
-
-
     }
 }
