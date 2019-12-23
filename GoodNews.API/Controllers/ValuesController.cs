@@ -17,9 +17,8 @@ namespace GoodNews.API.Controllers
         }
         // GET api/values
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<string>>> Get()
+        public IEnumerable<string> Get()
         {
-            // await _newsService.Run();
             return new string[] { "value1", "value2" };
         }
     }

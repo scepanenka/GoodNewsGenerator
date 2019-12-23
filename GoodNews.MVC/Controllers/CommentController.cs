@@ -49,7 +49,7 @@ namespace GoodNews.MVC.Controllers
                 Content = comment.Content
             };
             
-            return Json(result);
+            return Ok(result);
         }
 
         [AllowAnonymous]

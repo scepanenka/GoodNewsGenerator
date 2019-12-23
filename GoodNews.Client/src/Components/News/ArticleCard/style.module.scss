@@ -1,0 +1,35 @@
+a {
+  text-decoration: none;
+  color: black;
+}
+
+.mediaChild {
+  display: flex;
+  justify-content: space-between;
+
+  span {
+    background-color: rgba(200, 200, 200, 0.3);;
+    padding: 4px 4px 1px 4px;
+    color: white;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 16px;
+  }
+
+  .source {
+    text-transform: uppercase;
+  }
+  .rating {
+    color: yellow;
+  }
+}
+
+.cardContent {
+  padding:  8px 16px;
+}
+
+.cardBottom {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px;
+}

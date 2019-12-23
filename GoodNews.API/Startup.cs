@@ -18,6 +18,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using ParserService;
+using Serilog;
 using Swashbuckle.AspNetCore.Swagger;
 
 namespace GoodNews.API
@@ -27,6 +28,12 @@ namespace GoodNews.API
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+
+            Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Debug()
+                .WriteTo.Console()
+                .WriteTo.File("logs\\GoodNews.log", rollingInterval: RollingInterval.Day)
+                .CreateLogger();
         }
 
         public IConfiguration Configuration { get; }
@@ -52,7 +59,7 @@ namespace GoodNews.API
 
            
 
-            string connection = Configuration.GetConnectionString("DefaultConnection");
+            string connection = Configuration.GetConnectionString("AzureConnection");
             services.AddDbContext<GoodNewsContext>(options => options.UseSqlServer(
                 connection, x => x.MigrationsAssembly("GoodNews.Migrations")));
             services.AddAutoMapper(typeof(Startup));
@@ -64,9 +71,10 @@ namespace GoodNews.API
             services.AddTransient<ILemmatization, LemmatizationService.LemmatizationService>();
             services.AddTransient<IAffinService, AffinRuDictionary>();
             services.AddTransient<IRatingService, SentimentRatingService.SentimentRatingService>();
+            services.AddCors();
 
             services.AddHangfire(config => config.UseSqlServerStorage(
-                        Configuration.GetConnectionString("DefaultConnection")));
+                        Configuration.GetConnectionString("AzureConnection")));
 
             services.AddSwaggerGen(c =>
             {
@@ -106,6 +114,13 @@ namespace GoodNews.API
                 app.UseHsts();
             }
 
+            app.UseCors(builder => builder
+                .AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .AllowCredentials()
+            );
+
             app.UseSwagger();
             app.UseSwaggerUI(sw =>
             {
@@ -123,14 +138,9 @@ namespace GoodNews.API
             });
 
 
-            //var parserService = app.ApplicationServices.GetService<IParser>();
-            //var JobIdOnliner = "JobIdOnliner";
-            //var JobIdTutby = "JobIdTutby";
-            //var JobIdS13 = "JobIdS13";
-            //RecurringJob.AddOrUpdate(JobIdOnliner,
-            //    () => parserService.Parse("https://people.onliner.by/feed"),
-            //    Cron.Hourly(0));
-            //BackgroundJob.ContinueWith(JobIdOnliner, () => parserService.Parse("http://s13.ru/rss"));
+            var newsService = app.ApplicationServices.GetService<INewsService>();
+            RecurringJob.AddOrUpdate(() => newsService.Start(),
+                Cron.Daily);
         }
     }
 }

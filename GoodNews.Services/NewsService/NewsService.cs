@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using GoodNews.Core;
 using GoodNews.Data.Entities;
@@ -21,7 +22,7 @@ namespace NewsService
             _rating = rating;
         }
 
-        public async Task<bool> Run()
+        public async Task<bool> Start()
         {
             var news = await ParseNews();
             await AddNewsToDb(news);
@@ -41,7 +42,7 @@ namespace NewsService
             {
                 news.AddRange(await _parser.Parse(source.Url));
             }
-
+            news = news.Distinct().ToList();
             return news;
         }
 

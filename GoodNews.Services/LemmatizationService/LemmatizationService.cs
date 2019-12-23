@@ -21,7 +21,7 @@ namespace LemmatizationService
             using (var client = new HttpClient())
             {
                 using (HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post,
-                    "http://api.ispras.ru/texterra/v1/nlp?targetType=lemma&apikey=de7e616f3ec4bd9b67d7923692a692eddf4478ef")
+                    "http://api.ispras.ru/texterra/v1/nlp?targetType=lemma&apikey=406a9493f44455ad172202cb3be187282b732478")
                 )
                 {
                     request.Content = new StringContent("[ { \"text\" : \"" + input + "\" } ]",

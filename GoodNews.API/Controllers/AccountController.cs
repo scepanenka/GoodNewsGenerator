@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using Serilog;
 
 namespace GoodNews.API.Controllers
 {
@@ -40,17 +41,32 @@ namespace GoodNews.API.Controllers
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<object> Login([FromBody] LoginModel model)
+        public async Task<IActionResult> Login(string email, string password)
         {
-            var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, false, false);
-
-            if (result.Succeeded)
+            try
             {
-                var appUser = _userManager.Users.SingleOrDefault(r => r.Email == model.Email);
-                return GenerateJwtToken(model.Email, appUser);
+                var result = await _signInManager.PasswordSignInAsync(email, password, false, false);
+
+                if (result.Succeeded)
+                {
+                    var user = _userManager.Users.SingleOrDefault(r => r.Email == email);
+                    return Ok(new
+                    {
+                        id = user.Id,
+                        userName = user.UserName,
+                        email = user.Email,
+                        roles = await _userManager.GetRolesAsync(user),
+                        token = GenerateJwtToken(email, user),
+                    });
+                }
+            }
+            catch (Exception e)
+            {
+                Log.Error($"INVALID_LOGIN_ATTEMPT {e.Message}");
+                return StatusCode(500, "INVALID_LOGIN_ATTEMPT");
             }
 
-            throw new ApplicationException("INVALID_LOGIN_ATTEMPT");
+            return StatusCode(500, "INVALID_LOGIN_ATTEMPT");
         }
 
         /// <summary>
@@ -60,25 +76,41 @@ namespace GoodNews.API.Controllers
         /// <returns></returns>
         [AllowAnonymous]
         [HttpPost]
-        public async Task<object> Register([FromBody] RegisterModel model)
+        public async Task<IActionResult> Register([FromBody] RegisterModel model)
         {
-            var user = new User
+            try
             {
-                UserName = model.Email,
-                Email = model.Email
-            };
-            var result = await _userManager.CreateAsync(user, model.Password);
+                var user = new User
+                {
+                    UserName = model.Email,
+                    Email = model.Email
+                };
+                var result = await _userManager.CreateAsync(user, model.Password);
 
-            if (result.Succeeded)
-            {
-                await _signInManager.SignInAsync(user, false);
-                return GenerateJwtToken(model.Email, user);
+                if (result.Succeeded)
+                {
+                    await _signInManager.SignInAsync(user, false);
+                    return Ok(new
+                    {
+                        id = user.Id,
+                        userName = user.UserName,
+                        email = user.Email,
+                        roles = await _userManager.GetRolesAsync(user),
+                        token = GenerateJwtToken(model.Email, user)
+                    });
+                }
+
+                Log.Error("INVALID_REGISTER_ATTEMPT");
+                return StatusCode(500);
             }
-
-            throw new ApplicationException("UNKNOWN_ERROR");
+            catch (Exception e)
+            {
+                Log.Error("INVALID_REGISTER_ATTEMPT");
+                return StatusCode(501, e.Message);
+            }
         }
 
-        private object GenerateJwtToken(string email, User user)
+        private string GenerateJwtToken(string email, User user)
         {
             var claims = new List<Claim>
             {
