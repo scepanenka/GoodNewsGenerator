@@ -3,5 +3,6 @@
     "node_modules{,/**}",
     ".vscode{,/**}"
   ],
-  "appService.deploySubpath": "build"
+  "appService.deploySubpath": "",
+  "appService.defaultWebAppToDeploy": "/subscriptions/deff635d-e4dc-44f4-a406-b1613463ddb2/resourceGroups/GOODNEWS/providers/Microsoft.Web/sites/gn"
 }

@@ -113,6 +113,7 @@ namespace ParserService
                                     (a.HasClass("news-vote")) ||
                                     (a.HasClass("news-reference")) ||
                                     (a.HasClass("TitledImage")) ||
+                                    (a.HasClass("news-header")) ||
                                     (a.HasClass("b-addition"))).ToList();
 
                     foreach (var node in badNodes)
@@ -142,7 +143,8 @@ namespace ParserService
             
             try
             {
-                string selector = source.Name == "S13" ? ".content" : source.QuerySelector;
+                string selector = source.Name == "S13.RU" ? ".content" : source.QuerySelector;
+
                 string thumbnailUrl = article.ElementExtensions
                     .Where(extension =>
                         extension.OuterName == "content" &&
@@ -165,9 +167,6 @@ namespace ParserService
 
                     thumbnailUrl = Regex.Match(content, "<img.+?src=[\"'](.+?)[\"'].+?>", RegexOptions.IgnoreCase)
                         .Groups[1].Value;
-                    thumbnailUrl = thumbnailUrl.StartsWith("/ru") && source.Name.Equals("S13")
-                        ? thumbnailUrl.Insert(0, "http://s13.ru")
-                        : thumbnailUrl;
                 }
                 if (string.IsNullOrEmpty(thumbnailUrl))
                 {
@@ -176,6 +175,10 @@ namespace ParserService
                         .Select(extension => (string)extension.GetObject<XElement>().Attribute("url"))
                         .FirstOrDefault();
                 }
+
+                thumbnailUrl = thumbnailUrl.StartsWith("/ru") && source.Name.Equals("S13.RU")
+                    ? thumbnailUrl.Insert(0, "http://s13.ru")
+                    : thumbnailUrl;
 
                 return thumbnailUrl;
             }

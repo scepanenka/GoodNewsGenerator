@@ -5,22 +5,23 @@ a {
 
 .mediaChild {
   display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+}
+
+.mediaChildTop {
+  display: flex;
   justify-content: space-between;
 
   span {
-    background-color: rgba(200, 200, 200, 0.3);;
+    background-color: rgba(200, 200, 200, 0.5);;
     padding: 4px 4px 1px 4px;
     color: white;
     border-radius: 8px;
     font-weight: 700;
     font-size: 16px;
-  }
-
-  .source {
     text-transform: uppercase;
-  }
-  .rating {
-    color: yellow;
   }
 }
 
@@ -32,4 +33,20 @@ a {
   display: flex;
   justify-content: space-between;
   padding: 8px;
+}
+
+.rating {
+  font-size: 20px;
+  margin: 6px;
+  position: relative;
+  bottom: 5px;
+  font-weight: 700;
+}
+
+.date {
+  display: flex;
+  font-size: 10px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  font-weight: 700;
 }

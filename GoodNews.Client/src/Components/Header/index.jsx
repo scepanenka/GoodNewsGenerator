@@ -35,7 +35,8 @@ const Header = (props) => {
                         <IconButton edge="start" className={s.menuButton} color="inherit" aria-label="menu">
                             <MenuIcon/>
                         </IconButton>
-                        <NavLink to='/news'><Button color="inherit">GoodNews</Button></NavLink>
+                        <NavLink to='/news'><Button color="inherit"
+                        ><img className={s.logo} src="goodNewsWhite.png" alt="logo"/> </Button></NavLink>
                     </div>
                     <Box component="div" display="inline" mr={3}>
                         <Typography  variant="subtitle2" color="inherit" display="inline" >
